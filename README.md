@@ -10,7 +10,11 @@ Pasos para crear la aplicación:
     6- Para poder verlo en la web instalar lo siguiente:
         -> npx expo install react-dom react-native-web
 
-
+Extensiones del VS Code:
+- ES7+ React/Redux/React-Native snippets
+- REST Client
+- React Native Tools
+- Spring Boot Extension Pack (para la parte del backend)
 
     
 
