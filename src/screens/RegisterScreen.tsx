@@ -23,7 +23,7 @@ const RegisterScreen = ({ navigation }: { navigation: any }) => {
                 '¡Registro Exitoso!',
                 'Tu cuenta ha sido creada. Ahora puedes iniciar sesión.',
                 [
-                    { text: 'Ir a Login', onPress: () => navigation.navigate('Login') }
+                    { text: 'Ir a Login', onPress: () => navigation.navigate('LoginScreen') }
                 ]
             );
         } catch (error) {

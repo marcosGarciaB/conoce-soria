@@ -18,7 +18,6 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
 
         try {
             await login({ email, password });
-            Alert.alert("Éxito", "Has iniciado sesión correctamente.");
         } catch (error) {
             console.error("Error en login:", error);
             Alert.alert("Error", "No se pudo iniciar sesión. Revisa tus credenciales e inténtalo de nuevo.");
@@ -46,8 +45,9 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
                 secureTextEntry
             />
             <Button 
-            title={isLoading ? 'Iniciando...' : 'Iniciar Sesión'} 
-            onPress={handleLogin} disabled={isLoading} 
+                title={isLoading ? 'Iniciando...' : 'Iniciar Sesión'} 
+                onPress={handleLogin}  
+                disabled={isLoading} 
             />
 
             <Button

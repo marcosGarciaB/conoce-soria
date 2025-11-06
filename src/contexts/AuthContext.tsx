@@ -91,12 +91,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // useMemo optimiza el rendimiento. Solo volverá a crear este objeto si authState cambia.
     // Evita re-renderizados innecesarios en los componentes que consumen el contexto.
     const authContextValue = useMemo(() => ({
-        ...authState, // Exponemos 'status' y 'token'
-        login,       // Exponemos la función 'login'
-        logout,      // Exponemos la función 'logout'
+        ...authState, 
+        login,       
+        logout,      
     }), [authState]);
 
-    // --- 8. El Retorno del Provider ---
     return (
         <AuthContext.Provider value={authContextValue}>
             {children}
@@ -104,7 +103,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     );
 };
 
-// (Opcional pero muy recomendado) Hook personalizado para usar el contexto más fácilmente.
 export const useAuth = () => {
     return useContext(AuthContext);
 };

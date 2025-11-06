@@ -8,7 +8,7 @@ import React, { use } from 'react';
 import { AuthNavigator } from './AuthNavigator';
 import { BottomTabs } from './BottomTabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'; // <-- Importar el tipo base
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'; 
 
 const RootStack = createNativeStackNavigator();
 
