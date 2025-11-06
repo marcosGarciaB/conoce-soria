@@ -19,7 +19,8 @@ Extensiones del VS Code:
 Paquetes a instalar en bash:
 - npm install @react-navigation/native
 - expo install react-native-screens react-native-safe-area-context
-- expo install @react-native-async-storage/async-storage
+- npx expo install react-native-web react-dom
+- npx expo install @react-native-async-storage/async-storage
 - npm install @react-navigation/native-stack
 - npm install @react-navigation/bottom-tabs
 
