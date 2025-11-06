@@ -16,5 +16,13 @@ Extensiones del VS Code:
 - React Native Tools
 - Spring Boot Extension Pack (para la parte del backend)
 
+Paquetes a instalar en bash:
+- expo install @react-native-async-storage/async-storage
+- npm install @react-navigation/native
+- expo install react-native-screens react-native-safe-area-context
+
+
+
+
     
 
