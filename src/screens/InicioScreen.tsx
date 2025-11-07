@@ -1,4 +1,6 @@
-// src/screens/InicioScreen.tsx
+/**
+ * Pantalla de Inicio (Home).
+ */
 
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';

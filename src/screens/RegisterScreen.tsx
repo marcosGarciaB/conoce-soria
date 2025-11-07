@@ -1,3 +1,7 @@
+/**
+ * Pantalla de Registro de Usuario.
+ */
+
 import React, { useState } from "react";
 import { View, TextInput, Button, Alert, StyleSheet, Text } from "react-native";
 import { authService } from "../services/authService";

@@ -1,7 +1,7 @@
 /*
 * Muestra las pantallas de la app según el estado de autenticación.
-* - Si el usuario no está autenticado, muestra la pantalla de login.
-* - Si el usuario está autenticado, muestra la app principal.
+* 
+* 
 */
 
 import React, { use } from 'react';

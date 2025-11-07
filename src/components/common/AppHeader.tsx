@@ -1,3 +1,7 @@
+/**
+ * Parte superior de la aplicación.
+ */
+
 import React from "react";
 import { View, Button, StyleSheet, Text, ActivityIndicator } from "react-native";
 import { useAuth } from "../../contexts/AuthContext";

@@ -1,4 +1,8 @@
-import React, { use, useState } from "react"; // Es un HOOK, guarda el estado de un componente.
+/**
+ * Pantalla de Inicio de Sesión.
+ */
+
+import React, { use, useState } from "react"; // Es un HOOK (función interna de React), guarda el estado de un componente.
 import { View, TextInput, Button, Alert, StyleSheet, Text } from "react-native";
 import { useAuth } from "../contexts/AuthContext";
 
