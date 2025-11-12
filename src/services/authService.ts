@@ -29,10 +29,8 @@ const login = async (credentials: LoginCredentials): Promise<AuthResponse> => {
     try {
         // Primer argumento: endpoint, segundo argumento: datos del usuario.
         const response = await apiClient.post<AuthResponse>('/api/auth/login', credentials);
-        console.info('Login exitoso:', response);
         return response;
     } catch (error) {
-        console.error('Error en login:', error);
         throw error;
     }
 };
@@ -41,9 +39,7 @@ const login = async (credentials: LoginCredentials): Promise<AuthResponse> => {
 const register = async (credentials: RegisterCredentials): Promise<void> => {
     try {
         await apiClient.post<void>('/api/auth/register', credentials);
-        console.info('Registro exitoso');
     } catch (error) {
-        console.info('Error en registro', (error as Error).message);
         throw error;
     }
 }

@@ -1,17 +1,14 @@
-/**
- * Pantalla de Inicio de Sesión.
- */
-
-import React, { use, useState } from "react"; // Es un HOOK (función interna de React), guarda el estado de un componente.
-import { View, TextInput, Button, Alert, StyleSheet, Text } from "react-native";
+import React, { useState } from "react";
+import { View, TextInput, TouchableOpacity, Button, Alert, StyleSheet, Text } from "react-native";
 import { useAuth } from "../contexts/AuthContext";
+import Toolbar from '../components/common/Toolbar';
 
 const LoginScreen = ({ navigation }: { navigation: any }) => {
     const { login } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    
+
     const handleLogin = async () => {
         if (!email || !password) {
             Alert.alert("Error", "Por favor, ingresa email y contraseña para poder iniciar sesión.");
@@ -22,6 +19,7 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
 
         try {
             await login({ email, password });
+            navigation.navigate("Inicio");
         } catch (error) {
             console.error("Error en login:", error);
             Alert.alert("Error", "No se pudo iniciar sesión. Revisa tus credenciales e inténtalo de nuevo.");
@@ -33,6 +31,7 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Iniciar Sesión</Text>
+
             <TextInput
                 style={styles.input}
                 placeholder="Email"
@@ -48,17 +47,18 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
                 onChangeText={setPassword}
                 secureTextEntry
             />
-            <Button 
-                title={isLoading ? 'Iniciando...' : 'Iniciar Sesión'} 
-                onPress={handleLogin}  
-                disabled={isLoading} 
-            />
 
-            <Button
-                title="¿No tienes cuenta? Regístrate"
-                onPress={() => navigation.navigate('Register')}
-                color="gray"
-            />
+            <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={isLoading}>
+                <Text style={styles.buttonText}>{isLoading ? 'Iniciando...' : 'Iniciar Sesión'}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+                <Text style={styles.link}>¿No tienes cuenta? Regístrate</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => navigation.navigate('Inicio')}>
+                <Text style={styles.link}>Volver al inicio</Text>
+            </TouchableOpacity>
         </View>
     );
 };
@@ -67,21 +67,44 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        padding: 16,
+        paddingHorizontal: 20,
+        backgroundColor: '#FFF4E6',
     },
     title: {
-        fontSize: 24,
+        fontSize: 26,
         fontWeight: 'bold',
+        color: '#FF6B00',
         textAlign: 'center',
         marginBottom: 24,
     },
     input: {
-        height: 40,
-        borderColor: 'gray',
+        height: 50,
+        borderColor: '#FFA45C',
         borderWidth: 1,
-        marginBottom: 12,
-        paddingHorizontal: 8,
+        borderRadius: 10,
+        marginBottom: 16,
+        paddingHorizontal: 12,
+        backgroundColor: 'white',
+    },
+    button: {
+        backgroundColor: '#FF6B00',
+        paddingVertical: 14,
+        borderRadius: 10,
+        alignItems: 'center',
+        marginBottom: 16,
+    },
+    buttonText: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 16,
+    },
+    link: {
+        color: '#C1440E',
+        textAlign: 'center',
+        marginVertical: 4,
+        fontWeight: 'bold',
     },
 });
+
 
 export default LoginScreen;

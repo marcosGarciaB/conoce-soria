@@ -1,10 +1,7 @@
-/**
- * Pantalla de Registro de Usuario.
- */
-
 import React, { useState } from "react";
-import { View, TextInput, Button, Alert, StyleSheet, Text } from "react-native";
+import { View, TextInput,TouchableOpacity, Button, Alert, StyleSheet, Text } from "react-native";
 import { authService } from "../services/authService";
+import Toolbar from "../components/common/Toolbar";
 
 const RegisterScreen = ({ navigation }: { navigation: any }) => {
     const [name, setName] = useState("");
@@ -27,7 +24,7 @@ const RegisterScreen = ({ navigation }: { navigation: any }) => {
                 '¡Registro Exitoso!',
                 'Tu cuenta ha sido creada. Ahora puedes iniciar sesión.',
                 [
-                    { text: 'Ir a Login', onPress: () => navigation.navigate('LoginScreen') }
+                    { text: 'Ir al inicio', onPress: () => navigation.navigate('Inicio') }
                 ]
             );
         } catch (error) {
@@ -36,11 +33,12 @@ const RegisterScreen = ({ navigation }: { navigation: any }) => {
         } finally {
             setIsLoading(false);
         }
-};
+    };
 
-return (
+    return (
         <View style={styles.container}>
             <Text style={styles.title}>Crear Cuenta</Text>
+
             <TextInput
                 style={styles.input}
                 placeholder="Nombre"
@@ -62,16 +60,18 @@ return (
                 onChangeText={setPassword}
                 secureTextEntry
             />
-            <Button
-                title={isLoading ? 'Registrando...' : 'Registrarse'}
-                onPress={handleRegister}
-                disabled={isLoading}
-            />
-            <Button
-                title="¿Ya tienes cuenta? Inicia Sesión"
-                onPress={() => navigation.navigate('Login')}
-                color="gray"
-            />
+
+            <TouchableOpacity style={styles.button} onPress={handleRegister} disabled={isLoading}>
+                <Text style={styles.buttonText}>{isLoading ? 'Registrando...' : 'Registrarse'}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                <Text style={styles.link}>¿Ya tienes cuenta? Inicia Sesión</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => navigation.navigate('Inicio')}>
+                <Text style={styles.link}>Volver al inicio</Text>
+            </TouchableOpacity>
         </View>
     );
 };
@@ -80,20 +80,42 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        padding: 16,
+        paddingHorizontal: 20,
+        backgroundColor: '#FFF4E6',
     },
     title: {
-        fontSize: 24,
+        fontSize: 26,
         fontWeight: 'bold',
+        color: '#FF6B00',
         textAlign: 'center',
         marginBottom: 24,
     },
     input: {
-        height: 40,
-        borderColor: 'gray',
+        height: 50,
+        borderColor: '#FFA45C',
         borderWidth: 1,
-        marginBottom: 12,
-        paddingHorizontal: 8,
+        borderRadius: 10,
+        marginBottom: 16,
+        paddingHorizontal: 12,
+        backgroundColor: 'white',
+    },
+    button: {
+        backgroundColor: '#FF6B00',
+        paddingVertical: 14,
+        borderRadius: 10,
+        alignItems: 'center',
+        marginBottom: 16,
+    },
+    buttonText: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 16,
+    },
+    link: {
+        color: '#C1440E',
+        textAlign: 'center',
+        marginVertical: 4,
+        fontWeight: 'bold',
     },
 });
 

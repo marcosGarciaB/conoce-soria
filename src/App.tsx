@@ -10,32 +10,42 @@ import { AppNavigator } from './navigation/AppNavigator';
 import { AuthNavigator } from './navigation/AuthNavigator';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 
-const AppContent = () => {
-  // Usamos el hook useAuth para suscribirnos a los cambios de estado.
-  const { status } = useAuth(); 
+// const AppContent = () => {
+//   // Usamos el hook useAuth para suscribirnos a los cambios de estado.
+//   const { status } = useAuth(); 
   
-  // Muestra una pantalla de carga mientras se verifica el token.
-  if (status === 'checking') {
-    return (
-      <View style={styles.loaderContainer}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
+//   // Muestra una pantalla de carga mientras se verifica el token.
+//   if (status === 'checking') {
+//     return (
+//       <View style={styles.loaderContainer}>
+//         <ActivityIndicator size="large" />
+//       </View>
+//     );
+//   }
 
-  // Esta es la lógica que debería funcionar automáticamente.
-  // Cuando 'status' cambie de 'not-authenticated' a 'authenticated',
-  // React reemplazará AuthNavigator con AppNavigator.
-  return status === 'authenticated' ? <AppNavigator /> : <AuthNavigator />;
-};
+//   // Esta es la lógica que debería funcionar automáticamente.
+//   // Cuando 'status' cambie de 'not-authenticated' a 'authenticated',
+//   // React reemplazará AuthNavigator con AppNavigator.
+//   return status === 'authenticated' ? <AppNavigator /> : <AuthNavigator />;
+// };
 
 // El componente App solo se encarga de envolver todo en los proveedores.
+// export default function App() {
+//   return (
+//     // AuthProvider DEBE envolver a NavigationContainer y AppContent.
+//     <AuthProvider>
+//       <NavigationContainer>
+//         <AppContent />
+//       </NavigationContainer>
+//     </AuthProvider>
+//   );
+// }
+
 export default function App() {
   return (
-    // AuthProvider DEBE envolver a NavigationContainer y AppContent.
     <AuthProvider>
       <NavigationContainer>
-        <AppContent />
+        <AppNavigator />
       </NavigationContainer>
     </AuthProvider>
   );

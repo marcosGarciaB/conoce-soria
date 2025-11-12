@@ -23,6 +23,8 @@ Paquetes a instalar en bash:
 - npx expo install @react-native-async-storage/async-storage
 - npm install @react-navigation/native-stack
 - npm install @react-navigation/bottom-tabs
+- npm install react-native-snap-carousel
+
 
 
 
