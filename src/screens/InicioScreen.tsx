@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Image, Dimensions } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
 import { experienciaService, ExperienciasResponse } from '../services/experienciaService';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { width } = Dimensions.get('window');
 
@@ -33,41 +34,40 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
     );
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Experiencias Soria</Text>
+        <SafeAreaView style={styles.container}>
+            <View style={styles.headerPanel}>
+                <Text style={styles.title}>Experiencias Soria</Text>
 
-            {/* Carrusel horizontal */}
+                {status === 'authenticated' ? (
+                    <TouchableOpacity
+                        style={[styles.button, styles.smallButton]}
+                        onPress={logout}
+                    >
+                        <Text style={styles.buttonText}>Salir</Text>
+                    </TouchableOpacity>
+                ) : (
+                    <TouchableOpacity
+                        style={[styles.button, styles.smallButton]}
+                        onPress={() => navigation.navigate('Login')}
+                    >
+                        <Text style={styles.buttonText}>Login</Text>
+                    </TouchableOpacity>
+                )}
+            </View>
+
             <FlatList
                 data={experiencias}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={renderItem}
-                style={{ marginVertical: 20 }}
+                style={{ marginVertical: 30 }}
                 snapToAlignment="center"
                 decelerationRate="fast"
-                snapToInterval={width * 0.7 + 20} // ancho de la tarjeta + margen
+                snapToInterval={width * 0.7 + 20}
                 contentContainerStyle={{ paddingHorizontal: 10 }}
             />
-
-            {status === 'authenticated' ? (
-                <>
-                    <Text style={styles.subtitle}>¡Bienvenido de nuevo!</Text>
-                    <TouchableOpacity style={styles.button} onPress={logout}>
-                        <Text style={styles.buttonText}>Cerrar sesión</Text>
-                    </TouchableOpacity>
-                </>
-            ) : (
-                <>
-                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
-                        <Text style={styles.buttonText}>Iniciar sesión</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={[styles.button, styles.secondaryButton]} onPress={() => navigation.navigate('Register')}>
-                        <Text style={styles.buttonText}>Registrarse</Text>
-                    </TouchableOpacity>
-                </>
-            )}
-        </View>
+        </SafeAreaView>
     );
 };
 
@@ -76,42 +76,56 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'center',
-        backgroundColor: '#FFEDD5',
+        backgroundColor: '#FFEDD5', // tono base anaranjado claro
         paddingHorizontal: 20,
-        paddingTop: 50,
+        paddingTop: 20,
     },
+
+    // 🟧 Panel flotante superior
+    headerPanel: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '90%',
+        backgroundColor: '#FFF6EF', // fondo crema suave
+        borderRadius: 15,
+        paddingHorizontal: 20,
+        paddingVertical: 15,
+        marginTop: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.2,
+        shadowRadius: 6,
+        elevation: 6,
+    },
+
     title: {
-        fontSize: 28,
+        fontSize: 24,
         fontWeight: 'bold',
         color: '#FF6B00',
     },
-    subtitle: {
-        fontSize: 18,
-        color: '#C1440E',
-        marginVertical: 20,
-    },
+
     button: {
         backgroundColor: '#FF6B00',
-        paddingVertical: 14,
-        paddingHorizontal: 28,
-        borderRadius: 10,
-        marginVertical: 8,
-        width: '80%',
-        alignItems: 'center',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 8,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.2,
-        shadowRadius: 4,
-        elevation: 3,
+        shadowRadius: 3,
+        elevation: 2,
     },
-    secondaryButton: {
-        backgroundColor: '#FFA45C',
+    smallButton: {
+        paddingVertical: 8,
+        paddingHorizontal: 16,
     },
     buttonText: {
         color: 'white',
-        fontSize: 16,
         fontWeight: 'bold',
+        fontSize: 15,
     },
+
     card: {
         width: width * 0.7,
         marginHorizontal: 10,
@@ -119,6 +133,10 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         backgroundColor: '#fff',
         elevation: 3,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
     },
     image: {
         width: '100%',
@@ -129,6 +147,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         textAlign: 'center',
+        color: '#333',
     },
 });
 
