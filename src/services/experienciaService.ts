@@ -16,7 +16,7 @@ export interface ExperienciasResponse {
 
 const getExperiencias = async (): Promise<ExperienciasResponse[]> => {
     try {
-        const response = await apiClient.get<ExperienciasResponse[]>('/api/auth/experiencias');
+        const response = await apiClient.get<ExperienciasResponse[]>('/api/experiencias');
         return response;
     } catch (error) {
         throw error;

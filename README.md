@@ -24,6 +24,8 @@ Paquetes a instalar en bash:
 - npm install @react-navigation/native-stack
 - npm install @react-navigation/bottom-tabs
 - npm install react-native-snap-carousel
+- npm install @expo/vector-icons
+
 
 
 

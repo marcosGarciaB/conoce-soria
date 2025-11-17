@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, TextInput, TouchableOpacity, Button, Alert, StyleSheet, Text } from "react-native";
 import { useAuth } from "../contexts/AuthContext";
-import Toolbar from '../components/common/Toolbar';
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const LoginScreen = ({ navigation }: { navigation: any }) => {
     const { login } = useAuth();
@@ -19,7 +19,7 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
 
         try {
             await login({ email, password });
-            navigation.navigate("Inicio");
+            navigation.navigate("MainTabs");
         } catch (error) {
             console.error("Error en login:", error);
             Alert.alert("Error", "No se pudo iniciar sesión. Revisa tus credenciales e inténtalo de nuevo.");
@@ -29,46 +29,60 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Iniciar Sesión</Text>
+        <SafeAreaView style={styles.container}>
+            <View style={styles.innerContainer}>
+                <View style={styles.formContainer}>
+                    <Text style={styles.title}>Iniciar Sesión</Text>
 
-            <TextInput
-                style={styles.input}
-                placeholder="Email"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Contraseña"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-            />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Email"
+                        value={email}
+                        onChangeText={setEmail}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Contraseña"
+                        value={password}
+                        onChangeText={setPassword}
+                        secureTextEntry
+                    />
 
-            <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={isLoading}>
-                <Text style={styles.buttonText}>{isLoading ? 'Iniciando...' : 'Iniciar Sesión'}</Text>
-            </TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={isLoading}>
+                        <Text style={styles.buttonText}>{isLoading ? 'Iniciando...' : 'Iniciar Sesión'}</Text>
+                    </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-                <Text style={styles.link}>¿No tienes cuenta? Regístrate</Text>
-            </TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+                        <Text style={styles.link}>¿No tienes cuenta? Regístrate</Text>
+                    </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => navigation.navigate('Inicio')}>
-                <Text style={styles.link}>Volver al inicio</Text>
-            </TouchableOpacity>
-        </View>
+                    <TouchableOpacity onPress={() => navigation.navigate('Inicio')}>
+                        <Text style={styles.link}>Volver al inicio</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </SafeAreaView>
+
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        paddingHorizontal: 20,
-        backgroundColor: '#FFF4E6',
+        backgroundColor: '#FFEDD5',
+    },
+    innerContainer: {
+        flex: 1,
+        justifyContent: 'center',  
+        alignItems: 'center',      
+        paddingHorizontal: 20,      
+        width: '100%',
+    },
+    formContainer: {
+        width: '100%',
+        maxWidth: 400,          
     },
     title: {
         fontSize: 26,

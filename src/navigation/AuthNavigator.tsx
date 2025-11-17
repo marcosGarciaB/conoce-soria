@@ -8,7 +8,6 @@ import InicioScreen from "../screens/InicioScreen";
 import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 
-// Tipo de navegación donde las pantallas se apilan una encima de otra.
 const Stack = createNativeStackNavigator();
 
 export const AuthNavigator = () => {
