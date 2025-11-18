@@ -34,8 +34,7 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView contentContainerStyle={styles.scrollContent}>
-                <View style={styles.headerPanel}>
+            <View style={styles.headerPanel}>
                     <Text style={styles.title}>Experiencias Soria</Text>
 
                     {status === 'authenticated' ? (
@@ -54,6 +53,8 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
                         </TouchableOpacity>
                     )}
                 </View>
+            <ScrollView contentContainerStyle={styles.scrollContent}>
+                
 
                 <View style={styles.carouselContainer}>
                     <FlatList
@@ -80,7 +81,9 @@ const styles = StyleSheet.create({
     // Contenedores generales
     container: {
         flex: 1,
-        backgroundColor: '#FFEDD5',
+        backgroundColor: '#fdf9f6ff',
+        padding: 20
+
     },
     carouselContainer: {
         width: '100%',
@@ -97,17 +100,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        width: '90%',
-        backgroundColor: '#FFF6EF',
+        elevation: 5,
+        backgroundColor: 'white',
         borderRadius: 15,
-        paddingHorizontal: 20,
-        paddingVertical: 15,
-        marginTop: 10,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.2,
-        shadowRadius: 6,
-        elevation: 6,
+        height: 60,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
     },
     title: {
         fontSize: 24,
@@ -137,10 +137,15 @@ const styles = StyleSheet.create({
     // Card
     card: {
         width: width * 0.5,
-        marginHorizontal: 10,
         borderRadius: 15,
         overflow: 'hidden',
         backgroundColor: '#fff',
+        margin: 10,
+        shadowColor: '#000000ff',
+        shadowOffset: { width: 3, height: 3 },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 2
     },
     image: {
         width: '100%',
