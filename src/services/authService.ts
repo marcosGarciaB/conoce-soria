@@ -8,7 +8,6 @@ import { Alert } from 'react-native';
 import { apiClient } from './apiClient';
 
 // ------------------- ENVIAR/RECIBIR DATOS ------------------- //
-// Para la respuesta que esperamos del back al hacer login.
 export interface AuthResponse {
     token: string;
 }
@@ -27,7 +26,6 @@ export interface RegisterCredentials {
 // ------------------- LOGIN DEL USUARIO ------------------- //
 const login = async (credentials: LoginCredentials): Promise<AuthResponse> => {
     try {
-        // Primer argumento: endpoint, segundo argumento: datos del usuario.
         const response = await apiClient.post<AuthResponse>('/api/auth/login', credentials);
         return response;
     } catch (error) {

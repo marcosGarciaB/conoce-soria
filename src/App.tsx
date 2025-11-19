@@ -14,7 +14,6 @@ import { View, ActivityIndicator, StyleSheet } from 'react-native';
 const AppContent = () => {
   const { status } = useAuth();
 
-  // Muestra una pantalla de carga mientras se verifica el token.
   if (status === 'checking') {
     return (
       <View style={styles.loaderContainer}>
@@ -23,7 +22,7 @@ const AppContent = () => {
     );
   }
 
-  return status === 'authenticated' ? <AppNavigator /> : <AuthNavigator />;
+  return status === 'authenticated' ? <AuthNavigator /> : <AppNavigator />;
 };
 
 export default function App() {
@@ -31,7 +30,7 @@ export default function App() {
     <SafeAreaProvider>
       <AuthProvider>
         <NavigationContainer>
-          <AppNavigator />
+          <AppContent />
         </NavigationContainer>
       </AuthProvider>
     </SafeAreaProvider>

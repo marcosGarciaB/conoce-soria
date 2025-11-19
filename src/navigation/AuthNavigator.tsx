@@ -1,23 +1,31 @@
 /**
- * Navegador para cuando el usuario esté autenticado.
+ * Navegador para cuando el usuario cuando haya iniciado sesión.
  */
 
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import InicioScreen from "../screens/InicioScreen";
-import LoginScreen from "../screens/LoginScreen";
-import RegisterScreen from "../screens/RegisterScreen";
-import DetailsScreen from "../screens/DetalleExperienciaScreen"
+import DetailsScreen from "../screens/DetalleExperienciaScreen";
+import { ExperienciasResponse } from "../services/experienciaService";
+import { BottomTabs } from "./BottomTabs";
 
-const Stack = createNativeStackNavigator();
+
+export type AuthStackParamList = {
+    Inicio: undefined;
+    Buscador: undefined;
+    Login: undefined;
+    Register: undefined;
+    MainTabs: undefined;
+    Details: { experiencia: ExperienciasResponse };
+};
+
+const Stack = createNativeStackNavigator<AuthStackParamList>();
 
 export const AuthNavigator = () => {
     return (
-        <Stack.Navigator initialRouteName="Inicio">
-            <Stack.Screen name="Inicio" component={InicioScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Navigator initialRouteName="MainTabs" screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="MainTabs" component={BottomTabs} />
             <Stack.Screen name="Details" component={DetailsScreen} />
         </Stack.Navigator>
     );
 };
+

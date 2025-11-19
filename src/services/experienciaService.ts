@@ -6,13 +6,22 @@ import { apiClient } from './apiClient';
 export interface ExperienciasResponse {
     id:number;
     categoria: string;
-    descripcion:string;
-    direccion:string;
     foto_url:string;
     titulo:string;
-    latitud?:number;
-    longitud?:number;
 }
+
+export interface ExperienciaDetailResponse {
+    id: string;
+    titulo: string;
+    descripcion: string;
+    categoria: string;
+    imagenPortadaUrl: string;
+    direccion: string;
+    ubicacionLat: number | null;
+    ubicacionLng: number | null;
+    visible: boolean;
+}
+
 
 const getExperiencias = async (): Promise<ExperienciasResponse[]> => {
     try {
@@ -23,6 +32,16 @@ const getExperiencias = async (): Promise<ExperienciasResponse[]> => {
     }   
 };
 
+const getExperiencia = async (id: number): Promise<ExperienciaDetailResponse> => {
+    try {
+        const response = await apiClient.get<ExperienciaDetailResponse>(`/api/experiencias/${id}`);
+        return response;
+    } catch (error) {
+        throw error;
+    }   
+};
+
 export const experienciaService = {
     getExperiencias,
+    getExperiencia,
 };

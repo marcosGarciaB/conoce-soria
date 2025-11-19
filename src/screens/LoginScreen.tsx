@@ -117,7 +117,7 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fcf6f2ff',
+        backgroundColor: '#d7d7d7 ',
     },
     innerContainer: {
         flex: 1,
