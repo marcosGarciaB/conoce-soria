@@ -4,8 +4,8 @@
 
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import DetailsScreen from "../screens/DetalleExperienciaScreen";
-import { ExperienciasResponse } from "../services/experienciaService";
+import DetailsScreen from "../screens/ExperiencesDetailsScreen";
+import { ExperienciasResponse } from "../services/experienceService";
 import { BottomTabs } from "./BottomTabs";
 
 
@@ -16,6 +16,7 @@ export type AuthStackParamList = {
     Register: undefined;
     MainTabs: undefined;
     Details: { experiencia: ExperienciasResponse };
+    Profile: undefined;
 };
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();

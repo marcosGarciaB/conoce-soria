@@ -1,12 +1,16 @@
 import React, { useState } from "react";
-import { View, TextInput, TouchableOpacity, Button, Alert, StyleSheet, Text } from "react-native";
-import { authService } from "../services/authService";
+import { View, TouchableOpacity, Alert, StyleSheet, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useForm, Controller } from 'react-hook-form';
-import { Ionicons } from "@expo/vector-icons";
+import { useForm } from 'react-hook-form';
+import { Ionicons } from '@expo/vector-icons';
+
+import { authService } from "../services/authService";
+import NameInput from "../components/common/NameInput";
+import EmailInput from "../components/common/EmailInput";
+import PasswordInput from "../components/common/PasswordInput";
 
 type FormData = {
-    name: string;
+    nombre: string;
     email: string;
     password: string;
 }
@@ -14,14 +18,13 @@ type FormData = {
 const RegisterScreen = ({ navigation }: { navigation: any }) => {
     const [isLoading, setIsLoading] = useState(false);
     const { control, handleSubmit, formState: { errors } } = useForm<FormData>();
-    const [ showPass, setShowPass] = useState(false);
 
     const handleRegister = async (data: FormData) => {
         setIsLoading(true);
 
         try {
-            await authService.register({ name: data.name, email: data.email, password: data.password });
-            navigation.navigate("Inicio");
+            await authService.register({ nombre: data.nombre, email: data.email, password: data.password });
+            navigation.navigate("Login");
         } catch (error) {
             console.error("Error en login:", error);
             Alert.alert("Error", "No se pudo registrar la cuenta. Inténtalo de nuevo.");
@@ -36,96 +39,22 @@ const RegisterScreen = ({ navigation }: { navigation: any }) => {
                 <View style={styles.formContainer}>
                     <Text style={styles.title}>Crear Cuenta</Text>
 
-                    <Controller
-                        control={control}
-                        name="name"
-                        rules={{
-                            required: "Nombre de usuario obligatorio",
-                            minLength: { value: 6, message: "Debe tener al menos 6 caracteres" }
-                        }}
-                        render={({ field: { onChange, onBlur, value } }) => (
-                            <View style={styles.inputContainer}>
-                                <Ionicons name="person" size={20} color="#ffbf8bff" style={{ marginRight: 8 }} />
-                                <TextInput
-                                    style={styles.inputWithIcon}
-                                    placeholder="Nombre de usuario"
-                                    onBlur={onBlur}
-                                    onChangeText={onChange}
-                                    value={value}
-                                />
-                            </View>
-                        )}
-                    />
-                    {errors.name && <Text style={styles.errorText}>{errors.name.message}</Text>}
-
-                    <Controller
-                        control={control}
-                        name="email"
-                        rules={{
-                            required: "El email es obligatorio",
-                            pattern: {
-                                value: /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/i,
-                                message: "Email no válido"
-                            }
-                        }}
-                        render={({ field: { onChange, onBlur, value } }) => (
-                            <View style={styles.inputContainer}>
-                                <Ionicons name="mail" size={20} color="#ffbf8bff" style={{ marginRight: 8 }} />
-                                <TextInput
-                                    style={styles.inputWithIcon}
-                                    placeholder="Email"
-                                    onBlur={onBlur}
-                                    onChangeText={onChange}
-                                    value={value}
-                                />
-                                <Ionicons name="mail" size={20} color="#ffbf8bff" style={{ marginRight: 8 }} />
-
-                            </View>
-                        )}
-                    />
-                    {errors.email && <Text style={styles.errorText}>{errors.email.message}</Text>}
-
-                    <Controller
-                        control={control}
-                        name="password"
-                        rules={{
-                            required: "La contraseña es obligatoria",
-                            minLength: { value: 8, message: "Debe tener al menos 8 caracteres" }
-                        }}
-                        render={({ field: { onChange, onBlur, value } }) => (
-                            <View style={styles.inputContainer}>
-                                <Ionicons name="lock-closed-outline" size={20} color="#ffbf8bff" style={{ marginRight: 8 }} />
-                                <TextInput
-                                    style={styles.inputWithIcon}
-                                    placeholder="Contraseña"
-                                    secureTextEntry={!showPass}
-                                    onBlur={onBlur}
-                                    onChangeText={onChange}
-                                    value={value}
-                                />
-
-                                <TouchableOpacity onPress={() => setShowPass(!showPass)}>
-                                    <Ionicons
-                                        name={showPass ? "eye-off-outline" : "eye-outline"}
-                                        size={20}
-                                        color="#ffbf8bff"
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                        )}
-                    />
-                    {errors.password && <Text style={styles.errorText}>{errors.password.message}</Text>}
+                    <NameInput control={control} errors={errors} />
+                    <EmailInput control={control} errors={errors} />
+                    <PasswordInput control={control} errors={errors} />
 
                     <TouchableOpacity style={styles.button} onPress={handleSubmit(handleRegister)} disabled={isLoading}>
                         <Text style={styles.buttonText}>{isLoading ? 'Registrando...' : 'Registrarse'}</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                        <Text style={styles.link}>¿Ya tienes cuenta? Inicia Sesión</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={() => navigation.navigate('HomeTabs')}>
-                        <Text style={styles.link}>Volver al inicio</Text>
+                    <TouchableOpacity
+                        style={styles.buttonRegister}
+                        onPress={() => navigation.navigate('Login')}
+                    >
+                        <View style={styles.buttonWrapper}>
+                            <Text style={styles.buttonRegisterText}>Inicia Sesión </Text>
+                            <Ionicons name={"log-in-sharp"} size={20} color={"black"} />
+                        </View>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -136,7 +65,7 @@ const RegisterScreen = ({ navigation }: { navigation: any }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#d7d7d7 ',
+        backgroundColor: '#fff8f8ff',
     },
     innerContainer: {
         flex: 1,
@@ -162,37 +91,25 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 24,
     },
-    // Inputs
-    inputContainer: {
+    // Botones
+    buttonWrapper: {
         flexDirection: 'row',
         alignItems: 'center',
-        borderColor: '#ffbf8bff',
-        borderWidth: 1,
-        borderRadius: 10,
-        marginBottom: 16,
-        paddingHorizontal: 12,
-        backgroundColor: 'white',
     },
-    inputWithIcon: {
-        flex: 1,
-        height: 50,
-        fontSize: 16,
-        color: '#333'
-    },
-    input: {
-        height: 50,
-        borderColor: '#ffbf8bff',
-        borderWidth: 1,
-        borderRadius: 10,
-        marginBottom: 16,
-        paddingHorizontal: 12,
-        backgroundColor: 'white',
-    },
-    // Botones
     button: {
         backgroundColor: '#d35800ff',
         paddingVertical: 14,
-        borderRadius: 10,
+        borderRadius: 50,
+        alignItems: 'center',
+        marginTop: 30,
+        marginBottom: 10,
+    },
+    buttonRegister: {
+        backgroundColor: '#ffeddfff',
+        borderColor: '#f79e5aff',
+        borderWidth: 1,
+        paddingVertical: 14,
+        borderRadius: 50,
         alignItems: 'center',
         marginBottom: 16,
     },
@@ -201,15 +118,15 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 16,
     },
+    buttonRegisterText: {
+        color: 'black',
+        fontSize: 16,
+    },
     link: {
         color: '#C1440E',
         textAlign: 'center',
         marginVertical: 4,
         fontWeight: 'bold',
-    },
-    errorText: {
-        color: 'red',
-        fontSize: 14,
     },
 });
 

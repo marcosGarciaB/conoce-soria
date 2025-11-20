@@ -11,12 +11,10 @@ interface Headers {
 
 // Función genérica para las peticiones fetch.
 const request = async <T>(
-    
     method: 'GET' | 'POST' | 'PUT' | 'DELETE',
     endpoint: string,
     body?: any,
     token?: string,
-
 ): Promise<T> => {
     const headers: Headers = {
         'Content-Type': 'application/json',
@@ -25,11 +23,8 @@ const request = async <T>(
 
     if (token) {
         headers['Authorization'] = `Bearer ${token}`;
-                console.log('Token enviado:', token);
-
     }
 
-    // Petición fetch integrada con React Native.
     const response = await fetch(`${API_URL}${endpoint}`, {
         method,
         headers,
@@ -49,7 +44,9 @@ export const apiClient = {
     post: <T>(endpoint: string, body: any) => request<T>('POST', endpoint, body),
     put: <T>(endpoint: string, body: any) => request<T>('PUT', endpoint, body),
     delete: <T>(endpoint: string) => request<T>('DELETE', endpoint),
+    
     postWithToken: <T>(endpoint: string, body: any, token: string) => request<T>('POST', endpoint, body, token),
+    getWithToken: <T>(endpoint: string, token: string) => request<T>('GET', endpoint, undefined, token),
 };
 
 

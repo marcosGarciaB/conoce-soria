@@ -5,8 +5,9 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from "@expo/vector-icons";
-import { experienciaService, ExperienciasResponse } from '../services/experienciaService';
+import { experienciaService, ExperienciasResponse } from '../services/experienceService';
 import { useAuth } from "../contexts/AuthContext";
+import Filters from '../components/seeker/FilterDropdown';
 
 const { width } = Dimensions.get('window');
 const categories = ["RESTAURANTE", "MUSEO", "AIRE_LIBRE", "MONUMENTO"];
@@ -26,6 +27,7 @@ const SearchScreen = ({ navigation }: { navigation: any }) => {
     const [searchText, setSearchText] = useState("");
     const [selectedCat, setSelectedCat] = useState<string | null>(null);
     const [all, setAll] = useState<ExperienciasResponse[]>([]);
+
 
     useEffect(() => {
         const loadExperiencias = async () => {
@@ -48,6 +50,7 @@ const SearchScreen = ({ navigation }: { navigation: any }) => {
         }
     };
 
+    // FiLtrar
     const buttonFilter = (categoria: string) => {
         const newSelected = selectedCat === categoria ? null : categoria;
         setSelectedCat(newSelected);
@@ -74,6 +77,7 @@ const SearchScreen = ({ navigation }: { navigation: any }) => {
         setExperiencias(filter);
     };
 
+    // Cargar fotos
     const renderItem = ({ item }: { item: ExperienciasResponse }) => (
         <TouchableOpacity
             activeOpacity={0.8}
@@ -94,44 +98,30 @@ const SearchScreen = ({ navigation }: { navigation: any }) => {
         <SafeAreaView style={styles.container}>
             <View style={styles.headerPanel}>
                 <Text style={styles.title}>Explorar</Text>
-                <Ionicons style={{marginRight: 15}} name={"search-sharp"} size={30} color={"orange"} />
+                <Ionicons style={{ marginRight: 15 }} name={"search-sharp"} size={30} color={"orange"} />
             </View>
 
-            <View style={styles.searchContainer}>
-                <Ionicons name="search-outline" size={20} color="#c7a899" style={{ marginHorizontal: 10 }} />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Buscar experiencia"
-                    placeholderTextColor="#c7a899"
-                    value={searchText}
-                    onChangeText={wordsFilter}
+            <ScrollView contentContainerStyle={{ flexGrow: 1}}>
+                <Filters
+                    searchText={searchText}
+                    setSearchText={setSearchText}
+                    selectedCat={selectedCat}
+                    setSelectedCat={setSelectedCat}
+                    categories={categories}
+                    onFilterByText={wordsFilter}
+                    onFilterByCategory={buttonFilter}
                 />
-            </View>
 
-            <View style={styles.buttonsContainer}>
-                {categories.map(cat => (
-                    <TouchableOpacity
-                        key={cat}
-                        style={[styles.button, selectedCat === cat && styles.buttonSelected]}
-                        onPress={() => buttonFilter(cat)}
-                    >
-                        <Text style={[styles.buttonText, selectedCat === cat && styles.buttonTextSelected]}>
-                            {cat.replace('_', ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase())}
-                        </Text>
-                    </TouchableOpacity>
-                ))}
-            </View>
-
-            <FlatList
-                data={experiencias}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={renderItem}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 10 }}
-                style={{ marginTop: 10, marginBottom:50 }}
-                numColumns={width > 500 ? 2 : 1}
-                columnWrapperStyle={width > 500 ? { justifyContent: 'space-between' } : undefined}
-            />
+                <FlatList
+                    data={experiencias}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={renderItem}
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{paddingBottom: 40 }}
+                    numColumns={width > 600 ? 2 : 1}
+                    columnWrapperStyle={width > 600 ? { justifyContent: 'space-between' } : undefined}
+                />
+            </ScrollView>
         </SafeAreaView>
     );
 };
@@ -140,8 +130,9 @@ const styles = StyleSheet.create({
     // Generales
     container: {
         flex: 1,
-        backgroundColor: '#d7d7d7 ',
-        padding: 20
+        backgroundColor: '#fff8f8ff',
+        padding: 20,
+        paddingBottom: "30%"
     },
     headerPanel: {
         flexDirection: 'row',
@@ -149,7 +140,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         elevation: 5,
         backgroundColor: 'white',
-        borderRadius: 15,
+        borderRadius: 30,
         height: 60,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 5 },
@@ -162,63 +153,6 @@ const styles = StyleSheet.create({
         color: '#FF6B00',
         marginLeft: 20,
     },
-    // Filtros
-    searchContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: 'white',
-        borderColor: 'grey',
-        borderWidth: 1,
-        borderRadius: 15,
-        marginHorizontal: 20,
-        marginVertical: 10,
-        paddingHorizontal: 10,
-        height: 50,
-        marginTop: 20
-    },
-    input: {
-        flex: 1,
-        paddingVertical: 10,
-        fontSize: 16,
-        color: '#333'
-    },
-
-    // Botones
-    buttonsContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        alignItems: 'center',
-        marginTop: 10,
-        marginBottom: 100
-    },
-
-    buttonsRow: {
-        marginVertical: 10,
-        alignItems: 'center'
-    },
-    button: {
-        backgroundColor: 'white',
-        paddingHorizontal: 20,
-        paddingVertical: 10,
-        borderRadius: 20,
-        marginRight: 10,
-        marginBottom: 10,
-        borderWidth: 1,
-        borderColor: 'black'
-    },
-    buttonSelected: {
-        backgroundColor: '#FF6B00',
-        borderColor: '#FF6B00'
-    },
-    buttonText: {
-        color: 'black',
-        fontWeight: 'bold'
-    },
-    buttonTextSelected: {
-        color: 'white'
-    },
-
     // Card
     card: {
         flex: 1,

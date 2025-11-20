@@ -33,7 +33,10 @@
 - npm install react-native-snap-carousel
 - npm install @expo/vector-icons
 - npm install react-hook-form
-
+- npm install react-native-gesture-handler
+- npm install react-native-gesture-handler react-native-reanimated
+- npm install react-native-toast-message
+- npm install react-native-element-dropdown --save
 
 
 

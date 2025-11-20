@@ -5,14 +5,17 @@
 
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import InicioScreen from "../screens/InicioScreen";
-import SearchScreen from "../screens/BuscadorScreen";
 import { Ionicons } from "@expo/vector-icons";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
+
+import InicioScreen from "../screens/HomeScreen";
+import SearchScreen from "../screens/SeekerScreen";
+import ProfileScreen from "../screens/ProfileScreen";
 
 type BottomTabParamList = {
     Inicio: undefined;
     Buscador: undefined;
+    Profile: undefined;
 };
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
@@ -27,6 +30,7 @@ export const BottomTabs = () => {
 
                     if (route.name === "Inicio") iconName = "home-outline";
                     if (route.name === "Buscador") iconName = "search-outline";
+                    if (route.name === "Profile") iconName = "person";
 
                     return (
                         <View style={{
@@ -53,7 +57,7 @@ export const BottomTabs = () => {
                     elevation: 5,
                     backgroundColor: 'white',
                     borderRadius: 30,
-                    height: 60,
+                    height:60,
                     justifyContent: 'center',
                     alignItems: 'stretch',
                     shadowColor: "#000",
@@ -65,6 +69,7 @@ export const BottomTabs = () => {
         >
             <Tab.Screen name="Inicio" component={InicioScreen} />
             <Tab.Screen name="Buscador" component={SearchScreen} />
+            <Tab.Screen name="Profile" component={ProfileScreen} />
         </Tab.Navigator>
     );
 };

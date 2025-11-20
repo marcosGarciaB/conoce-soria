@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, ReactNode, useMemo, useContext } from 'react';
-import { experienciaService, ExperienciasResponse } from '../services/experienciaService';
+import { experienciaService, ExperienciasResponse } from '../services/experienceService';
 
 // ------------------- TIPOS ------------------- //
 interface ExperienciaContextProps {

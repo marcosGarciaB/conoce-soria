@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList, Image, Dimensions, ScrollView } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
-import { experienciaService, ExperienciasResponse } from '../services/experienciaService';
+import { experienciaService, ExperienciasResponse } from '../services/experienceService';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -57,7 +57,6 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
                 <View>
                     <Text style={styles.subtitle}>Descubre Soria a tu ritmo</Text>
                     <Text style={styles.contentTitle}>Naturaleza, cultura y sabores locacles</Text>
-
                 </View>
 
                 <View style={styles.carouselContainer}>
@@ -74,7 +73,15 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
                 </View>
 
                 <View>
-                    <Text style={styles.subtitle}>AQUI VA EL PASAPORTE CON LAS EXPERIENCIAS</Text>
+                    <Text style={styles.subtitle}>
+                        Si está logueado, que salga su pasaporte con su experiencias.
+                    </Text>
+                </View>
+
+                <View>
+                    <Text style={styles.subtitle}>
+                        Si no está logueado, que salga el ranking general de la gente.
+                    </Text>
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -85,7 +92,7 @@ const styles = StyleSheet.create({
     // Contenedores generales
     container: {
         flex: 1,
-        backgroundColor: '#d7d7d7 ',
+        backgroundColor: '#fff8f8ff',
         padding: 20
     },
     carouselContainer: {
@@ -104,7 +111,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         elevation: 5,
         backgroundColor: 'white',
-        borderRadius: 15,
+        borderRadius: 30,
         height: 60,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 5 },

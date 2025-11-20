@@ -4,10 +4,8 @@
 * - Define los tipos de datos que se envían y reciben.
 */
 
-import { Alert } from 'react-native';
 import { apiClient } from './apiClient';
 
-// ------------------- ENVIAR/RECIBIR DATOS ------------------- //
 export interface AuthResponse {
     token: string;
 }
@@ -18,12 +16,20 @@ export interface LoginCredentials {
 }
 
 export interface RegisterCredentials {
-    name: string;
+    nombre: string;
     email: string;
     password: string;
 }
 
-// ------------------- LOGIN DEL USUARIO ------------------- //
+export interface UserCredentials {
+    nombre: string;
+    email: string;
+    password: string;
+    role: string;
+    puntos: string;
+    fechaCreacion?: string;
+}
+
 const login = async (credentials: LoginCredentials): Promise<AuthResponse> => {
     try {
         const response = await apiClient.post<AuthResponse>('/api/auth/login', credentials);
@@ -33,18 +39,26 @@ const login = async (credentials: LoginCredentials): Promise<AuthResponse> => {
     }
 };
 
-// -------------------  REGISTRO DEL USUARIO ------------------- //
 const register = async (credentials: RegisterCredentials): Promise<void> => {
     try {
         await apiClient.post<void>('/api/auth/register', credentials);
+        console.log("Credenciales recibidas", credentials.nombre )
     } catch (error) {
         throw error;
     }
 }
 
+const getUserData = async (token: string): Promise<UserCredentials> => {
+    try {
+        const response = await apiClient.getWithToken<UserCredentials>('/api/auth/me', token);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
 
 export const authService = {
     login,
     register,
-
+    getUserData,
 };

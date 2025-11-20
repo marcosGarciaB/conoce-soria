@@ -10,6 +10,7 @@ import { AppNavigator } from './navigation/AppNavigator';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthNavigator } from './navigation/AuthNavigator';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 const AppContent = () => {
   const { status } = useAuth();
@@ -31,6 +32,7 @@ export default function App() {
       <AuthProvider>
         <NavigationContainer>
           <AppContent />
+          <Toast />
         </NavigationContainer>
       </AuthProvider>
     </SafeAreaProvider>
