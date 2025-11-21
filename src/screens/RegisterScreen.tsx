@@ -1,114 +1,125 @@
 import React, { useState } from "react";
-import { View, TextInput,TouchableOpacity, Button, Alert, StyleSheet, Text } from "react-native";
+import { View, TouchableOpacity, Alert, StyleSheet, Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useForm } from 'react-hook-form';
+import { Ionicons } from '@expo/vector-icons';
+
 import { authService } from "../services/authService";
-import Toolbar from "../components/common/Toolbar";
+import NameInput from "../components/common/NameInput";
+import EmailInput from "../components/common/EmailInput";
+import PasswordInput from "../components/common/PasswordInput";
+
+type FormData = {
+    nombre: string;
+    email: string;
+    password: string;
+}
 
 const RegisterScreen = ({ navigation }: { navigation: any }) => {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const { control, handleSubmit, formState: { errors } } = useForm<FormData>();
 
-    const handleRegister = async () => {
-        if (!name || !email || !password) {
-            Alert.alert("Error", "Por favor, completa todos los campos para registrarte.");
-            return;
-        }
-
+    const handleRegister = async (data: FormData) => {
         setIsLoading(true);
 
         try {
-            await authService.register({ name, email, password });
-
-            Alert.alert(
-                '¡Registro Exitoso!',
-                'Tu cuenta ha sido creada. Ahora puedes iniciar sesión.',
-                [
-                    { text: 'Ir al inicio', onPress: () => navigation.navigate('Inicio') }
-                ]
-            );
+            await authService.register({ nombre: data.nombre, email: data.email, password: data.password });
+            navigation.navigate("Login");
         } catch (error) {
-            console.error("Error en registro:", error);
+            console.error("Error en login:", error);
             Alert.alert("Error", "No se pudo registrar la cuenta. Inténtalo de nuevo.");
         } finally {
             setIsLoading(false);
         }
-    };
+    }
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Crear Cuenta</Text>
+        <SafeAreaView style={styles.container}>
+            <View style={styles.innerContainer}>
+                <View style={styles.formContainer}>
+                    <Text style={styles.title}>Crear Cuenta</Text>
 
-            <TextInput
-                style={styles.input}
-                placeholder="Nombre"
-                value={name}
-                onChangeText={setName}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Email"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Contraseña"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-            />
+                    <NameInput control={control} errors={errors} />
+                    <EmailInput control={control} errors={errors} />
+                    <PasswordInput control={control} errors={errors} />
 
-            <TouchableOpacity style={styles.button} onPress={handleRegister} disabled={isLoading}>
-                <Text style={styles.buttonText}>{isLoading ? 'Registrando...' : 'Registrarse'}</Text>
-            </TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={handleSubmit(handleRegister)} disabled={isLoading}>
+                        <Text style={styles.buttonText}>{isLoading ? 'Registrando...' : 'Registrarse'}</Text>
+                    </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                <Text style={styles.link}>¿Ya tienes cuenta? Inicia Sesión</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={() => navigation.navigate('Inicio')}>
-                <Text style={styles.link}>Volver al inicio</Text>
-            </TouchableOpacity>
-        </View>
+                    <TouchableOpacity
+                        style={styles.buttonRegister}
+                        onPress={() => navigation.navigate('Login')}
+                    >
+                        <View style={styles.buttonWrapper}>
+                            <Text style={styles.buttonRegisterText}>Inicia Sesión </Text>
+                            <Ionicons name={"log-in-sharp"} size={20} color={"black"} />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#fff8f8ff',
+    },
+    innerContainer: {
+        flex: 1,
         justifyContent: 'center',
+        alignItems: 'center',
         paddingHorizontal: 20,
-        backgroundColor: '#FFF4E6',
+        width: '100%',
+    },
+    formContainer: {
+        width: '100%',
+        maxWidth: 500,
+        backgroundColor: '#f8f3f3ff',
+        padding: 40,
+        margin: 20,
+        borderColor: '#d35800ff',
+        borderWidth: 1,
+        borderRadius: 10
     },
     title: {
         fontSize: 26,
         fontWeight: 'bold',
-        color: '#FF6B00',
+        color: '#d35800ff',
         textAlign: 'center',
         marginBottom: 24,
     },
-    input: {
-        height: 50,
-        borderColor: '#FFA45C',
-        borderWidth: 1,
-        borderRadius: 10,
-        marginBottom: 16,
-        paddingHorizontal: 12,
-        backgroundColor: 'white',
+    // Botones
+    buttonWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     button: {
-        backgroundColor: '#FF6B00',
+        backgroundColor: '#d35800ff',
         paddingVertical: 14,
-        borderRadius: 10,
+        borderRadius: 50,
+        alignItems: 'center',
+        marginTop: 30,
+        marginBottom: 10,
+    },
+    buttonRegister: {
+        backgroundColor: '#ffeddfff',
+        borderColor: '#f79e5aff',
+        borderWidth: 1,
+        paddingVertical: 14,
+        borderRadius: 50,
         alignItems: 'center',
         marginBottom: 16,
     },
     buttonText: {
         color: 'white',
         fontWeight: 'bold',
+        fontSize: 16,
+    },
+    buttonRegisterText: {
+        color: 'black',
         fontSize: 16,
     },
     link: {
