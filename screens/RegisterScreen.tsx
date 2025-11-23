@@ -1,0 +1,133 @@
+import React, { useState } from "react";
+import { View, TouchableOpacity, Alert, StyleSheet, Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useForm } from 'react-hook-form';
+import { Ionicons } from '@expo/vector-icons';
+
+import { authService } from "../services/authService";
+import NameInput from "../components/common/NameInput";
+import EmailInput from "../components/common/EmailInput";
+import PasswordInput from "../components/common/PasswordInput";
+
+type FormData = {
+    nombre: string;
+    email: string;
+    password: string;
+}
+
+const RegisterScreen = ({ navigation }: { navigation: any }) => {
+    const [isLoading, setIsLoading] = useState(false);
+    const { control, handleSubmit, formState: { errors } } = useForm<FormData>();
+
+    const handleRegister = async (data: FormData) => {
+        setIsLoading(true);
+
+        try {
+            await authService.register({ nombre: data.nombre, email: data.email, password: data.password });
+            navigation.navigate("Login");
+        } catch (error) {
+            console.error("Error en login:", error);
+            Alert.alert("Error", "No se pudo registrar la cuenta. Inténtalo de nuevo.");
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    return (
+        <SafeAreaView style={styles.container}>
+            <View style={styles.innerContainer}>
+                <View style={styles.formContainer}>
+                    <Text style={styles.title}>Crear Cuenta</Text>
+
+                    <NameInput control={control} errors={errors} />
+                    <EmailInput control={control} errors={errors} />
+                    <PasswordInput control={control} errors={errors} />
+
+                    <TouchableOpacity style={styles.button} onPress={handleSubmit(handleRegister)} disabled={isLoading}>
+                        <Text style={styles.buttonText}>{isLoading ? 'Registrando...' : 'Registrarse'}</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={styles.buttonRegister}
+                        onPress={() => navigation.navigate('Login')}
+                    >
+                        <View style={styles.buttonWrapper}>
+                            <Text style={styles.buttonRegisterText}>Inicia Sesión </Text>
+                            <Ionicons name={"log-in-sharp"} size={20} color={"black"} />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </SafeAreaView>
+    );
+};
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff8f8ff',
+    },
+    innerContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        width: '100%',
+    },
+    formContainer: {
+        width: '100%',
+        maxWidth: 500,
+        backgroundColor: '#f8f3f3ff',
+        padding: 40,
+        margin: 20,
+        borderColor: '#d35800ff',
+        borderWidth: 1,
+        borderRadius: 10
+    },
+    title: {
+        fontSize: 26,
+        fontWeight: 'bold',
+        color: '#d35800ff',
+        textAlign: 'center',
+        marginBottom: 24,
+    },
+    // Botones
+    buttonWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    button: {
+        backgroundColor: '#d35800ff',
+        paddingVertical: 14,
+        borderRadius: 50,
+        alignItems: 'center',
+        marginTop: 30,
+        marginBottom: 10,
+    },
+    buttonRegister: {
+        backgroundColor: '#ffeddfff',
+        borderColor: '#f79e5aff',
+        borderWidth: 1,
+        paddingVertical: 14,
+        borderRadius: 50,
+        alignItems: 'center',
+        marginBottom: 16,
+    },
+    buttonText: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 16,
+    },
+    buttonRegisterText: {
+        color: 'black',
+        fontSize: 16,
+    },
+    link: {
+        color: '#C1440E',
+        textAlign: 'center',
+        marginVertical: 4,
+        fontWeight: 'bold',
+    },
+});
+
+export default RegisterScreen;
