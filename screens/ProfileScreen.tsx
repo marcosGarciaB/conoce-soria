@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { useAuth } from '../contexts/AuthContext';
 import { authService, UserCredentials } from "../services/authService";
@@ -41,10 +41,9 @@ const ProfileScreen = ({ navigation }: { navigation: any }) => {
 };
 
 const styles = StyleSheet.create({
-    // Contenedores generales
     container: {
         flex: 1,
-        backgroundColor: '#fff8f8ff',
+        backgroundColor: '#FAFAFA',
     },
 });
 

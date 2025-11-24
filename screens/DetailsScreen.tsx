@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { useAdmin } from "@/hooks/useAdmin";
 import AddComment from "../components/detail/AddComment";
 import ComentarioItem from "../components/detail/CommentItem";
 import { useAuth } from "../contexts/AuthContext";
@@ -54,6 +55,7 @@ const DetailsScreen = ({
 	const [comentarios, setComentarios] = useState<ComentariosResponse[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const { token } = useAuth();
+	const isAdminUser = useAdmin(token);
 
 	const flatListRef = useRef<ScrollView>(null);
 
@@ -85,13 +87,7 @@ const DetailsScreen = ({
 		loadComentarios();
 	}, [experiencia.id]);
 
-	// Formulario de comentarios
-	const {
-		control,
-		handleSubmit,
-		formState: { errors },
-		reset,
-	} = useForm<FormData>();
+	const { control, handleSubmit, formState: { errors }, reset, } = useForm<FormData>();
 
 	const onSubmit = async (data: FormData) => {
 		if (!token) return console.error("Token no disponible");
@@ -110,6 +106,7 @@ const DetailsScreen = ({
 			setComentarios(updatedComentarios);
 			reset({ comentario: "" });
 			flatListRef.current?.scrollToEnd({ animated: true });
+
 		} catch (error) {
 			console.error("Error al enviar comentario:", error);
 		} finally {
@@ -117,11 +114,44 @@ const DetailsScreen = ({
 		}
 	};
 
+	const handleDelete = async (comentarioId: string) => {
+		if (!token) return console.error("Token no disponible");
+		setIsLoading(true);
+
+		try {
+			await comentariosService.deleteComentario(experiencia.id.toString(), comentarioId, token);
+			const updated = await comentariosService.getComentarios(experiencia.id.toString());
+			setComentarios(updated);
+
+		} catch (error) {
+			console.error("Error al enviar comentario:", error);
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
+	const handleUpdate = async (comentarioId: string, newText: string) => {
+		if (!token) return console.error("Token no disponible");
+		setIsLoading(true);
+
+		try {
+			await comentariosService.updateComentario(experiencia.id.toString(), comentarioId, { texto: newText }, token);
+			const updated = await comentariosService.getComentarios(experiencia.id.toString());
+
+			setComentarios(updated);
+
+		} catch (error) {
+			console.error("Error al enviar comentario:", error);
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
+
 	if (!detalle) return <Text>Cargando...</Text>;
 
 	return (
 		<SafeAreaView style={styles.container}>
-			{/* Header */}
 			<View style={styles.headerPanel}>
 				<Ionicons
 					style={{ marginLeft: 15 }}
@@ -141,38 +171,52 @@ const DetailsScreen = ({
 
 			{/* Scroll principal */}
 			<ScrollView ref={flatListRef} showsVerticalScrollIndicator={true}>
-				{/* Imagen principal */}
 				<Image source={{ uri: url }} style={styles.galleryImage} />
 
-				{/* Galería */}
 				<View style={styles.sectionTitleRow}>
 					<Ionicons name="images" size={20} color="grey" />
 					<Text style={styles.sectionTitle}>Galería</Text>
+					{isAdminUser && (
+							<View style={styles.aboutTitleRow}>
+								<TouchableOpacity style={[styles.adminIcon, styles.editIcon]}>
+									<Ionicons name="pencil-sharp" size={20} color="white" />
+								</TouchableOpacity>
+								<TouchableOpacity style={[styles.adminIcon, styles.deleteIcon]}>
+									<Ionicons name="trash-bin-sharp" size={20} color="white" />
+								</TouchableOpacity>
+							</View>
+						)}
 				</View>
 
-				{/* Sobre la experiencia */}
 				<View style={styles.aboutSection}>
 					<View style={styles.aboutTitleRow}>
 						<Ionicons name="book-outline" size={20} color="grey" />
 						<Text style={styles.sectionTitle}>
 							Sobre esta experiencia
 						</Text>
+						{isAdminUser && (
+							<View style={styles.aboutTitleRow}>
+								<TouchableOpacity style={[styles.adminIcon, styles.editIcon]}>
+									<Ionicons name="pencil-sharp" size={20} color="white" />
+								</TouchableOpacity>
+							</View>
+						)}
 					</View>
 					<Text style={styles.aboutText}>{detalle.descripcion}</Text>
 				</View>
 
-				{/* Comentarios */}
 				<View style={styles.commentsTitleRow}>
 					<Ionicons name="chatbox-outline" size={20} color="grey" />
 					<Text style={styles.commentsTitle}>Comentarios</Text>
 				</View>
 
-				{/* Lista de comentarios + formulario */}
 				<View>
 					{comentarios.map((comentario) => (
 						<ComentarioItem
 							key={comentario.id}
 							comentario={comentario}
+							onDelete={(id) => handleDelete(id)}
+							onUpdate={(id, newText) => handleUpdate(id, newText)}
 						/>
 					))}
 
@@ -184,7 +228,6 @@ const DetailsScreen = ({
 					/>
 				</View>
 
-				{/* Botón final */}
 				<TouchableOpacity
 					style={styles.inputButton}
 					onPress={() => console.log("Registrar experiencia")}
@@ -203,7 +246,10 @@ const DetailsScreen = ({
 };
 
 const styles = StyleSheet.create({
-	container: { flex: 1, backgroundColor: "#fff8f8ff", paddingHorizontal: 20 },
+	container: { flex: 1, 
+		backgroundColor: "#FAFAFA", 
+		paddingHorizontal: 20 
+	},
 	headerPanel: {
 		flexDirection: "row",
 		justifyContent: "space-between",
@@ -278,6 +324,29 @@ const styles = StyleSheet.create({
 		fontSize: 19,
 		color: "white",
 		fontWeight: "bold",
+	},	
+	// Admin
+	adminBadge: {
+		position: "absolute",
+		top: 10,
+		right: 10,
+		flexDirection: "row",
+		borderRadius: 12,
+		overflow: "hidden",
+	},
+	adminIcon: {
+		width: 35,
+		height: 35,
+		justifyContent: "center",
+		alignItems: "center",
+		marginLeft: 5,
+		borderRadius: 8,
+	},
+	editIcon: {
+		backgroundColor: "#007bff",
+	},
+	deleteIcon: {
+		backgroundColor: "#ff4d4f", 
 	},
 });
 

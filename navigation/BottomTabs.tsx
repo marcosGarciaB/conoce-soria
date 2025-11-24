@@ -6,11 +6,14 @@
  * https://hernandezmarquina.medium.com/personaliza-las-tabs-de-tu-aplicaci%C3%B3n-en-react-native-210c28bf079e
  */
 
+import { useAdmin } from "@/hooks/useAdmin";
 import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React from "react";
 import { View } from "react-native";
+import { useAuth } from "../contexts/AuthContext";
 
+import AdminScreen from "@/screens/AdminScreen";
 import InicioScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import SearchScreen from "../screens/SeekerScreen";
@@ -19,11 +22,15 @@ type BottomTabParamList = {
 	Inicio: undefined;
 	Buscador: undefined;
 	Profile: undefined;
+	Admin: undefined;
 };
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
 
 export const BottomTabs = () => {
+	const { token } = useAuth();
+	const isAdminUser = useAdmin(token);
+
 	return (
 		<Tab.Navigator
 			screenOptions={({ route }) => ({
@@ -34,6 +41,7 @@ export const BottomTabs = () => {
 					if (route.name === "Inicio") iconName = "home-outline";
 					if (route.name === "Buscador") iconName = "search-outline";
 					if (route.name === "Profile") iconName = "person";
+					if (route.name === "Admin") iconName = "accessibility";
 
 					return (
 						<View
@@ -77,6 +85,11 @@ export const BottomTabs = () => {
 			<Tab.Screen name="Inicio" component={InicioScreen} />
 			<Tab.Screen name="Buscador" component={SearchScreen} />
 			<Tab.Screen name="Profile" component={ProfileScreen} />
+
+			{
+				isAdminUser && (
+				< Tab.Screen name="Admin" component={AdminScreen} />
+			)}
 		</Tab.Navigator>
 	);
 };

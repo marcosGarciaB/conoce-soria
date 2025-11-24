@@ -88,7 +88,7 @@ const RegisterScreen = ({ navigation }: { navigation: any }) => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#fff8f8ff",
+		backgroundColor: "#FAFAFA",
 	},
 	innerContainer: {
 		flex: 1,

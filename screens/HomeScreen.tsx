@@ -12,7 +12,6 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import MapComponent from "@/components/seeker/MapComponent";
 import { useAuth } from "../contexts/AuthContext";
 import {
 	experienciaService,
@@ -118,9 +117,9 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
 					</Text>
 				</View>
 
-				<View style={styles.mapContainer}>
+				{/* <View style={styles.mapContainer}>
 					<MapComponent />
-				</View>
+				</View> */}
 			</ScrollView>
 		</SafeAreaView>
 	);
@@ -129,7 +128,7 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
 const styles = StyleSheet.create({
 	// Contenedores generales
 	container: {
-		backgroundColor: "#fff8f8ff",
+		backgroundColor: "#FAFAFA",
 		padding: 20,
 		marginBottom: 30,
 	},

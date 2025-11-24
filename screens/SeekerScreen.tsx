@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { useAdmin } from "@/hooks/useAdmin";
 import Filters from "../components/seeker/FilterDropdown";
 import { useAuth } from "../contexts/AuthContext";
 import {
@@ -29,14 +30,12 @@ if (Platform.OS === "android") {
 }
 
 const SearchScreen = ({ navigation }: { navigation: any }) => {
-	// Comprobar si está logueado
-	const { status } = useAuth();
+	const { status, token } = useAuth();
 	const isLogged = status === "authenticated";
-
+	const isAdminUser = useAdmin(token);
+	
 	// Resto
-	const url =
-		"https://r-charts.com/es/miscelanea/procesamiento-imagenes-magick_files/figure-html/recortar-bordes-imagen-r.png";
-
+	const url ="https://r-charts.com/es/miscelanea/procesamiento-imagenes-magick_files/figure-html/recortar-bordes-imagen-r.png";
 	const [experiencias, setExperiencias] = useState<ExperienciasResponse[]>(
 		[]
 	);
@@ -55,6 +54,7 @@ const SearchScreen = ({ navigation }: { navigation: any }) => {
 			}
 		};
 		loadExperiencias();
+
 	}, []);
 
 	const handlePressExperiencia = (experiencia: ExperienciasResponse) => {
@@ -117,6 +117,16 @@ const SearchScreen = ({ navigation }: { navigation: any }) => {
 						.replace(/\b\w/g, (l) => l.toUpperCase())}
 				</Text>
 			</View>
+			{isAdminUser && (
+				<View style={styles.adminBadge}>
+					<TouchableOpacity style={[styles.adminIcon, styles.editIcon]}>
+						<Ionicons name="pencil-sharp" size={20} color="white" />
+					</TouchableOpacity>
+					<TouchableOpacity style={[styles.adminIcon, styles.deleteIcon]}>
+						<Ionicons name="trash-bin-sharp" size={20} color="white" />
+					</TouchableOpacity>
+				</View>
+			)}
 			<Text style={styles.cardTitle}>{item.titulo}</Text>
 		</TouchableOpacity>
 	);
@@ -165,7 +175,7 @@ const styles = StyleSheet.create({
 	// Generales
 	container: {
 		flex: 1,
-		backgroundColor: "#fff8f8ff",
+		backgroundColor: "#FAFAFA",
 		padding: 10,
 		paddingBottom: "30%",
 	},
@@ -226,6 +236,29 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 		color: "#333",
 		textAlign: "center",
+	},
+	// Admin
+	adminBadge: {
+		position: "absolute",
+		top: 10,
+		right: 10,
+		flexDirection: "row",
+		borderRadius: 12,
+		overflow: "hidden",
+	},
+	adminIcon: {
+		width: 35,
+		height: 35,
+		justifyContent: "center",
+		alignItems: "center",
+		marginLeft: 5,
+		borderRadius: 8,
+	},
+	editIcon: {
+		backgroundColor: "#007bff", // azul
+	},
+	deleteIcon: {
+		backgroundColor: "#ff4d4f", // rojo
 	},
 });
 

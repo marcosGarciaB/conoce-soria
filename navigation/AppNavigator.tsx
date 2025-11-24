@@ -1,14 +1,14 @@
 /**
  * Lo que ve el usuario cuando no ha inciado sesión.
  */
-import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import React from "react";
 
-import LoginScreen from "../screens/LoginScreen";
+import DetailsScreen from "../screens/DetailsScreen";
 import InicioScreen from "../screens/HomeScreen";
-import RegisterScreen from "../screens/RegisterScreen";
-import DetailsScreen from "../screens/ExperiencesDetailsScreen";
+import LoginScreen from "../screens/LoginScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import RegisterScreen from "../screens/RegisterScreen";
 
 import { ExperienciasResponse } from "../services/experienceService";
 import { BottomTabs } from "./BottomTabs";

@@ -3,12 +3,10 @@
 * - Cualquier componente puede leer el estado sin pasar props.
 */
 
-import React, { createContext, useState, useEffect, ReactNode, useMemo, useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { authService } from '../services/authService';
-import { LoginCredentials, AuthResponse } from '../services/authService';
+import React, { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
+import { AuthResponse, authService, LoginCredentials } from '../services/authService';
 
-// ------------------- DEFINICIÓN DE TIPOS ------------------- //
 interface AuthState {
     status: 'checking' | 'authenticated' | 'not-authenticated';
     token: string | null;
@@ -21,24 +19,17 @@ interface AuthContextProps {
     logout: () => void;
 }
 
-// ------------------- CREACIÓN DEL CONTEXTO ------------------- //
-// Creamos el contexto con un valor inicial vacío.
 export const AuthContext = createContext({} as AuthContextProps);
 
-// ------------------- COMPONENTE PROVEEDOR ------------------- //
-// Children es toda la aplicación.
-// Necesito entender bien toda esta parte.
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [authState, setAuthState] = useState<AuthState>({
         status: 'checking',
         token: null,
     });
 
-    // Efecto para restaurar la sesión al iniciar la app.
     useEffect(() => {
         const checkToken = async () => {
             try {
-                // Cogemos el token que hemos guardado con la persistencia.
                 const tokenFromStorge = await AsyncStorage.getItem('authToken');
 
                 if (!tokenFromStorge) {
@@ -48,7 +39,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                     });
                     return;
                 }
-
                 setAuthState({
                     status: 'authenticated',
                     token: tokenFromStorge,
@@ -79,21 +69,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const logout = async () => {
-        // Borramos el token del almacenamiento local.
         await AsyncStorage.removeItem('authToken');
-        // Actualizamos el estado para reflejar que el usuario ya no está autenticado.
         setAuthState({
             status: 'not-authenticated',
             token: null,
         });
     };
 
-    // useMemo optimiza el rendimiento. Solo volverá a crear este objeto si authState cambia.
-    // Evita re-renderizados innecesarios en los componentes que consumen el contexto.
     const authContextValue = useMemo(() => ({
-        ...authState, 
-        login,       
-        logout,      
+        ...authState,
+        login,
+        logout,
     }), [authState]);
 
     return (
