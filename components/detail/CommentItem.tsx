@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
 	interpolateColor,
@@ -9,9 +9,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { useAuth } from "@/contexts/AuthContext";
-import { useAdmin } from "@/hooks/useAdmin";
-import { Ionicons } from "@expo/vector-icons";
-import { ComentariosResponse } from "../../services/commentService";
+import { ComentariosResponse } from "@/services/commentService";
 import ModalComment from "./ModalComment";
 
 interface ComentarioItemProps {
@@ -33,7 +31,6 @@ const ComentarioItem: React.FC<ComentarioItemProps> = ({
 	const [actionType, setActionType] = useState<"delete" | "update" | null>(
 		null
 	);
-	const isAdminUser = useAdmin(token);
 
 	const panGesture = Gesture.Pan()
 		.onUpdate((e) => {
@@ -61,7 +58,8 @@ const ComentarioItem: React.FC<ComentarioItemProps> = ({
 
 	const handleConfirm = (newText?: string) => {
 		if (actionType === "delete" && onDelete) onDelete(comentario.id);
-		if (actionType === "update" && onUpdate && newText) onUpdate(comentario.id, newText);
+		if (actionType === "update" && onUpdate && newText)
+			onUpdate(comentario.id, newText);
 		setModalVisible(false);
 		setActionType(null);
 	};
@@ -75,22 +73,10 @@ const ComentarioItem: React.FC<ComentarioItemProps> = ({
 		<View>
 			<GestureDetector gesture={panGesture}>
 				<Animated.View style={[styles.commentItem, animatedStyle]}>
-					<View>
-						{isAdminUser && (
-							<View style={styles.adminBadge}>
-								<TouchableOpacity style={[styles.adminIcon, styles.editIcon]}>
-									<Ionicons name="warning" size={20} color="white" />
-								</TouchableOpacity>
-								<TouchableOpacity style={[styles.adminIcon, styles.deleteIcon]}>
-									<Ionicons name="trash-bin-sharp" size={20} color="white" />
-								</TouchableOpacity>
-							</View>
-						)}
-					</View>
 					<Text style={styles.commentUser}>
 						{comentario.autorNombre}
 					</Text>
-					
+
 					<Text style={styles.commentText}>{comentario.texto}</Text>
 					<Text style={styles.commentDate}>
 						{new Date(comentario.fecha).toLocaleString()}
@@ -100,7 +86,9 @@ const ComentarioItem: React.FC<ComentarioItemProps> = ({
 
 			<ModalComment
 				title={
-					actionType === "delete" ? "Eliminar comentario" : "Editar comentario"
+					actionType === "delete"
+						? "Eliminar comentario"
+						: "Editar comentario"
 				}
 				isVisible={modalVisible}
 				onSave={handleConfirm}

@@ -1,4 +1,5 @@
-import { Ionicons } from "@expo/vector-icons";
+import Header from "@/components/common/HeaderItem";
+import MapComponent from "@/components/seeker/MapComponent";
 import React, { useEffect, useState } from "react";
 import {
 	Dimensions,
@@ -7,11 +8,9 @@ import {
 	ScrollView,
 	StyleSheet,
 	Text,
-	TouchableOpacity,
 	View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 import { useAuth } from "../contexts/AuthContext";
 import {
 	experienciaService,
@@ -49,43 +48,22 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
 
 	return (
 		<SafeAreaView style={styles.container}>
-			<View style={styles.headerPanel}>
-				<Text style={styles.title}>Experiencias Soria</Text>
+			{status === "authenticated" ? (
+				<Header title="Conoce Soria" icon="exit-outline" />
+			) : (
+				<Header title="Conoce Soria" icon="person-circle" />
+			)}
 
-				{status === "authenticated" ? (
-					<TouchableOpacity
-						style={[styles.smallButton]}
-						onPress={logout}
-					>
-						<Ionicons
-							name={"exit-outline"}
-							size={30}
-							color={"grey"}
-						/>
-					</TouchableOpacity>
-				) : (
-					<TouchableOpacity
-						style={[styles.smallButton]}
-						onPress={() => navigation.navigate("Login")}
-					>
-						<Ionicons
-							name={"person-circle"}
-							size={30}
-							color={"grey"}
-						/>
-					</TouchableOpacity>
-				)}
-			</View>
 			<ScrollView
 				contentContainerStyle={styles.scrollContent}
 				nestedScrollEnabled={true}
 			>
-				<View>
+				<View style={{ paddingHorizontal: 20, marginTop: 25 }}>
 					<Text style={styles.subtitle}>
 						Descubre Soria a tu ritmo
 					</Text>
 					<Text style={styles.contentTitle}>
-						Naturaleza, cultura y sabores locacles
+						Naturaleza, cultura y sabores locales
 					</Text>
 				</View>
 
@@ -103,23 +81,9 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
 					/>
 				</View>
 
-				<View>
-					<Text style={styles.subtitle}>
-						Si está logueado, que salga su pasaporte con su
-						experiencias.
-					</Text>
-				</View>
-
-				<View>
-					<Text style={styles.subtitle}>
-						Si no está logueado, que salga el ranking general de la
-						gente.
-					</Text>
-				</View>
-
-				{/* <View style={styles.mapContainer}>
+				<View style={styles.mapContainer}>
 					<MapComponent />
-				</View> */}
+				</View>
 			</ScrollView>
 		</SafeAreaView>
 	);
@@ -129,7 +93,7 @@ const styles = StyleSheet.create({
 	// Contenedores generales
 	container: {
 		backgroundColor: "#FAFAFA",
-		padding: 20,
+		padding: 5,
 		marginBottom: 30,
 	},
 	carouselContainer: {
@@ -140,48 +104,19 @@ const styles = StyleSheet.create({
 		paddingTop: 20,
 		alignItems: "center",
 	},
-	// Cabecera
-	headerPanel: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
-		elevation: 5,
-		backgroundColor: "white",
-		borderRadius: 30,
-		height: 60,
-		shadowColor: "#000",
-		shadowOffset: { width: 0, height: 5 },
-		shadowOpacity: 0.1,
-		shadowRadius: 5,
-	},
-	title: {
-		fontSize: 24,
-		fontWeight: "bold",
-		color: "#FF6B00",
-		marginLeft: 20,
-	},
 	// Esilos de títulos
 	subtitle: {
-		fontSize: 24,
-		fontWeight: "bold",
-		color: "black",
+		fontSize: 26,
+		fontWeight: "700",
+		color: "#1E1E1E",
 		marginLeft: 20,
+		marginBottom: 5,
 	},
 	contentTitle: {
 		fontSize: 18,
-		fontWeight: "bold",
-		color: "grey",
+		fontWeight: "500",
+		color: "#6B6B6B",
 		marginLeft: 20,
-	},
-	// Botones
-	smallButton: {
-		paddingVertical: 8,
-		paddingHorizontal: 16,
-	},
-	buttonText: {
-		color: "white",
-		fontWeight: "bold",
-		fontSize: 15,
 	},
 	// Card
 	card: {

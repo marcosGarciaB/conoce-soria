@@ -1,4 +1,11 @@
-import { Ionicons } from "@expo/vector-icons";
+import Header from "@/components/common/HeaderItem";
+import Filters from "@/components/seeker/FilterDropdown";
+import { useAuth } from "@/contexts/AuthContext";
+import { useAdmin } from "@/hooks/useAdmin";
+import {
+	experienciaService,
+	ExperienciasResponse,
+} from "@/services/experienceService";
 import React, { useEffect, useState } from "react";
 import {
 	Dimensions,
@@ -14,14 +21,6 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { useAdmin } from "@/hooks/useAdmin";
-import Filters from "../components/seeker/FilterDropdown";
-import { useAuth } from "../contexts/AuthContext";
-import {
-	experienciaService,
-	ExperienciasResponse,
-} from "../services/experienceService";
-
 const { width } = Dimensions.get("window");
 const categories = ["RESTAURANTE", "MUSEO", "AIRE_LIBRE", "MONUMENTO"];
 
@@ -33,9 +32,10 @@ const SearchScreen = ({ navigation }: { navigation: any }) => {
 	const { status, token } = useAuth();
 	const isLogged = status === "authenticated";
 	const isAdminUser = useAdmin(token);
-	
+
 	// Resto
-	const url ="https://r-charts.com/es/miscelanea/procesamiento-imagenes-magick_files/figure-html/recortar-bordes-imagen-r.png";
+	const url =
+		"https://r-charts.com/es/miscelanea/procesamiento-imagenes-magick_files/figure-html/recortar-bordes-imagen-r.png";
 	const [experiencias, setExperiencias] = useState<ExperienciasResponse[]>(
 		[]
 	);
@@ -54,7 +54,6 @@ const SearchScreen = ({ navigation }: { navigation: any }) => {
 			}
 		};
 		loadExperiencias();
-
 	}, []);
 
 	const handlePressExperiencia = (experiencia: ExperienciasResponse) => {
@@ -117,31 +116,13 @@ const SearchScreen = ({ navigation }: { navigation: any }) => {
 						.replace(/\b\w/g, (l) => l.toUpperCase())}
 				</Text>
 			</View>
-			{isAdminUser && (
-				<View style={styles.adminBadge}>
-					<TouchableOpacity style={[styles.adminIcon, styles.editIcon]}>
-						<Ionicons name="pencil-sharp" size={20} color="white" />
-					</TouchableOpacity>
-					<TouchableOpacity style={[styles.adminIcon, styles.deleteIcon]}>
-						<Ionicons name="trash-bin-sharp" size={20} color="white" />
-					</TouchableOpacity>
-				</View>
-			)}
 			<Text style={styles.cardTitle}>{item.titulo}</Text>
 		</TouchableOpacity>
 	);
 
 	return (
 		<SafeAreaView style={styles.container}>
-			<View style={styles.headerPanel}>
-				<Text style={styles.title}>Explorar</Text>
-				<Ionicons
-					style={{ marginRight: 15 }}
-					name={"search-sharp"}
-					size={30}
-					color={"orange"}
-				/>
-			</View>
+			<Header title="Explorar" icon="search-sharp" />
 
 			<FlatList
 				data={experiencias}
@@ -176,27 +157,8 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: "#FAFAFA",
-		padding: 10,
+		padding: 5,
 		paddingBottom: "30%",
-	},
-	headerPanel: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
-		elevation: 5,
-		backgroundColor: "white",
-		borderRadius: 30,
-		height: 60,
-		shadowColor: "#000",
-		shadowOffset: { width: 0, height: 5 },
-		shadowOpacity: 0.1,
-		shadowRadius: 5,
-	},
-	title: {
-		fontSize: 24,
-		fontWeight: "bold",
-		color: "#FF6B00",
-		marginLeft: 20,
 	},
 	// Card
 	card: {

@@ -1,3 +1,4 @@
+import Header from "@/components/common/HeaderItem";
 import { Ionicons } from "@expo/vector-icons";
 import { RouteProp } from "@react-navigation/native";
 import React, { useEffect, useRef, useState } from "react";
@@ -13,8 +14,6 @@ import {
 	View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-import { useAdmin } from "@/hooks/useAdmin";
 import AddComment from "../components/detail/AddComment";
 import ComentarioItem from "../components/detail/CommentItem";
 import { useAuth } from "../contexts/AuthContext";
@@ -55,7 +54,6 @@ const DetailsScreen = ({
 	const [comentarios, setComentarios] = useState<ComentariosResponse[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const { token } = useAuth();
-	const isAdminUser = useAdmin(token);
 
 	const flatListRef = useRef<ScrollView>(null);
 
@@ -87,7 +85,12 @@ const DetailsScreen = ({
 		loadComentarios();
 	}, [experiencia.id]);
 
-	const { control, handleSubmit, formState: { errors }, reset, } = useForm<FormData>();
+	const {
+		control,
+		handleSubmit,
+		formState: { errors },
+		reset,
+	} = useForm<FormData>();
 
 	const onSubmit = async (data: FormData) => {
 		if (!token) return console.error("Token no disponible");
@@ -106,7 +109,6 @@ const DetailsScreen = ({
 			setComentarios(updatedComentarios);
 			reset({ comentario: "" });
 			flatListRef.current?.scrollToEnd({ animated: true });
-
 		} catch (error) {
 			console.error("Error al enviar comentario:", error);
 		} finally {
@@ -119,10 +121,15 @@ const DetailsScreen = ({
 		setIsLoading(true);
 
 		try {
-			await comentariosService.deleteComentario(experiencia.id.toString(), comentarioId, token);
-			const updated = await comentariosService.getComentarios(experiencia.id.toString());
+			await comentariosService.deleteComentario(
+				experiencia.id.toString(),
+				comentarioId,
+				token
+			);
+			const updated = await comentariosService.getComentarios(
+				experiencia.id.toString()
+			);
 			setComentarios(updated);
-
 		} catch (error) {
 			console.error("Error al enviar comentario:", error);
 		} finally {
@@ -135,11 +142,17 @@ const DetailsScreen = ({
 		setIsLoading(true);
 
 		try {
-			await comentariosService.updateComentario(experiencia.id.toString(), comentarioId, { texto: newText }, token);
-			const updated = await comentariosService.getComentarios(experiencia.id.toString());
+			await comentariosService.updateComentario(
+				experiencia.id.toString(),
+				comentarioId,
+				{ texto: newText },
+				token
+			);
+			const updated = await comentariosService.getComentarios(
+				experiencia.id.toString()
+			);
 
 			setComentarios(updated);
-
 		} catch (error) {
 			console.error("Error al enviar comentario:", error);
 		} finally {
@@ -147,45 +160,24 @@ const DetailsScreen = ({
 		}
 	};
 
-
 	if (!detalle) return <Text>Cargando...</Text>;
 
 	return (
 		<SafeAreaView style={styles.container}>
-			<View style={styles.headerPanel}>
-				<Ionicons
-					style={{ marginLeft: 15 }}
-					name="chevron-back-circle"
-					size={30}
-					color="grey"
-					onPress={() => navigation.goBack()}
-				/>
-				<Text style={styles.title}>{detalle.titulo}</Text>
-				<Ionicons
-					style={{ marginRight: 15 }}
-					name="location"
-					size={30}
-					color="grey"
-				/>
-			</View>
+			<Header
+				title={detalle.titulo}
+				icon="search-sharp"
+				isSecondIcon={true}
+				icon2="chevron-back-circle"
+				onPress={() => navigation.goBack()}
+			/>
 
-			{/* Scroll principal */}
 			<ScrollView ref={flatListRef} showsVerticalScrollIndicator={true}>
 				<Image source={{ uri: url }} style={styles.galleryImage} />
 
 				<View style={styles.sectionTitleRow}>
 					<Ionicons name="images" size={20} color="grey" />
 					<Text style={styles.sectionTitle}>Galería</Text>
-					{isAdminUser && (
-							<View style={styles.aboutTitleRow}>
-								<TouchableOpacity style={[styles.adminIcon, styles.editIcon]}>
-									<Ionicons name="pencil-sharp" size={20} color="white" />
-								</TouchableOpacity>
-								<TouchableOpacity style={[styles.adminIcon, styles.deleteIcon]}>
-									<Ionicons name="trash-bin-sharp" size={20} color="white" />
-								</TouchableOpacity>
-							</View>
-						)}
 				</View>
 
 				<View style={styles.aboutSection}>
@@ -194,13 +186,6 @@ const DetailsScreen = ({
 						<Text style={styles.sectionTitle}>
 							Sobre esta experiencia
 						</Text>
-						{isAdminUser && (
-							<View style={styles.aboutTitleRow}>
-								<TouchableOpacity style={[styles.adminIcon, styles.editIcon]}>
-									<Ionicons name="pencil-sharp" size={20} color="white" />
-								</TouchableOpacity>
-							</View>
-						)}
 					</View>
 					<Text style={styles.aboutText}>{detalle.descripcion}</Text>
 				</View>
@@ -216,7 +201,9 @@ const DetailsScreen = ({
 							key={comentario.id}
 							comentario={comentario}
 							onDelete={(id) => handleDelete(id)}
-							onUpdate={(id, newText) => handleUpdate(id, newText)}
+							onUpdate={(id, newText) =>
+								handleUpdate(id, newText)
+							}
 						/>
 					))}
 
@@ -246,29 +233,10 @@ const DetailsScreen = ({
 };
 
 const styles = StyleSheet.create({
-	container: { flex: 1, 
-		backgroundColor: "#FAFAFA", 
-		paddingHorizontal: 20 
-	},
-	headerPanel: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
-		elevation: 5,
-		backgroundColor: "white",
-		borderRadius: 30,
-		height: 60,
-		shadowColor: "#000",
-		shadowOffset: { width: 0, height: 5 },
-		shadowOpacity: 0.1,
-		shadowRadius: 5,
-		marginTop: 15,
-	},
-	title: {
-		fontSize: 18,
-		fontWeight: "bold",
-		color: "#FF6B00",
-		marginLeft: 15,
+	container: {
+		flex: 1,
+		backgroundColor: "#FAFAFA",
+		padding: 5,
 	},
 	sectionTitleRow: {
 		flexDirection: "row",
@@ -298,8 +266,16 @@ const styles = StyleSheet.create({
 		shadowRadius: 6,
 		elevation: 2,
 	},
-	aboutTitleRow: { flexDirection: "row", alignItems: "center" },
-	aboutText: { fontSize: 15, color: "#555", lineHeight: 22, marginTop: 5 },
+	aboutTitleRow: {
+		flexDirection: "row",
+		alignItems: "center",
+	},
+	aboutText: {
+		fontSize: 15,
+		color: "#555",
+		lineHeight: 22,
+		marginTop: 5,
+	},
 	commentsTitleRow: {
 		flexDirection: "row",
 		alignItems: "center",
@@ -324,7 +300,7 @@ const styles = StyleSheet.create({
 		fontSize: 19,
 		color: "white",
 		fontWeight: "bold",
-	},	
+	},
 	// Admin
 	adminBadge: {
 		position: "absolute",
@@ -346,7 +322,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "#007bff",
 	},
 	deleteIcon: {
-		backgroundColor: "#ff4d4f", 
+		backgroundColor: "#ff4d4f",
 	},
 });
 
