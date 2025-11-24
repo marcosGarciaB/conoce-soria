@@ -105,7 +105,9 @@ const styles = StyleSheet.create({
 	// General
 	formContainer: {
 		flex: 1,
+		backgroundColor: "white",
 		width: "95%",
+		borderRadius: 10,
 		marginBottom: 60,
 	},
 	// Input
