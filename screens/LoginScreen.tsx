@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { View, TouchableOpacity, Alert, StyleSheet, Text } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useForm } from 'react-hook-form';
 import { Ionicons } from '@expo/vector-icons';
+import React, { useState } from "react";
+import { useForm } from 'react-hook-form';
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { useAuth } from "../contexts/AuthContext";
 import EmailInput from "../components/common/EmailInput";
 import PasswordInput from "../components/common/PasswordInput";
+import { useAuth } from "../contexts/AuthContext";
 
 type FormData = {
     email: string;
@@ -67,7 +67,7 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff8f8ff',
+        backgroundColor: '#FAFAFA',
     },
     innerContainer: {
         flex: 1,

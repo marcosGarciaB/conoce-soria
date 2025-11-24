@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import { useAdmin } from "@/hooks/useAdmin";
 import { Ionicons } from '@expo/vector-icons';
 import { useForm } from 'react-hook-form';
 
+import Toast from 'react-native-toast-message';
 import { UserCredentials, authService } from "../../services/authService";
 import ModalUpdate from './ModalUpdate';
 import PrivacyModal from './PrivacyModal';
-import Toast from 'react-native-toast-message';
 
 interface UserLogguedProps {
     user: UserCredentials;
@@ -20,6 +21,7 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [modalField, setModalField] = useState<'nombre' | 'email' | 'password' | null>(null);
     const [privacyVisible, setPrivacyVisible] = useState(false);
+    const isAdminUser = useAdmin(token);
 
     const { control, handleSubmit, formState: { errors }, setValue } = useForm({
         defaultValues: {
@@ -94,6 +96,7 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
                     </View>
 
                     <View style={styles.actionButtons}>
+                        
                         <TouchableOpacity style={styles.actionButton} onPress={() => openModal('nombre')}>
                             <Text style={styles.actionText}>Cambiar nombre</Text>
                         </TouchableOpacity>
@@ -146,7 +149,7 @@ const styles = StyleSheet.create({
     // Contenedores generales
     container: {
         flex: 1,
-        backgroundColor: '#fff8f8ff',
+        backgroundColor: '#FAFAFA',
         padding: 20
     },
     scrollContent: {
@@ -236,6 +239,53 @@ const styles = StyleSheet.create({
         color: '#333',
         fontWeight: 'bold',
     },
+    adminContainer: {
+        width: '100%',
+        marginBottom: 25,
+        padding: 10,
+        backgroundColor: '#fff4e6',
+        borderRadius: 15,
+        borderWidth: 1,
+        borderColor: '#FF6B00',
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.15,
+        shadowRadius: 4,
+        elevation: 4,
+    },
+
+    adminBadge: {
+        alignSelf: 'center',
+        backgroundColor: '#FF6B00',
+        color: 'white',
+        paddingHorizontal: 12,
+        paddingVertical: 4,
+        borderRadius: 12,
+        fontWeight: 'bold',
+        marginBottom: 12,
+        fontSize: 12,
+        letterSpacing: 1,
+    },
+
+    adminButton: {
+        backgroundColor: '#FF6B00',
+        paddingVertical: 14,
+        paddingHorizontal: 20,
+        borderRadius: 12,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
+        marginBottom: 12,
+        elevation: 3,
+    },
+
+    adminButtonText: {
+        fontSize: 16,
+        color: 'white',
+        fontWeight: 'bold',
+    },
+
+
 });
 
 export default Logged;

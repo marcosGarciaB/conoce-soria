@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import { View, TouchableOpacity, Alert, StyleSheet, Text } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useForm } from 'react-hook-form';
 import { Ionicons } from '@expo/vector-icons';
+import React, { useState } from "react";
+import { useForm } from 'react-hook-form';
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { authService } from "../services/authService";
-import NameInput from "../components/common/NameInput";
 import EmailInput from "../components/common/EmailInput";
+import NameInput from "../components/common/NameInput";
 import PasswordInput from "../components/common/PasswordInput";
+import { authService } from "../services/authService";
 
 type FormData = {
     nombre: string;
@@ -65,7 +65,7 @@ const RegisterScreen = ({ navigation }: { navigation: any }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff8f8ff',
+        backgroundColor: '#FAFAFA',
     },
     innerContainer: {
         flex: 1,

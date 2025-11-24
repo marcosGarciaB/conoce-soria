@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
 	interpolateColor,
@@ -7,38 +7,43 @@ import Animated, {
 	useSharedValue,
 	withSpring,
 } from "react-native-reanimated";
+
+import { useAuth } from "@/contexts/AuthContext";
+import { useAdmin } from "@/hooks/useAdmin";
+import { Ionicons } from "@expo/vector-icons";
 import { ComentariosResponse } from "../../services/commentService";
+import ModalComment from "./ModalComment";
 
 interface ComentarioItemProps {
 	comentario: ComentariosResponse;
 	onDelete?: (id: string) => void;
-	onUpdate?: (id: string) => void;
+	onUpdate?: (id: string, newText: string) => void;
 }
 
-const MAX = 30;
-
-// ME FALTA PONER PARA QUE SE CAMBIE DE VERDAD
+const MAX = 200;
 
 const ComentarioItem: React.FC<ComentarioItemProps> = ({
 	comentario,
 	onDelete,
 	onUpdate,
 }) => {
+	const { token } = useAuth();
 	const translate = useSharedValue(0);
 	const [modalVisible, setModalVisible] = useState(false);
 	const [actionType, setActionType] = useState<"delete" | "update" | null>(
 		null
 	);
+	const isAdminUser = useAdmin(token);
 
 	const panGesture = Gesture.Pan()
 		.onUpdate((e) => {
 			translate.value = Math.max(-MAX, Math.min(e.translationX, MAX));
 		})
 		.onEnd(() => {
-			if (translate.value >= MAX / 2 && onUpdate) {
+			if (translate.value == MAX && onUpdate) {
 				setActionType("update");
 				setModalVisible(true);
-			} else if (translate.value <= -MAX / 2 && onDelete) {
+			} else if (translate.value == -MAX && onDelete) {
 				setActionType("delete");
 				setModalVisible(true);
 			}
@@ -50,13 +55,13 @@ const ComentarioItem: React.FC<ComentarioItemProps> = ({
 		backgroundColor: interpolateColor(
 			translate.value,
 			[-MAX, 0, MAX],
-			["#ffd3d3ff", "#fff", "#dfe7ffff"]
+			["#ffdfdfff", "#fff", "#eef2ffff"]
 		),
 	}));
 
-	const handleConfirm = () => {
+	const handleConfirm = (newText?: string) => {
 		if (actionType === "delete" && onDelete) onDelete(comentario.id);
-		if (actionType === "update" && onUpdate) onUpdate(comentario.id);
+		if (actionType === "update" && onUpdate && newText) onUpdate(comentario.id, newText);
 		setModalVisible(false);
 		setActionType(null);
 	};
@@ -67,12 +72,25 @@ const ComentarioItem: React.FC<ComentarioItemProps> = ({
 	};
 
 	return (
-		<>
+		<View>
 			<GestureDetector gesture={panGesture}>
 				<Animated.View style={[styles.commentItem, animatedStyle]}>
+					<View>
+						{isAdminUser && (
+							<View style={styles.adminBadge}>
+								<TouchableOpacity style={[styles.adminIcon, styles.editIcon]}>
+									<Ionicons name="warning" size={20} color="white" />
+								</TouchableOpacity>
+								<TouchableOpacity style={[styles.adminIcon, styles.deleteIcon]}>
+									<Ionicons name="trash-bin-sharp" size={20} color="white" />
+								</TouchableOpacity>
+							</View>
+						)}
+					</View>
 					<Text style={styles.commentUser}>
 						{comentario.autorNombre}
 					</Text>
+					
 					<Text style={styles.commentText}>{comentario.texto}</Text>
 					<Text style={styles.commentDate}>
 						{new Date(comentario.fecha).toLocaleString()}
@@ -80,45 +98,16 @@ const ComentarioItem: React.FC<ComentarioItemProps> = ({
 				</Animated.View>
 			</GestureDetector>
 
-			<Modal
-				visible={modalVisible}
-				transparent
-				animationType="fade"
-				onRequestClose={handleCancel}
-			>
-				<View style={styles.modalBackground}>
-					<View style={styles.modalContainer}>
-						<Text style={styles.modalTitle}>
-							{actionType === "delete"
-								? "¿Borrar comentario?"
-								: "¿Actualizar comentario?"}
-						</Text>
-						<View style={styles.modalButtons}>
-							<TouchableOpacity
-								style={[
-									styles.modalButton,
-									{ backgroundColor: "#FF4D4D" },
-								]}
-								onPress={handleConfirm}
-							>
-								<Text style={styles.modalButtonText}>Sí</Text>
-							</TouchableOpacity>
-							<TouchableOpacity
-								style={[
-									styles.modalButton,
-									{ backgroundColor: "#ccc" },
-								]}
-								onPress={handleCancel}
-							>
-								<Text style={styles.modalButtonText}>
-									Cancelar
-								</Text>
-							</TouchableOpacity>
-						</View>
-					</View>
-				</View>
-			</Modal>
-		</>
+			<ModalComment
+				title={
+					actionType === "delete" ? "Eliminar comentario" : "Editar comentario"
+				}
+				isVisible={modalVisible}
+				onSave={handleConfirm}
+				onClose={handleCancel}
+				initialText={comentario.texto}
+			/>
+		</View>
 	);
 };
 
@@ -180,6 +169,28 @@ const styles = StyleSheet.create({
 	modalButtonText: {
 		color: "#fff",
 		fontWeight: "600",
+	},
+	// Admin
+	adminBadge: {
+		position: "absolute",
+		right: 10,
+		flexDirection: "row",
+		borderRadius: 12,
+		overflow: "hidden",
+	},
+	adminIcon: {
+		width: 30,
+		height: 30,
+		justifyContent: "center",
+		alignItems: "center",
+		marginLeft: 5,
+		borderRadius: 8,
+	},
+	editIcon: {
+		backgroundColor: "#fbff00ff", // azul
+	},
+	deleteIcon: {
+		backgroundColor: "#ff4d4f", // rojo
 	},
 });
 

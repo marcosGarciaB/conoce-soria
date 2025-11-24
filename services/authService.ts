@@ -62,8 +62,8 @@ const getUserData = async (token: string): Promise<UserCredentials> => {
     }
 }
 
-const updateUserData = async (token: string, credentials: UpdateCredentials): Promise<UserCredentials>  => {
-try {
+const updateUserData = async (token: string, credentials: UpdateCredentials): Promise<UserCredentials> => {
+    try {
         const response = await apiClient.putWithToken<UserCredentials>('/api/auth/me', credentials, token);
         return response;
     } catch (error) {

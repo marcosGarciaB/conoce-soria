@@ -5,6 +5,7 @@ import { apiClient } from './apiClient';
 
 export interface ComentariosResponse {
     id:string;
+    autorId: string,
     autorNombre: string;
     texto:string;
     fecha:string;
@@ -32,8 +33,25 @@ const setComentario = async (experienciaId: string, comentario: ComentarioPost, 
     );
 };
 
+const updateComentario = async (experienciaId: string, comentarioId: string, comentario: ComentarioPost, token: string) => {
+    return apiClient.putWithToken<ComentariosResponse>(
+        `/api/experiencias/${experienciaId}/comentarios/${comentarioId}`,
+        comentario,
+        token
+    );
+};
+
+const deleteComentario = async (experienciaId: string, comentarioId: string, token: string) => {
+    await apiClient.deleteWithToken<ComentariosResponse>(
+        `/api/experiencias/${experienciaId}/comentarios/${comentarioId}`,
+        token
+    );
+};
+
 
 export const comentariosService = {
     getComentarios,
     setComentario,
+    updateComentario,
+    deleteComentario,
 };
