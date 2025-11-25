@@ -1,189 +1,220 @@
-import React, { useEffect, useState, useRef } from "react";
-import { 
-    View, Text, Animated, TouchableOpacity, Image, StyleSheet, ScrollView 
+import React, { useEffect, useState } from "react";
+import {
+    View, Text, TouchableOpacity, Image, StyleSheet, ScrollView
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../contexts/AuthContext";
-import { passportService, PasaporteDTO } from "../services/passportService";
+import { passportService } from "../services/passportService";
+import { authService } from "../services/authService";
 import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-
-
 
 const PassportScreen = () => {
+
     const { token } = useAuth();
     const navigation = useNavigation<any>();
-    const [pasaporte, setPasaporte] = useState<PasaporteDTO | null>(null);
 
-    const pointsAnim = useRef(new Animated.Value(0)).current;
-    console.log("TOKEN DESDE useAuth():", token);
+    const [registros, setRegistros] = useState<any[]>([]);
+    const [totalPuntos, setTotalPuntos] = useState(0);
+    const [ranking, setRanking] = useState<number | null>(null);
 
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const load = async () => {
+        const loadPassport = async () => {
             if (!token) return;
 
             try {
                 const data = await passportService.getPasaporte(token);
-                
-                console.log("TOKEN:", token);
+                const filtrado = data.registros.filter((r: any) => r.puntosOtorgados > 0);
 
+                setRegistros(filtrado);
+                setTotalPuntos(Number(data.puntosTotales ?? 0));
 
-                // 🔥 FILTRAMOS SOLO EXPERIENCIAS REGISTRADAS
-                const registrosFiltrados = data.registros.filter(r => r.puntosOtorgados > 0);
+                const user = await authService.getUserData(token);
+                const top = await authService.getRankingData();
 
-                setPasaporte({
-                    ...data,
-                    registros: registrosFiltrados
-                });
+                const pos = top.findIndex(
+                    (u: any) => u.nombre === user.nombre || u.email === user.email
+                );
 
-                Animated.timing(pointsAnim, {
-                    toValue: data.puntosTotales,
-                    duration: 800,
-                    useNativeDriver: false
-                }).start();
+                setRanking(pos >= 0 ? pos + 1 : null);
 
-            } catch (error) {
-                console.log("Error cargando pasaporte:", error);
+            } catch (err) {
+                console.log("Error cargando pasaporte:", err);
+            } finally {
+                setLoading(false);
             }
         };
 
-        load();
+        loadPassport();
     }, [token]);
 
-        useEffect(() => {
-            const check = async () => {
-                const stored = await AsyncStorage.getItem("authToken");
-                console.log("TOKEN STORAGE QUIERO VER MI LOG:", stored);
-                const { token } = useAuth();
-console.log("TOKEN DESDE CONTEXT:", token);
-
-            };
-            check();
-        }, []);
-
-
-
-    if (!pasaporte) {
-        return <Text style={{ padding: 20 }}>Cargando...</Text>;
-    }
+    if (loading) return <Text style={{ padding: 20 }}>Cargando...</Text>;
 
     return (
         <ScrollView style={styles.container}>
-            
-            <Text style={styles.title}>Tu Pasaporte</Text>
 
-            <View style={styles.pointsBox}>
-                <Text style={styles.pointsLabel}>Puntos totales</Text>
-                <Animated.Text style={styles.pointsValue}>
-                    {pointsAnim.interpolate({
-                        inputRange: [0, pasaporte.puntosTotales],
-                        outputRange: [0, pasaporte.puntosTotales]
-                    }).toString()}
-                </Animated.Text>
+            {/* BARRA SUPERIOR */}
+            <View style={styles.topBar}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Ionicons name="chevron-back" size={28} color="#777" />
+                </TouchableOpacity>
+
+                <Text style={styles.topBarTitle}>Pasaporte</Text>
+
+                <Ionicons name="location-outline" size={26} color="#777" />
             </View>
 
-            <Text style={styles.subtitle}>Tus experiencias completadas:</Text>
+            {/* TARJETA DE PUNTOS */}
+            <View style={styles.headerCard}>
+                <Text style={styles.pointsValue}>{totalPuntos}</Text>
 
-            {pasaporte.registros.map((reg, index) => (
-                <TouchableOpacity
-                    key={index}
-                    style={styles.card}
-                    onPress={() =>
-                        navigation.navigate("ExperienceDetailsScreen", {
-                            experienciaId: reg.experienciaId
-                        })
-                    }
-                >
-                    <Image 
-                        source={{ uri: "https://picsum.photos/200" }}
+                {ranking !== null && (
+                    <View style={styles.rankBadge}>
+                        <Text style={styles.rankText}>Puesto #{ranking}</Text>
+                    </View>
+                )}
+            </View>
+
+            {/* LISTA */}
+            <Text style={styles.sectionTitle}>Historial de experiencias</Text>
+
+            {registros.map((reg, index) => (
+                <View key={index} style={styles.card}>
+                    <Image
+                        source={{ uri: reg.imagen ?? "https://picsum.photos/200" }}
                         style={styles.cardImage}
                     />
 
                     <View style={{ flex: 1 }}>
                         <Text style={styles.cardTitle}>{reg.titulo}</Text>
-                        <Text style={styles.cardCategory}>{reg.categoria}</Text>
                         <Text style={styles.cardDate}>
-                            {new Date(reg.fechaRegistro).toLocaleDateString()}
+                            {new Date(reg.fechaRegistro).toLocaleDateString("es-ES")}
                         </Text>
                     </View>
 
-                    <View style={styles.pointsBadge}>
+                    <View style={styles.pointsBadgeItem}>
                         <Text style={styles.pointsAmount}>+{reg.puntosOtorgados}</Text>
                     </View>
-                </TouchableOpacity>
+                </View>
             ))}
-
         </ScrollView>
     );
 };
 
-
-
 export default PassportScreen;
 
+
+// ------------------------------------------
+// ESTILOS
+// ------------------------------------------
 const styles = StyleSheet.create({
     container: {
         padding: 16,
         backgroundColor: "#faf7f2"
     },
-    title: {
-        fontSize: 28,
-        fontWeight: "bold",
-        marginBottom: 20
-    },
-    pointsBox: {
+
+    topBar: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
         backgroundColor: "white",
-        padding: 20,
-        borderRadius: 20,
-        marginBottom: 25
+        padding: 15,
+        borderRadius: 30,
+        marginBottom: 20,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.15,
+        shadowRadius: 4,
+        elevation: 5,
     },
-    pointsLabel: {
-        fontSize: 16,
-        opacity: 0.7
-    },
-    pointsValue: {
-        fontSize: 40,
-        fontWeight: "900",
-        marginTop: 4
-    },
-    subtitle: {
+
+    topBarTitle: {
         fontSize: 18,
-        marginBottom: 10,
+        fontWeight: "bold",
+        color: "#FF6B00",
+    },
+
+    headerCard: {
+        backgroundColor: "white",
+        padding: 22,
+        borderRadius: 20,
+        marginBottom: 30,
+        alignItems: "flex-start",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.10,
+        shadowRadius: 4,
+        elevation: 3
+    },
+
+    pointsValue: {
+        fontSize: 42,
+        fontWeight: "900",
+        color: "#000"
+    },
+
+    rankBadge: {
+        marginTop: 12,
+        backgroundColor: "#5fbf66",
+        paddingVertical: 6,
+        paddingHorizontal: 14,
+        borderRadius: 10
+    },
+
+    rankText: {
+        color: "white",
+        fontSize: 14,
         fontWeight: "bold"
     },
+
+    sectionTitle: {
+        fontSize: 20,
+        fontWeight: "bold",
+        marginBottom: 14
+    },
+
     card: {
         flexDirection: "row",
+        alignItems: "center",
         backgroundColor: "white",
-        padding: 12,
+        padding: 14,
         borderRadius: 15,
         marginBottom: 12,
-        alignItems: "center"
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.08,
+        shadowRadius: 3,
+        elevation: 2
     },
+
     cardImage: {
         width: 60,
         height: 60,
         borderRadius: 12,
         marginRight: 12,
-        backgroundColor: "#ddd"
+        backgroundColor: "#eee"
     },
+
     cardTitle: {
         fontSize: 16,
-        fontWeight: "600"
+        fontWeight: "600",
+        color: "#333"
     },
-    cardCategory: {
-        fontSize: 14,
-        opacity: 0.7
-    },
+
     cardDate: {
         fontSize: 13,
-        opacity: 0.5
+        color: "#999",
+        marginTop: 2
     },
-    pointsBadge: {
-        backgroundColor: "#f0f0f0",
-        paddingHorizontal: 12,
+
+    pointsBadgeItem: {
+        backgroundColor: "#eef0f1",
         paddingVertical: 6,
+        paddingHorizontal: 14,
         borderRadius: 10
     },
+
     pointsAmount: {
         fontSize: 14,
         fontWeight: "bold"

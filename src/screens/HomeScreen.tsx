@@ -12,19 +12,16 @@ import { authService } from "../services/authService";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
-
 const { width } = Dimensions.get('window');
 
-const InicioScreen = ({ navigation }: { navigation: any }) => {
+const HomeScreen = ({ navigation }: { navigation: any }) => {
 
     const { status, logout, token } = useAuth();
     const isLogged = status === "authenticated";
 
-    // MINI EXPERIENCIAS DEL PASAPORTE
     const [passportPreview, setPassportPreview] = useState<any[]>([]);
     const [loadingPassport, setLoadingPassport] = useState(true);
 
-    // NUEVOS ESTADOS
     const [passportPoints, setPassportPoints] = useState(0);
     const [passportRank, setPassportRank] = useState<number | null>(null);
 
@@ -32,9 +29,7 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
 
     const placeholderImg = "https://picsum.photos/400";
 
-    // ---------------------------------------------------------------
-    // CARGAR EXPERIENCIAS
-    // ---------------------------------------------------------------
+    // Cargar experiencias generales
     useEffect(() => {
         const loadExperiencias = async () => {
             try {
@@ -47,9 +42,7 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
         loadExperiencias();
     }, []);
 
-    // ---------------------------------------------------------------
-    // CARGAR MINI PASAPORTE
-    // ---------------------------------------------------------------
+    // Cargar mini pasaporte
     useEffect(() => {
         const loadPassport = async () => {
             if (!isLogged || !token) return;
@@ -69,9 +62,7 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
         loadPassport();
     }, [isLogged, token]);
 
-    // ---------------------------------------------------------------
-    // CARGAR PUNTOS DEL USUARIO
-    // ---------------------------------------------------------------
+    // Cargar puntos del usuario
     useEffect(() => {
         const loadPoints = async () => {
             if (!isLogged || !token) return;
@@ -79,8 +70,6 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
             try {
                 const user = await authService.getUserData(token);
                 setPassportPoints(Number(user.puntos));
-
-
             } catch (error) {
                 console.log("Error cargando puntos usuario:", error);
             }
@@ -89,36 +78,30 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
         loadPoints();
     }, [isLogged, token]);
 
-    // ---------------------------------------------------------------
-    // CARGAR RANKING DEL USUARIO
-    // ---------------------------------------------------------------
+    // Cargar ranking del usuario usando /api/top
     useEffect(() => {
-    const loadRanking = async () => {
-        if (!isLogged || !token) return;
+        const loadRanking = async () => {
+            if (!isLogged || !token) return;
 
-        try {
-            // 1. obtener usuario logueado
-            const user = await authService.getUserData(token);
+            try {
+                const user = await authService.getUserData(token);
 
-            // 2. obtener lista del top
-            const top = await authService.getRankingData(); // /api/top
+                const top = await authService.getRankingData();
 
-            // 3. buscar posición
-            const pos = top.findIndex(u => u.nombre === user.nombre);
+                const pos = top.findIndex((u: any) =>
+                    u.nombre === user.nombre || u.email === user.email
+                );
 
-            setPassportRank(pos >= 0 ? pos + 1 : null);
+                setPassportRank(pos >= 0 ? pos + 1 : null);
 
-        } catch (error) {
-            console.log("Error cargando ranking:", error);
-        }
-    };
+            } catch (error) {
+                console.log("Error cargando ranking:", error);
+            }
+        };
 
-    loadRanking();
-}, [isLogged, token]);
+        loadRanking();
+    }, [isLogged, token]);
 
-    // ---------------------------------------------------------------
-    // RENDER ITEM DEL CARRUSEL
-    // ---------------------------------------------------------------
     const renderItem = ({ item }: { item: ExperienciasResponse }) => (
         <View style={styles.card}>
             <Image source={{ uri: placeholderImg }} style={styles.image} />
@@ -126,9 +109,6 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
         </View>
     );
 
-    // ---------------------------------------------------------------
-    // UI
-    // ---------------------------------------------------------------
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.headerPanel}>
@@ -149,13 +129,11 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
 
             <ScrollView contentContainerStyle={styles.scrollContent}>
 
-                {/* TITULOS */}
                 <View>
                     <Text style={styles.subtitle}>Descubre Soria a tu ritmo</Text>
                     <Text style={styles.contentTitle}>Naturaleza, cultura y sabores locales</Text>
                 </View>
 
-                {/* CARRUSEL */}
                 <View style={styles.carouselContainer}>
                     <FlatList
                         data={experiencias}
@@ -170,7 +148,6 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
                     />
                 </View>
 
-                {/* TARJETA DEL PASAPORTE */}
                 {isLogged && (
                     <TouchableOpacity
                         style={styles.passportCard}
@@ -197,17 +174,15 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
                                         source={{ uri: item.imagen ?? placeholderImg }}
                                         style={styles.miniImage}
                                     />
-                                    <Text style={styles.miniName}>{item.titulo}</Text>
+                                    <Text style={styles.miniName} numberOfLines={2}>{item.titulo}</Text>
                                 </View>
                             ))}
                         </ScrollView>
-
 
                         <Text style={styles.passportMore}>ver más…</Text>
                     </TouchableOpacity>
                 )}
 
-                {/* Ranking si no está logueado */}
                 {!isLogged && (
                     <View>
                         <Text style={styles.subtitle}>
@@ -221,29 +196,21 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
     );
 };
 
-
-// ---------------------------------------------------------------
-// ESTILOS
-// ---------------------------------------------------------------
 const styles = StyleSheet.create({
-
     container: {
         flex: 1,
         backgroundColor: '#fff8f8ff',
         padding: 20
     },
-
     carouselContainer: {
         width: '100%',
         marginTop: 30
     },
-
     scrollContent: {
         paddingHorizontal: 20,
         paddingTop: 20,
         alignItems: 'center'
     },
-
     headerPanel: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -254,31 +221,26 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         elevation: 5
     },
-
     title: {
         fontSize: 24,
         fontWeight: 'bold',
         color: '#FF6B00'
     },
-
     subtitle: {
         fontSize: 24,
         fontWeight: 'bold',
         color: 'black',
         marginLeft: 20
     },
-
     contentTitle: {
         fontSize: 18,
         color: 'grey',
         fontWeight: 'bold',
         marginLeft: 20
     },
-
     smallButton: {
         padding: 10
     },
-
     card: {
         width: width * 0.7,
         borderRadius: 15,
@@ -287,20 +249,16 @@ const styles = StyleSheet.create({
         margin: 10,
         elevation: 2
     },
-
     image: {
         width: '100%',
         height: 180
     },
-
     cardTitle: {
         padding: 10,
         fontSize: 16,
         fontWeight: 'bold',
         textAlign: 'center'
     },
-
-    // TARJETA PASAPORTE
     passportCard: {
         width: "90%",
         backgroundColor: "white",
@@ -313,44 +271,36 @@ const styles = StyleSheet.create({
         shadowRadius: 6,
         elevation: 5
     },
-
     passportTitle: {
         fontSize: 18,
         fontWeight: "bold",
         color: "#FF6B00"
     },
-
     passportHeaderRow: {
         flexDirection: "row",
         justifyContent: "space-between",
         marginTop: 10
     },
-
     passportPoints: {
         fontSize: 15,
         fontWeight: "900",
         color: "black"
     },
-
     passportRanking: {
         fontSize: 16,
         color: "#777",
         alignSelf: "center"
     },
-
     passportMiniRow: {
-    flexDirection: "row",
-    paddingVertical: 10
+        flexDirection: "row",
+        paddingVertical: 10
     },
-
     miniImage: {
-    width: 55,
-    height: 55,
-    borderRadius: 30,
-    marginBottom: 4
+        width: 55,
+        height: 55,
+        borderRadius: 30,
+        marginBottom: 4
     },
-    
-
     passportMore: {
         fontSize: 16,
         marginTop: 8,
@@ -358,26 +308,16 @@ const styles = StyleSheet.create({
         fontStyle: "italic"
     },
     miniName: {
-    fontSize: 12,
-    textAlign: "center",
-    color: "#555"
+        fontSize: 12,
+        textAlign: "center",
+        color: "#555",
+        width: 70
     },
-
     miniItem: {
-    alignItems: "center",
-    marginRight: 12,
-    width: 70
-},
-
-
-miniText: {
-    fontSize: 10,
-    textAlign: "center",
-    marginTop: 4,
-    color: "black"
-},
-
-
+        alignItems: "center",
+        marginRight: 12,
+        width: 70
+    },
 });
 
-export default InicioScreen;
+export default HomeScreen;

@@ -10,11 +10,13 @@ import { View } from "react-native";
 import InicioScreen from "../screens/HomeScreen";
 import SearchScreen from "../screens/SeekerScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import PassportScreen from "../screens/PassportScreen";
 
 type BottomTabParamList = {
     Inicio: undefined;
     Buscador: undefined;
     Profile: undefined;
+    PassportScreen: undefined;   // ⭐ AÑADIDO — NECESARIO PARA NAVEGAR
 };
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
@@ -67,6 +69,7 @@ export const BottomTabs = () => {
                 },
             })}
         >
+
             <Tab.Screen name="Inicio" component={InicioScreen} />
             <Tab.Screen name="Buscador" component={SearchScreen} />
             <Tab.Screen name="Profile" component={ProfileScreen} />

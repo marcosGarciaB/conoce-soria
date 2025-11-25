@@ -7,6 +7,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import DetailsScreen from "../screens/ExperiencesDetailsScreen";
 import { ExperienciasResponse } from "../services/experienceService";
 import { BottomTabs } from "./BottomTabs";
+import PassportScreen from "../screens/PassportScreen";
+
 
 
 export type AuthStackParamList = {
@@ -17,6 +19,7 @@ export type AuthStackParamList = {
     MainTabs: undefined;
     Details: { experiencia: ExperienciasResponse };
     Profile: undefined;
+    PassportScreen: undefined;
 };
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
@@ -26,7 +29,7 @@ export const AuthNavigator = () => {
         <Stack.Navigator initialRouteName="MainTabs" screenOptions={{ headerShown: false }}>
             <Stack.Screen name="MainTabs" component={BottomTabs} />
             <Stack.Screen name="Details" component={DetailsScreen} />
+            <Stack.Screen name="PassportScreen" component={PassportScreen} />
         </Stack.Navigator>
     );
 };
-
