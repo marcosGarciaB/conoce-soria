@@ -1,7 +1,11 @@
 import Header from "@/components/common/HeaderItem";
-import MapComponent from "@/components/seeker/MapComponent";
-import React, { useEffect, useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { usePaginatedFetch } from "@/hooks/usePaginatedFetch";
+import { experienciaService, ExperienciasResponse, } from "@/services/experienceService";
+
+import React, { useEffect } from "react";
 import {
+	ActivityIndicator,
 	Dimensions,
 	FlatList,
 	Image,
@@ -11,11 +15,6 @@ import {
 	View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useAuth } from "../contexts/AuthContext";
-import {
-	experienciaService,
-	ExperienciasResponse,
-} from "../services/experienceService";
 
 const { width } = Dimensions.get("window");
 
@@ -23,20 +22,14 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
 	const { status, logout } = useAuth();
 	const url =
 		"https://r-charts.com/es/miscelanea/procesamiento-imagenes-magick_files/figure-html/recortar-bordes-imagen-r.png";
-	const [experiencias, setExperiencias] = useState<ExperienciasResponse[]>(
-		[]
-	);
+
+	const { data: experiencias, loadData: loadExperiencias, loading, hasMore } = usePaginatedFetch<ExperienciasResponse>({
+		fetchFunction: experienciaService.getExperiencias,
+		pageSize: 5,
+	});
 
 	useEffect(() => {
-		const loadExperiencias = async () => {
-			try {
-				const data = await experienciaService.getExperiencias();
-				setExperiencias(data);
-			} catch (error) {
-				console.error("Error cargando experiencias:", error);
-			}
-		};
-		loadExperiencias();
+		loadExperiencias(true);
 	}, []);
 
 	const renderItem = ({ item }: { item: ExperienciasResponse }) => (
@@ -49,7 +42,7 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
 	return (
 		<SafeAreaView style={styles.container}>
 			{status === "authenticated" ? (
-				<Header title="Conoce Soria" icon="exit-outline" />
+				<Header title="Conoce Soria" icon="home-outline" isSecondIcon={true} icon2="exit-outline" onPress={logout} />
 			) : (
 				<Header title="Conoce Soria" icon="person-circle" />
 			)}
@@ -78,12 +71,19 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
 						decelerationRate="fast"
 						snapToInterval={width * 0.8 + 30}
 						contentContainerStyle={{ paddingHorizontal: 10 }}
+						onEndReached={() => loadExperiencias()}
+						onEndReachedThreshold={0.5}
+						ListFooterComponent={
+							loading
+								? <ActivityIndicator size="large" color="#333" style={{ margin: 20 }} />
+								: null
+						}
 					/>
 				</View>
 
-				<View style={styles.mapContainer}>
+				{/* <View style={styles.mapContainer}>
 					<MapComponent />
-				</View>
+				</View> */}
 			</ScrollView>
 		</SafeAreaView>
 	);

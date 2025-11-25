@@ -1,23 +1,20 @@
 import Header from "@/components/common/HeaderItem";
+import ExperienceCard from "@/components/seeker/ExperienceCard";
 import Filters from "@/components/seeker/FilterDropdown";
 import { useAuth } from "@/contexts/AuthContext";
-import { useAdmin } from "@/hooks/useAdmin";
+import { experienciaService, ExperienciasResponse } from "@/services/experienceService";
+
+import { usePaginatedFetch } from "@/hooks/usePaginatedFetch";
+import debounce from "lodash.debounce";
+import React, { useCallback, useEffect, useState } from "react";
 import {
-	experienciaService,
-	ExperienciasResponse,
-} from "@/services/experienceService";
-import React, { useEffect, useState } from "react";
-import {
+	ActivityIndicator,
 	Dimensions,
 	FlatList,
-	Image,
 	LayoutAnimation,
 	Platform,
 	StyleSheet,
-	Text,
-	TouchableOpacity,
-	UIManager,
-	View,
+	UIManager
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -25,203 +22,99 @@ const { width } = Dimensions.get("window");
 const categories = ["RESTAURANTE", "MUSEO", "AIRE_LIBRE", "MONUMENTO"];
 
 if (Platform.OS === "android") {
-	UIManager.setLayoutAnimationEnabledExperimental?.(true);
+    UIManager.setLayoutAnimationEnabledExperimental?.(true);
 }
 
 const SearchScreen = ({ navigation }: { navigation: any }) => {
-	const { status, token } = useAuth();
-	const isLogged = status === "authenticated";
-	const isAdminUser = useAdmin(token);
+    const { status } = useAuth();
+    const isLogged = status === "authenticated";
 
-	// Resto
-	const url =
-		"https://r-charts.com/es/miscelanea/procesamiento-imagenes-magick_files/figure-html/recortar-bordes-imagen-r.png";
-	const [experiencias, setExperiencias] = useState<ExperienciasResponse[]>(
-		[]
-	);
-	const [searchText, setSearchText] = useState("");
-	const [selectedCat, setSelectedCat] = useState<string | null>(null);
-	const [all, setAll] = useState<ExperienciasResponse[]>([]);
+    const { data: experiencias, loadData: loadExperiencias, loading, hasMore } = usePaginatedFetch<ExperienciasResponse>({
+        fetchFunction: experienciaService.getExperiencias,
+        pageSize: 10,
+    });
 
-	useEffect(() => {
-		const loadExperiencias = async () => {
-			try {
-				const data = await experienciaService.getExperiencias();
-				setExperiencias(data);
-				setAll(data);
-			} catch (error) {
-				console.error("Error cargando experiencias:", error);
-			}
-		};
-		loadExperiencias();
-	}, []);
+    // Filtros locales
+    const [searchText, setSearchText] = useState("");
+    const [selectedCat, setSelectedCat] = useState<string | null>(null);
+    const [filteredExperiencias, setFilteredExperiencias] = useState<ExperienciasResponse[]>([]);
 
-	const handlePressExperiencia = (experiencia: ExperienciasResponse) => {
-		if (isLogged) {
-			navigation.navigate("Details", { experiencia });
-		} else {
-			navigation.navigate("Login");
-		}
-	};
+    useEffect(() => {
+        setFilteredExperiencias(experiencias);
+    }, [experiencias]);
 
-	// FiLtrar
-	const buttonFilter = (categoria: string) => {
-		const newSelected = selectedCat === categoria ? null : categoria;
-		setSelectedCat(newSelected);
+    const handlePressExperiencia = (experiencia: ExperienciasResponse) => {
+        navigation.navigate(isLogged ? "Details" : "Login", { experiencia });
+    };
 
-		LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+	const applyFilters = (texto: string, category: string | null) => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        const filtered = experiencias.filter(exp => {
+            const matchCat = category ? exp.categoria.toUpperCase() === category.toUpperCase() : true;
+            const matchText = exp.titulo.toLowerCase().includes(texto.toLowerCase());
+            return matchCat && matchText;
+        });
+        setFilteredExperiencias(filtered);
+    };
 
-		const filtered = all.filter((exp) => {
-			const matchCat = newSelected
-				? exp.categoria.toUpperCase() === newSelected.toUpperCase()
-				: true;
-			const matchText = exp.titulo
-				.toLowerCase()
-				.includes(searchText.toLowerCase());
-			return matchCat && matchText;
-		});
-		setExperiencias(filtered);
-	};
+    const debouncedApplyFilters = useCallback(
+        debounce((texto: string, category: string | null) => applyFilters(texto, category), 300),
+        [experiencias]
+    );
 
-	const wordsFilter = (texto: string) => {
-		setSearchText(texto);
+    const wordsFilter = (texto: string) => {
+        setSearchText(texto);
+        debouncedApplyFilters(texto, selectedCat);
+    };
 
-		LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    const buttonFilter = (categoria: string) => {
+        const newSelected = selectedCat === categoria ? null : categoria;
+        setSelectedCat(newSelected);
+        applyFilters(searchText, newSelected);
+    };
 
-		const filter = all.filter((exp) => {
-			const matchCat = selectedCat
-				? exp.categoria.toUpperCase() === selectedCat.toUpperCase()
-				: true;
-			return (
-				matchCat &&
-				exp.titulo.toLowerCase().includes(texto.toLowerCase())
-			);
-		});
-		setExperiencias(filter);
-	};
+    const renderItem = ({ item }: { item: ExperienciasResponse }) => (
+        <ExperienceCard experiencia={item} onPress={handlePressExperiencia} />
+    );
 
-	// Cargar fotos
-	const renderItem = ({ item }: { item: ExperienciasResponse }) => (
-		<TouchableOpacity
-			activeOpacity={0.8}
-			style={styles.card}
-			onPress={() => handlePressExperiencia(item)}
-		>
-			<Image source={{ uri: url }} style={styles.image} />
-			<View style={styles.categoryBadge}>
-				<Text style={styles.categoryText}>
-					{item.categoria
-						.replace("_", " ")
-						.toLowerCase()
-						.replace(/\b\w/g, (l) => l.toUpperCase())}
-				</Text>
-			</View>
-			<Text style={styles.cardTitle}>{item.titulo}</Text>
-		</TouchableOpacity>
-	);
+    return (
+        <SafeAreaView style={styles.container}>
+            <Header title="Explorar" icon="search-sharp" />
 
-	return (
-		<SafeAreaView style={styles.container}>
-			<Header title="Explorar" icon="search-sharp" />
-
-			<FlatList
-				data={experiencias}
-				keyExtractor={(item) => item.id.toString()}
-				renderItem={renderItem}
-				showsVerticalScrollIndicator={false}
-				numColumns={width > 600 ? 2 : 1}
-				columnWrapperStyle={
-					width > 600
-						? { justifyContent: "space-between" }
-						: undefined
-				}
-				contentContainerStyle={{ paddingBottom: 40 }}
-				ListHeaderComponent={
-					<Filters
-						searchText={searchText}
-						setSearchText={setSearchText}
-						selectedCat={selectedCat}
-						setSelectedCat={setSelectedCat}
-						categories={categories}
-						onFilterByText={wordsFilter}
-						onFilterByCategory={buttonFilter}
-					/>
-				}
-			/>
-		</SafeAreaView>
-	);
+            <FlatList
+                data={filteredExperiencias}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={renderItem}
+                showsVerticalScrollIndicator={false}
+                numColumns={width > 600 ? 2 : 1}
+                columnWrapperStyle={width > 600 ? { justifyContent: "space-between" } : undefined}
+                contentContainerStyle={{ paddingBottom: 40, paddingHorizontal: 5 }}
+                ListHeaderComponent={
+                    <Filters
+                        searchText={searchText}
+                        setSearchText={setSearchText}
+                        selectedCat={selectedCat}
+                        setSelectedCat={setSelectedCat}
+                        categories={categories}
+                        onFilterByText={wordsFilter}
+                        onFilterByCategory={buttonFilter}
+                    />
+                }
+                onEndReached={() => loadExperiencias()}
+                onEndReachedThreshold={0.5}
+                ListFooterComponent={
+                    loading ? <ActivityIndicator size="large" color="#333" style={{ margin: 20 }} /> : null
+                }
+            />
+        </SafeAreaView>
+    );
 };
 
 const styles = StyleSheet.create({
-	// Generales
-	container: {
-		flex: 1,
-		backgroundColor: "#FAFAFA",
-		padding: 5,
-		paddingBottom: "30%",
-	},
-	// Card
-	card: {
-		flex: 1,
-		margin: 10,
-		borderRadius: 15,
-		overflow: "hidden",
-		backgroundColor: "white",
-		shadowColor: "#000",
-		shadowOffset: { width: 0, height: 4 },
-		shadowOpacity: 0.15,
-		shadowRadius: 5,
-		elevation: 4,
-	},
-	image: {
-		width: "100%",
-		height: 180,
-		resizeMode: "cover",
-	},
-	categoryBadge: {
-		position: "absolute",
-		top: 10,
-		left: 10,
-		backgroundColor: "white",
-		paddingHorizontal: 10,
-		paddingVertical: 5,
-		borderRadius: 12,
-	},
-	categoryText: {
-		color: "black",
-		fontWeight: "bold",
-		fontSize: 12,
-	},
-	cardTitle: {
-		padding: 10,
-		fontSize: 16,
-		fontWeight: "bold",
-		color: "#333",
-		textAlign: "center",
-	},
-	// Admin
-	adminBadge: {
-		position: "absolute",
-		top: 10,
-		right: 10,
-		flexDirection: "row",
-		borderRadius: 12,
-		overflow: "hidden",
-	},
-	adminIcon: {
-		width: 35,
-		height: 35,
-		justifyContent: "center",
-		alignItems: "center",
-		marginLeft: 5,
-		borderRadius: 8,
-	},
-	editIcon: {
-		backgroundColor: "#007bff", // azul
-	},
-	deleteIcon: {
-		backgroundColor: "#ff4d4f", // rojo
-	},
+    container: {
+        flex: 1,
+        backgroundColor: "#FAFAFA",
+    },
 });
 
 export default SearchScreen;

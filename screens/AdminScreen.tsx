@@ -2,6 +2,7 @@ import AddButton from "@/components/admin/AddButton";
 import CategoryItem from "@/components/admin/CategoryItem";
 import Buttom from "@/components/admin/ManageButton";
 import UserItem from "@/components/admin/UserItem";
+import Header from "@/components/common/HeaderItem";
 import { useAuth } from "@/contexts/AuthContext";
 import { adminService, UserCredentials } from "@/services/adminService";
 import {
@@ -9,7 +10,6 @@ import {
 	experienciaService,
 } from "@/services/experienceService";
 
-import Header from "@/components/common/HeaderItem";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -50,17 +50,31 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 			}
 		};
 
-		loadUsers();
-		loadExperiencias();
-	}, []);
+		//loadUsers();
+		//loadExperiencias();
+	}, [users, experiencias]);
 
-	const handleToggleExperiencias = () => {
-		setShowExperiencias(!showExperiencias);
-	};
-
-	const handleToggleUsers = () => {
-		setShowUsers(!showUsers);
-	};
+	const handleToggleExperiencias = () => setShowExperiencias(!showExperiencias);
+	const handleToggleUsers = () =>  setShowUsers(!showUsers);
+	
+	const handleDeleteUser = async (email: string) => {
+		try {
+			await adminService.deleteUser(
+				email,
+				token!
+			);
+			setUsers((preview) =>
+				preview.filter(
+					(user) => user.email !== email
+				)
+			);
+		} catch (error) {
+			console.error(
+				"Error eliminando usuario",
+				error
+			);
+		}
+	}
 
 	return (
 		<SafeAreaView style={styles.container}>
@@ -77,7 +91,6 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 						onPress={handleToggleUsers}
 						isActive={showUsers}
 					/>
-
 					<Buttom
 						title="Gestionar experiencias"
 						onPress={handleToggleExperiencias}
@@ -89,9 +102,8 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 					<>
 						<AddButton
 							title="Añadir experiencia"
-							onPress={() => navigation.navigate("AddUser")}
+							onPress={() => navigation.navigate("AddExperience")}
 						/>
-
 						<CategoryItem experiencias={experiencias} />
 					</>
 				)}
@@ -100,29 +112,12 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 					<>
 						<AddButton
 							title="Añadir usuario"
-							onPress={() => navigation.navigate("AddUser")}
+							onPress={() => navigation.navigate("ManageUser")}
 						/>
 						<UserItem
 							users={users}
-							token={token!}
-							onDelete={async (email) => {
-								try {
-									await adminService.deleteUser(
-										email,
-										token!
-									);
-									setUsers((preview) =>
-										preview.filter(
-											(user) => user.email !== email
-										)
-									);
-								} catch (error) {
-									console.error(
-										"Error eliminando usuario",
-										error
-									);
-								}
-							}}
+							onDelete={handleDeleteUser}
+							onEdit={(user) => navigation.navigate("ManageUser", { user })}
 						/>
 					</>
 				)}

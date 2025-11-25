@@ -19,6 +19,13 @@ export interface UpdateCredentials {
     password?: string;
 }
 
+export interface NewUser {
+    nombre: string;
+    email: string;
+    password: string;
+    role: string;
+}
+
 const getUserData = async (token: string): Promise<UserCredentials> => {
     try {
         const response = await apiClient.getWithToken<UserCredentials>('/api/auth/me', token);
@@ -52,6 +59,14 @@ const updateUser = async (email: string, data: UpdateCredentials, token: string)
     }
 }
 
+const createUser = async (data: NewUser, token: string): Promise<UserCredentials> => {
+    try {
+        return await apiClient.postWithToken<UserCredentials>(`/api/users`, data, token);
+    } catch (error) {
+        throw error;
+    }
+}
+
 const deleteUser = async (email: string, token: string): Promise<void> => {
     try {
         await apiClient.deleteWithToken(`/api/users/${email}`, token);
@@ -71,6 +86,7 @@ const isAdmin = async (token: string): Promise<boolean> => {
 
 export const adminService = {
     getAllUsers,
+    createUser,
     updateUser,
     deleteUser,
     getUserByEmail,

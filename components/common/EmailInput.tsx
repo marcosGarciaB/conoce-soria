@@ -21,31 +21,11 @@ const EmailInput: React.FC<EmailInputProps> = ({ control, errors }) => {
 			Vibration.vibrate(500);
 
 			Animated.sequence([
-				Animated.timing(shakeAnim, {
-					toValue: 5, // Mover a la derecha
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: -5, // Mover a la izquierda
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: 5, // Mover a la derecha
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: -5, // Mover a la izquierda
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: 0, // Posición inicial
-					duration: 100,
-					useNativeDriver: true,
-				}),
+				Animated.timing(shakeAnim, { toValue: 5, duration: 100, useNativeDriver: true }),
+				Animated.timing(shakeAnim, { toValue: -5, duration: 100, useNativeDriver: true }),
+				Animated.timing(shakeAnim, { toValue: 5, duration: 100, useNativeDriver: true }),
+				Animated.timing(shakeAnim, { toValue: -5, duration: 100, useNativeDriver: true }),
+				Animated.timing(shakeAnim, { toValue: 0, duration: 100, useNativeDriver: true }),
 			]).start();
 
 			Toast.show({

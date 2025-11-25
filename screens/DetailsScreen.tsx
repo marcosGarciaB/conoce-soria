@@ -1,34 +1,33 @@
 import Header from "@/components/common/HeaderItem";
+import AddComment from "@/components/detail/AddComment";
+import ComentarioItem from "@/components/detail/CommentItem";
+import ExperienceDetail from "@/components/detail/ExperienceInfo";
+import { useAuth } from "@/contexts/AuthContext";
+import { RootStackParamList } from "@/navigation/AppNavigator";
+import {
+	ComentariosResponse,
+	comentariosService,
+} from "@/services/commentService";
+import {
+	ExperienciaDetailResponse,
+	experienciaService,
+} from "@/services/experienceService";
+
 import { Ionicons } from "@expo/vector-icons";
 import { RouteProp } from "@react-navigation/native";
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
-	Image,
 	Platform,
 	ScrollView,
 	StyleSheet,
 	Text,
 	TouchableOpacity,
 	UIManager,
-	View,
+	View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import AddComment from "../components/detail/AddComment";
-import ComentarioItem from "../components/detail/CommentItem";
-import { useAuth } from "../contexts/AuthContext";
-import { RootStackParamList } from "../navigation/AppNavigator";
-import {
-	ComentariosResponse,
-	comentariosService,
-} from "../services/commentService";
-import {
-	ExperienciaDetailResponse,
-	experienciaService,
-} from "../services/experienceService";
 
-const url =
-	"https://r-charts.com/es/miscelanea/procesamiento-imagenes-magick_files/figure-html/recortar-bordes-imagen-r.png";
 
 if (Platform.OS === "android") {
 	UIManager.setLayoutAnimationEnabledExperimental?.(true);
@@ -164,36 +163,11 @@ const DetailsScreen = ({
 
 	return (
 		<SafeAreaView style={styles.container}>
-			<Header
-				title={detalle.titulo}
-				icon="search-sharp"
-				isSecondIcon={true}
-				icon2="chevron-back-circle"
-				onPress={() => navigation.goBack()}
-			/>
+			<Header title={detalle.titulo} icon="search-sharp" isSecondIcon={true} icon2="chevron-back-circle" onPress={() => navigation.goBack()}/>
 
 			<ScrollView ref={flatListRef} showsVerticalScrollIndicator={true}>
-				<Image source={{ uri: url }} style={styles.galleryImage} />
-
-				<View style={styles.sectionTitleRow}>
-					<Ionicons name="images" size={20} color="grey" />
-					<Text style={styles.sectionTitle}>Galería</Text>
-				</View>
-
-				<View style={styles.aboutSection}>
-					<View style={styles.aboutTitleRow}>
-						<Ionicons name="book-outline" size={20} color="grey" />
-						<Text style={styles.sectionTitle}>
-							Sobre esta experiencia
-						</Text>
-					</View>
-					<Text style={styles.aboutText}>{detalle.descripcion}</Text>
-				</View>
-
-				<View style={styles.commentsTitleRow}>
-					<Ionicons name="chatbox-outline" size={20} color="grey" />
-					<Text style={styles.commentsTitle}>Comentarios</Text>
-				</View>
+				
+				<ExperienceDetail detail={detalle} />
 
 				<View>
 					{comentarios.map((comentario) => (
@@ -238,56 +212,6 @@ const styles = StyleSheet.create({
 		backgroundColor: "#FAFAFA",
 		padding: 5,
 	},
-	sectionTitleRow: {
-		flexDirection: "row",
-		alignItems: "center",
-		marginTop: 20,
-	},
-	sectionTitle: {
-		fontSize: 20,
-		fontWeight: "600",
-		color: "#333",
-		marginLeft: 15,
-	},
-	galleryImage: {
-		width: "100%",
-		height: 200,
-		borderRadius: 15,
-		marginTop: 10,
-	},
-	aboutSection: {
-		backgroundColor: "#fff",
-		padding: 15,
-		borderRadius: 15,
-		marginTop: 20,
-		shadowColor: "#000",
-		shadowOpacity: 0.05,
-		shadowOffset: { width: 0, height: 3 },
-		shadowRadius: 6,
-		elevation: 2,
-	},
-	aboutTitleRow: {
-		flexDirection: "row",
-		alignItems: "center",
-	},
-	aboutText: {
-		fontSize: 15,
-		color: "#555",
-		lineHeight: 22,
-		marginTop: 5,
-	},
-	commentsTitleRow: {
-		flexDirection: "row",
-		alignItems: "center",
-		marginTop: 10,
-		marginBottom: 5,
-	},
-	commentsTitle: {
-		fontSize: 18,
-		fontWeight: "600",
-		color: "#333",
-		marginLeft: 10,
-	},
 	inputButton: {
 		flexDirection: "row",
 		alignItems: "center",
@@ -300,29 +224,6 @@ const styles = StyleSheet.create({
 		fontSize: 19,
 		color: "white",
 		fontWeight: "bold",
-	},
-	// Admin
-	adminBadge: {
-		position: "absolute",
-		top: 10,
-		right: 10,
-		flexDirection: "row",
-		borderRadius: 12,
-		overflow: "hidden",
-	},
-	adminIcon: {
-		width: 35,
-		height: 35,
-		justifyContent: "center",
-		alignItems: "center",
-		marginLeft: 5,
-		borderRadius: 8,
-	},
-	editIcon: {
-		backgroundColor: "#007bff",
-	},
-	deleteIcon: {
-		backgroundColor: "#ff4d4f",
 	},
 });
 

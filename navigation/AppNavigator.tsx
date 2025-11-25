@@ -4,13 +4,14 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
-import DetailsScreen from "../screens/DetailsScreen";
-import InicioScreen from "../screens/HomeScreen";
-import LoginScreen from "../screens/LoginScreen";
-import ProfileScreen from "../screens/ProfileScreen";
-import RegisterScreen from "../screens/RegisterScreen";
-
-import { ExperienciasResponse } from "../services/experienceService";
+import DetailsScreen from "@/screens/DetailsScreen";
+import InicioScreen from "@/screens/HomeScreen";
+import LoginScreen from "@/screens/LoginScreen";
+import ManageUserScreen from "@/screens/ManageUserScreen";
+import ProfileScreen from "@/screens/ProfileScreen";
+import RegisterScreen from "@/screens/RegisterScreen";
+import { UserCredentials } from "@/services/authService";
+import { ExperienciasResponse } from "@/services/experienceService";
 import { BottomTabs } from "./BottomTabs";
 
 export type RootStackParamList = {
@@ -20,6 +21,7 @@ export type RootStackParamList = {
     MainTabs: undefined;
     Details:  { experiencia: ExperienciasResponse };
     Profile: undefined;
+    ManageUser: {user: UserCredentials};
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -33,6 +35,7 @@ export const AppNavigator = () => {
             <Stack.Screen name="Register" component={RegisterScreen} />
             <Stack.Screen name="Details" component={DetailsScreen} />
             <Stack.Screen name="Profile" component={ProfileScreen} />
+            <Stack.Screen name="ManageUser" component={ManageUserScreen} />
         </Stack.Navigator>
     );
 };

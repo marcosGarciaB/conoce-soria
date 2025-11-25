@@ -7,9 +7,9 @@ import {
 	Image,
 	StyleSheet,
 	Text,
-	View,
+	View
 } from "react-native";
-
+import ItemButton from "./ItemButton";
 const { width } = Dimensions.get("window");
 
 interface CategoryItemProps {
@@ -55,6 +55,11 @@ const CategoryItem = ({ experiencias }: CategoryItemProps) => {
 					/>
 					<Text style={styles.labelText}>{item.direccion}</Text>
 				</View>
+			</View>
+
+			<View style={styles.userActions}>
+				<ItemButton title="Editar" onPress={() => console.log("Se ha seleccionado editar.")} />
+				<ItemButton title="Eliminar" onPress={() => console.log("Se ha seleccionado eliminar.")} />
 			</View>
 		</View>
 	);
@@ -151,7 +156,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "#d9534f",
 	},
 	expContent: {
-		padding: 15,
+		padding: 5,
 	},
 	description: {
 		fontSize: 14,
@@ -168,6 +173,12 @@ const styles = StyleSheet.create({
 		marginLeft: 6,
 		fontSize: 14,
 		color: "#555",
+	},
+	userActions: {
+		flex: 1,
+		flexDirection: "row",
+		justifyContent: "center",
+		margin: 10,
 	},
 });
 

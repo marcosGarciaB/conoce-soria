@@ -6,19 +6,19 @@ import {
 	Image,
 	StyleSheet,
 	Text,
-	TouchableOpacity,
-	View,
+	View
 } from "react-native";
+import ItemButton from "./ItemButton";
 
 const { width } = Dimensions.get("window");
 
 interface UserItemProps {
 	users: UserCredentials[];
 	onDelete: (email: string) => void;
-	token: string;
+	onEdit: (user: UserCredentials) => void;
 }
 
-const UserItem = ({ users, onDelete, token }: UserItemProps) => {
+const UserItem = ({ users, onDelete, onEdit }: UserItemProps) => {
 	const url =
 		"https://r-charts.com/es/miscelanea/procesamiento-imagenes-magick_files/figure-html/recortar-bordes-imagen-r.png";
 
@@ -38,21 +38,8 @@ const UserItem = ({ users, onDelete, token }: UserItemProps) => {
 				</View>
 
 				<View style={styles.userActions}>
-					<TouchableOpacity
-						style={styles.editButton}
-						onPress={() =>
-							console.log("Editar usuario", item.email)
-						}
-					>
-						<Text style={styles.buttonText}>Editar</Text>
-					</TouchableOpacity>
-
-					<TouchableOpacity
-						style={styles.deleteButton}
-						onPress={() => onDelete(item.email)}
-					>
-						<Text style={styles.buttonText}>Eliminar</Text>
-					</TouchableOpacity>
+					<ItemButton title="Editar" onPress={() => onEdit(item)} />
+					<ItemButton title="Eliminar" onPress={() => onDelete(item.email)} />
 				</View>
 			</View>
 		);
@@ -131,23 +118,6 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		marginTop: 10,
 		justifyContent: "center",
-	},
-	editButton: {
-		backgroundColor: "#4CAF50",
-		paddingVertical: 6,
-		paddingHorizontal: 12,
-		borderRadius: 8,
-		marginRight: 10,
-	},
-	deleteButton: {
-		backgroundColor: "#F44336",
-		paddingVertical: 6,
-		paddingHorizontal: 12,
-		borderRadius: 8,
-	},
-	buttonText: {
-		color: "white",
-		fontWeight: "500",
 	},
 });
 

@@ -18,9 +18,10 @@ interface FormData {
 interface PasswordInputProps {
 	control: Control<any>;
 	errors: FieldErrors<FormData>;
+	initialData?: boolean;
 }
 
-const PasswordInput: React.FC<PasswordInputProps> = ({ control, errors }) => {
+const PasswordInput: React.FC<PasswordInputProps> = ({ control, errors, initialData }) => {
 	const shakeAnim = useRef(new Animated.Value(0)).current;
 	const [showPass, setShowPass] = useState(false);
 
@@ -29,31 +30,11 @@ const PasswordInput: React.FC<PasswordInputProps> = ({ control, errors }) => {
 			Vibration.vibrate(500);
 
 			Animated.sequence([
-				Animated.timing(shakeAnim, {
-					toValue: 5, // Mover a la derecha
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: -5, // Mover a la izquierda
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: 5, // Mover a la derecha
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: -5, // Mover a la izquierda
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: 0, // Posición inicial
-					duration: 100,
-					useNativeDriver: true,
-				}),
+				Animated.timing(shakeAnim, { toValue: 5, duration: 100, useNativeDriver: true }),
+				Animated.timing(shakeAnim, { toValue: -5, duration: 100, useNativeDriver: true }),
+				Animated.timing(shakeAnim, { toValue: 5, duration: 100, useNativeDriver: true }),
+				Animated.timing(shakeAnim, { toValue: -5, duration: 100, useNativeDriver: true }),
+				Animated.timing(shakeAnim, { toValue: 0, duration: 100, useNativeDriver: true }),
 			]).start();
 
 			Toast.show({
@@ -74,7 +55,9 @@ const PasswordInput: React.FC<PasswordInputProps> = ({ control, errors }) => {
 				control={control}
 				name="password"
 				rules={{
-					required: "La contraseña es obligatoria",
+					required: !initialData
+						? "Debes ingresar una contraseña"
+						: false,
 					minLength: {
 						value: 8,
 						message: "Debe tener al menos 8 caracteres",

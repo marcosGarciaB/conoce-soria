@@ -23,14 +23,16 @@ export interface ExperienciaDetailResponse {
 }
 
 
-const getExperiencias = async (): Promise<ExperienciasResponse[]> => {
+const getExperiencias = async (offset = 0, limit = 5): Promise<ExperienciasResponse[]> => {
     try {
-        const response = await apiClient.get<ExperienciasResponse[]>('/api/experiencias');
+        const url = `/api/experiencias?offset=${offset}&limit=${limit}`;
+        const response = await apiClient.get<ExperienciasResponse[]>(url);
         return response;
     } catch (error) {
         throw error;
-    }   
+    }
 };
+
 
 const getExperiencia = async (id: number): Promise<ExperienciaDetailResponse> => {
     try {
