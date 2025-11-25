@@ -5,6 +5,9 @@ import {
 import { useAuth } from "../contexts/AuthContext";
 import { passportService, PasaporteDTO } from "../services/passportService";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+
 
 const PassportScreen = () => {
     const { token } = useAuth();
@@ -12,6 +15,8 @@ const PassportScreen = () => {
     const [pasaporte, setPasaporte] = useState<PasaporteDTO | null>(null);
 
     const pointsAnim = useRef(new Animated.Value(0)).current;
+    console.log("TOKEN DESDE useAuth():", token);
+
 
     useEffect(() => {
         const load = async () => {
@@ -19,8 +24,8 @@ const PassportScreen = () => {
 
             try {
                 const data = await passportService.getPasaporte(token);
-                console.log(">>> PASAPORTE BACKEND:", data);
-                console.log(">>> REGISTROS:", data.registros);
+                
+                console.log("TOKEN:", token);
 
 
                 // 🔥 FILTRAMOS SOLO EXPERIENCIAS REGISTRADAS
@@ -44,6 +49,19 @@ const PassportScreen = () => {
 
         load();
     }, [token]);
+
+        useEffect(() => {
+            const check = async () => {
+                const stored = await AsyncStorage.getItem("authToken");
+                console.log("TOKEN STORAGE QUIERO VER MI LOG:", stored);
+                const { token } = useAuth();
+console.log("TOKEN DESDE CONTEXT:", token);
+
+            };
+            check();
+        }, []);
+
+
 
     if (!pasaporte) {
         return <Text style={{ padding: 20 }}>Cargando...</Text>;

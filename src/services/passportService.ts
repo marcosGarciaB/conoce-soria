@@ -19,7 +19,7 @@ export interface PasaporteDTO {
 export const passportService = {
     async getPasaporte(token: string): Promise<PasaporteDTO> {
         // AHORA USA GET CON TOKEN POR HEADER
-        return apiClient.getWithToken("/pasaporte", token);
+        return apiClient.getWithToken("/api/pasaporte", token);
     },
 
     async registrar(uid: string, opinion: string, token: string) {

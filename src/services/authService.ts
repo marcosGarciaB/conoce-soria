@@ -26,39 +26,34 @@ export interface UserCredentials {
     email: string;
     password: string;
     role: string;
-    puntos: string;
+    puntos: string; // viene como string
     fechaCreacion?: string;
 }
 
 const login = async (credentials: LoginCredentials): Promise<AuthResponse> => {
-    try {
-        const response = await apiClient.post<AuthResponse>('/api/auth/login', credentials);
-        return response;
-    } catch (error) {
-        throw error;
-    }
+    const response = await apiClient.post<AuthResponse>('/api/auth/login', credentials);
+    return response;
 };
 
 const register = async (credentials: RegisterCredentials): Promise<void> => {
-    try {
-        await apiClient.post<void>('/api/auth/register', credentials);
-        console.log("Credenciales recibidas", credentials.nombre )
-    } catch (error) {
-        throw error;
-    }
-}
+    await apiClient.post<void>('/api/auth/register', credentials);
+};
 
 const getUserData = async (token: string): Promise<UserCredentials> => {
-    try {
-        const response = await apiClient.getWithToken<UserCredentials>('/api/auth/me', token);
-        return response;
-    } catch (error) {
-        throw error;
-    }
-}
+    const response = await apiClient.getWithToken<UserCredentials>('/api/auth/me', token);
+    return response;
+};
 
+/* 🔥 AÑADIR ESTE MÉTODO NUEVO — OBLIGATORIO */
+const getRankingData = async (): Promise<any[]> => {
+    return apiClient.get<any[]>('/api/top');
+};
+
+
+/* 🔥 AÑADIRLO AL EXPORT — SIN ESTO NO FUNCIONA */
 export const authService = {
     login,
     register,
     getUserData,
+    getRankingData
 };
