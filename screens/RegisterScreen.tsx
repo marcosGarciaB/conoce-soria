@@ -50,9 +50,17 @@ const RegisterScreen = ({ navigation }: { navigation: any }) => {
 				<View style={styles.formContainer}>
 					<Text style={styles.title}>Crear Cuenta</Text>
 
-					<NameInput control={control} errors={errors} />
-					<EmailInput control={control} errors={errors} />
-					<PasswordInput control={control} errors={errors} />
+					<View style={styles.inputContainer}>
+						<NameInput control={control} errors={errors} />
+					</View>
+
+					<View style={styles.inputContainer}>
+						<EmailInput control={control} errors={errors} />
+					</View>
+
+					<View style={styles.inputContainer}>
+						<PasswordInput control={control} errors={errors} />
+					</View>
 
 					<TouchableOpacity
 						style={styles.button}
@@ -145,11 +153,8 @@ const styles = StyleSheet.create({
 		color: "black",
 		fontSize: 16,
 	},
-	link: {
-		color: "#C1440E",
-		textAlign: "center",
-		marginVertical: 4,
-		fontWeight: "bold",
+	inputContainer: {
+		marginBottom: 40,
 	},
 });
 

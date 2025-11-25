@@ -32,7 +32,9 @@ const Header = ({
 				false
 			)}
 
-			<Text style={styles.title}>{title}</Text>
+			<Text style={[isSecondIcon ? styles.title1 : styles.title2]}>
+				{title}
+			</Text>
 			<Ionicons
 				style={{ marginRight: 15 }}
 				name={icon}
@@ -57,11 +59,17 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.1,
 		shadowRadius: 5,
 	},
-	title: {
+	title1: {
 		fontSize: 20,
 		fontWeight: "bold",
 		color: "#FF6B00",
-		marginLeft: 20,
+		maxWidth: 200,
+	},
+	title2: {
+		fontSize: 20,
+		fontWeight: "bold",
+		color: "#FF6B00",
+		marginLeft: 25,
 		maxWidth: 200,
 	},
 });

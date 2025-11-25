@@ -22,7 +22,6 @@ export interface ExperienciaDetailResponse {
     visible: boolean;
 }
 
-
 const getExperiencias = async (offset = 0, limit = 5): Promise<ExperienciasResponse[]> => {
     try {
         const url = `/api/experiencias?offset=${offset}&limit=${limit}`;
@@ -32,7 +31,6 @@ const getExperiencias = async (offset = 0, limit = 5): Promise<ExperienciasRespo
         throw error;
     }
 };
-
 
 const getExperiencia = async (id: number): Promise<ExperienciaDetailResponse> => {
     try {

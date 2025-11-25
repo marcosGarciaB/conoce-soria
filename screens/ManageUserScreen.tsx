@@ -2,15 +2,27 @@ import UserForm from "@/components/admin/UserForm";
 import Header from "@/components/common/HeaderItem";
 import { useAuth } from "@/contexts/AuthContext";
 import { RootStackParamList } from "@/navigation/AppNavigator";
-import { adminService, NewUser, UpdateCredentials, UserCredentials, } from "@/services/adminService";
+import {
+	adminService,
+	NewUser,
+	UpdateCredentials,
+	UserCredentials,
+} from "@/services/adminService";
 
 import { RouteProp } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type UserRoute = RouteProp<RootStackParamList, "ManageUser">;
 
-const ManageUserScreen = ({ navigation, route }: { navigation: any, route: UserRoute }) => {
+const ManageUserScreen = ({
+	navigation,
+	route,
+}: {
+	navigation: any;
+	route: UserRoute;
+}) => {
 	const { token } = useAuth();
 	const user = route.params?.user;
 	const [editingUser, setEditingUser] = useState<UserCredentials | null>();
@@ -21,7 +33,10 @@ const ManageUserScreen = ({ navigation, route }: { navigation: any, route: UserR
 			if (!token || !user) return;
 
 			try {
-				const data = await adminService.getUserByEmail(user.email, token);
+				const data = await adminService.getUserByEmail(
+					user.email,
+					token
+				);
 				setEditingUser(data);
 			} catch (error) {
 				console.error("Error cargando experiencia:", error);
@@ -34,7 +49,11 @@ const ManageUserScreen = ({ navigation, route }: { navigation: any, route: UserR
 		try {
 			if (editingUser) {
 				// Editar
-				const updated = await adminService.updateUser(editingUser.email, data as UpdateCredentials, token!);
+				const updated = await adminService.updateUser(
+					editingUser.email,
+					data as UpdateCredentials,
+					token!
+				);
 				setEditingUser(updated);
 				// Actualizar la lista local de usuarios si tienes un listado
 				setUsers((prev) =>
@@ -42,7 +61,10 @@ const ManageUserScreen = ({ navigation, route }: { navigation: any, route: UserR
 				);
 			} else {
 				// Crear
-				const created = await adminService.createUser(data as NewUser, token!);
+				const created = await adminService.createUser(
+					data as NewUser,
+					token!
+				);
 				setUsers((prev) => [...prev, created]);
 			}
 		} catch (error) {
@@ -50,10 +72,15 @@ const ManageUserScreen = ({ navigation, route }: { navigation: any, route: UserR
 		}
 	};
 
-
 	return (
-		<View style={styles.container}>
-			<Header title="Gestión usuarios" icon="home-outline" isSecondIcon={true} icon2="chevron-back-circle" onPress={() => navigation.goBack()} />
+		<SafeAreaView style={styles.container}>
+			<Header
+				title="Creación de usuarios"
+				icon="person-add-outline"
+				isSecondIcon={true}
+				icon2="chevron-back-circle"
+				onPress={() => navigation.goBack()}
+			/>
 			<ScrollView contentContainerStyle={styles.scrollContent}>
 				<UserForm
 					initialData={editingUser ?? undefined}
@@ -61,21 +88,17 @@ const ManageUserScreen = ({ navigation, route }: { navigation: any, route: UserR
 					navigation={navigation}
 				/>
 			</ScrollView>
-		</View>
+		</SafeAreaView>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#FAFAFA"
+		backgroundColor: "#FAFAFA",
+		padding: 5,
 	},
-	scrollContent: {
-        flex: 1,                // Hace que ScrollView ocupe todo el espacio
-        justifyContent: "center",   // Centra verticalmente
-        alignItems: "center",       // Centra horizontalmente
-        padding: 16,
-    },
+	scrollContent: {},
 });
 
 export default ManageUserScreen;

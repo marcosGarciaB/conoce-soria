@@ -21,13 +21,33 @@ const NameInput: React.FC<NameInputProps> = ({ control, errors }) => {
 			Vibration.vibrate(500);
 
 			Animated.sequence([
-				Animated.timing(shakeAnim, { toValue: 5, duration: 100, useNativeDriver: true }),
-				Animated.timing(shakeAnim, { toValue: -5, duration: 100, useNativeDriver: true }),
-				Animated.timing(shakeAnim, { toValue: 5, duration: 100, useNativeDriver: true }),
-				Animated.timing(shakeAnim, { toValue: -5, duration: 100, useNativeDriver: true }),
-				Animated.timing(shakeAnim, { toValue: 0, duration: 100, useNativeDriver: true }),
+				Animated.timing(shakeAnim, {
+					toValue: 5,
+					duration: 100,
+					useNativeDriver: true,
+				}),
+				Animated.timing(shakeAnim, {
+					toValue: -5,
+					duration: 100,
+					useNativeDriver: true,
+				}),
+				Animated.timing(shakeAnim, {
+					toValue: 5,
+					duration: 100,
+					useNativeDriver: true,
+				}),
+				Animated.timing(shakeAnim, {
+					toValue: -5,
+					duration: 100,
+					useNativeDriver: true,
+				}),
+				Animated.timing(shakeAnim, {
+					toValue: 0,
+					duration: 100,
+					useNativeDriver: true,
+				}),
 			]).start();
-			
+
 			Toast.show({
 				type: "error",
 				position: "top",
@@ -70,6 +90,7 @@ const NameInput: React.FC<NameInputProps> = ({ control, errors }) => {
 							<TextInput
 								style={styles.inputWithIcon}
 								placeholder="Nombre de usuario"
+								placeholderTextColor="#999"
 								onBlur={onBlur}
 								onChangeText={onChange}
 								value={value}
@@ -87,7 +108,7 @@ const styles = StyleSheet.create({
 	formContainer: {
 		flex: 1,
 		width: "95%",
-		marginBottom: 60,
+		marginBottom: 20,
 	},
 	// Input
 	inputWrapper: {

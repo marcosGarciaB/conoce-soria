@@ -39,7 +39,7 @@ type FormData = {
 	comentario: string;
 };
 
-const DetailsScreen = ({ navigation, route, }: { navigation: any; route: DetailsRoute;}) => {
+const CategoryItemDetail = ({ navigation, route, }: { navigation: any; route: DetailsRoute;}) => {
 	const { experiencia } = route.params;
 	const [detalle, setDetalle] = useState<ExperienciaDetailResponse | null>( null );
 	const [comentarios, setComentarios] = useState<ComentariosResponse[]>([]);
@@ -219,4 +219,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default DetailsScreen;
+export default CategoryItemDetail;

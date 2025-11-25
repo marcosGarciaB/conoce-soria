@@ -21,7 +21,11 @@ interface PasswordInputProps {
 	initialData?: boolean;
 }
 
-const PasswordInput: React.FC<PasswordInputProps> = ({ control, errors, initialData }) => {
+const PasswordInput: React.FC<PasswordInputProps> = ({
+	control,
+	errors,
+	initialData,
+}) => {
 	const shakeAnim = useRef(new Animated.Value(0)).current;
 	const [showPass, setShowPass] = useState(false);
 
@@ -30,11 +34,31 @@ const PasswordInput: React.FC<PasswordInputProps> = ({ control, errors, initialD
 			Vibration.vibrate(500);
 
 			Animated.sequence([
-				Animated.timing(shakeAnim, { toValue: 5, duration: 100, useNativeDriver: true }),
-				Animated.timing(shakeAnim, { toValue: -5, duration: 100, useNativeDriver: true }),
-				Animated.timing(shakeAnim, { toValue: 5, duration: 100, useNativeDriver: true }),
-				Animated.timing(shakeAnim, { toValue: -5, duration: 100, useNativeDriver: true }),
-				Animated.timing(shakeAnim, { toValue: 0, duration: 100, useNativeDriver: true }),
+				Animated.timing(shakeAnim, {
+					toValue: 5,
+					duration: 100,
+					useNativeDriver: true,
+				}),
+				Animated.timing(shakeAnim, {
+					toValue: -5,
+					duration: 100,
+					useNativeDriver: true,
+				}),
+				Animated.timing(shakeAnim, {
+					toValue: 5,
+					duration: 100,
+					useNativeDriver: true,
+				}),
+				Animated.timing(shakeAnim, {
+					toValue: -5,
+					duration: 100,
+					useNativeDriver: true,
+				}),
+				Animated.timing(shakeAnim, {
+					toValue: 0,
+					duration: 100,
+					useNativeDriver: true,
+				}),
 			]).start();
 
 			Toast.show({
@@ -81,6 +105,7 @@ const PasswordInput: React.FC<PasswordInputProps> = ({ control, errors, initialD
 							<TextInput
 								style={styles.inputWithIcon}
 								placeholder="Contraseña"
+								placeholderTextColor="#999"
 								secureTextEntry={!showPass}
 								onBlur={onBlur}
 								onChangeText={onChange}
@@ -113,7 +138,7 @@ const styles = StyleSheet.create({
 	formContainer: {
 		flex: 1,
 		width: "95%",
-		marginBottom: 60,
+		marginBottom: 20,
 	},
 	// Input
 	inputWrapper: {

@@ -4,10 +4,11 @@ import Buttom from "@/components/admin/ManageButton";
 import UserItem from "@/components/admin/UserItem";
 import Header from "@/components/common/HeaderItem";
 import { useAuth } from "@/contexts/AuthContext";
+import { usePaginatedFetch } from "@/hooks/usePaginatedFetch";
 import { adminService, UserCredentials } from "@/services/adminService";
 import {
-	ExperienciaDetailResponse,
 	experienciaService,
+	ExperienciasResponse
 } from "@/services/experienceService";
 
 import React, { useEffect, useState } from "react";
@@ -18,63 +19,42 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const AdminScreen = ({ navigation }: { navigation: any }) => {
 	const [showExperiencias, setShowExperiencias] = useState(false);
 	const [showUsers, setShowUsers] = useState(false);
-	const [experiencias, setExperiencias] = useState<
-		ExperienciaDetailResponse[]
-	>([]);
-	const [users, setUsers] = useState<UserCredentials[]>([]);
 	const { token } = useAuth();
 
+	if (!token) return;
+	const { data: users, loadData: loadUsers, loading, hasMore } = usePaginatedFetch<UserCredentials>({
+		fetchFunction: (offset, limit) => adminService.getAllUsers(token, offset, limit),
+		pageSize: 5,
+	});
+
+	const { data: experiencias, loadData: loadExperiencias, loading: loadingEx, hasMore: hasMoreEx } = usePaginatedFetch<ExperienciasResponse>({
+		fetchFunction: experienciaService.getExperiencias,
+		pageSize: 5,
+	});
+
 	useEffect(() => {
-		const loadExperiencias = async () => {
-			try {
-				const resumen = await experienciaService.getExperiencias();
-				const detalles = await Promise.all(
-					resumen.map((exp) =>
-						experienciaService.getExperiencia(exp.id)
-					)
-				);
-
-				setExperiencias(detalles);
-			} catch (error) {
-				console.error("Error cargando las experiencias:", error);
+		const listener = navigation.addListener("focus", () => {
+			if (token) {
+				loadUsers(true);
+				loadExperiencias(true);
 			}
-		};
+		});
 
-		const loadUsers = async () => {
-			if (!token) return;
-			try {
-				const allUsers = await adminService.getAllUsers(token);
-				setUsers(allUsers);
-			} catch (error) {
-				console.error("Error cargando los usuarios:", error);
-			}
-		};
+		return () => listener; 
+	}, [navigation, token, loadUsers, loadExperiencias]);
 
-		//loadUsers();
-		//loadExperiencias();
-	}, [users, experiencias]);
+	const handleToggleExperiencias = () =>
+		setShowExperiencias(!showExperiencias);
+	const handleToggleUsers = () => setShowUsers(!showUsers);
 
-	const handleToggleExperiencias = () => setShowExperiencias(!showExperiencias);
-	const handleToggleUsers = () =>  setShowUsers(!showUsers);
-	
 	const handleDeleteUser = async (email: string) => {
 		try {
-			await adminService.deleteUser(
-				email,
-				token!
-			);
-			setUsers((preview) =>
-				preview.filter(
-					(user) => user.email !== email
-				)
-			);
+			await adminService.deleteUser(email, token!);
+			loadUsers(true);
 		} catch (error) {
-			console.error(
-				"Error eliminando usuario",
-				error
-			);
+			console.error("Error eliminando usuario", error);
 		}
-	}
+	};
 
 	return (
 		<SafeAreaView style={styles.container}>
@@ -117,7 +97,9 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 						<UserItem
 							users={users}
 							onDelete={handleDeleteUser}
-							onEdit={(user) => navigation.navigate("ManageUser", { user })}
+							onEdit={(user) =>
+								navigation.navigate("ManageUser", { user })
+							}
 						/>
 					</>
 				)}

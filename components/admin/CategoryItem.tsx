@@ -1,5 +1,4 @@
-import { ExperienciaDetailResponse } from "@/services/experienceService";
-import { Ionicons } from "@expo/vector-icons";
+import { ExperienciasResponse } from "@/services/experienceService";
 import React from "react";
 import {
 	Dimensions,
@@ -13,14 +12,13 @@ import ItemButton from "./ItemButton";
 const { width } = Dimensions.get("window");
 
 interface CategoryItemProps {
-	experiencias: ExperienciaDetailResponse[];
+	experiencias: ExperienciasResponse[];
 }
 
 const CategoryItem = ({ experiencias }: CategoryItemProps) => {
-	const url =
-		"https://r-charts.com/es/miscelanea/procesamiento-imagenes-magick_files/figure-html/recortar-bordes-imagen-r.png";
+	const url = "https://r-charts.com/es/miscelanea/procesamiento-imagenes-magick_files/figure-html/recortar-bordes-imagen-r.png";
 
-	const renderItem = ({ item }: { item: ExperienciaDetailResponse }) => (
+	const renderItem = ({ item }: { item: ExperienciasResponse }) => (
 		<View style={styles.expCard}>
 			<Image source={{ uri: url }} style={styles.expImage} />
 
@@ -32,20 +30,20 @@ const CategoryItem = ({ experiencias }: CategoryItemProps) => {
 							.toLowerCase()
 							.replace(/\b\w/g, (l) => l.toUpperCase())}
 					</Text>
-					<Text
+					{/* <Text
 						style={[
 							styles.overlayStatus,
 							item.visible ? styles.active : styles.inactive,
 						]}
 					>
 						{item.visible ? "Activo" : "Inactivo"}
-					</Text>
+					</Text> */}
 				</View>
 			</View>
 
 			<View style={styles.expContent}>
 				<Text style={styles.experinceTitle}>{item.titulo}</Text>
-				<Text style={styles.description}>{item.descripcion}</Text>
+				{/* <Text style={styles.description}>{item.descripcion}</Text>
 
 				<View style={styles.row}>
 					<Ionicons
@@ -54,7 +52,7 @@ const CategoryItem = ({ experiencias }: CategoryItemProps) => {
 						color="orange"
 					/>
 					<Text style={styles.labelText}>{item.direccion}</Text>
-				</View>
+				</View> */}
 			</View>
 
 			<View style={styles.userActions}>

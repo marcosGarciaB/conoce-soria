@@ -35,9 +35,11 @@ const getUserData = async (token: string): Promise<UserCredentials> => {
     }
 }
 
-const getAllUsers = async (token: string): Promise<UserCredentials[]> => {
+const getAllUsers = async (token: string, offset = 0, limit = 5): Promise<UserCredentials[]> => {
     try {
-        return await apiClient.getWithToken<UserCredentials[]>('/api/users', token);
+        const url = `/api/users?offset=${offset}&limit=${limit}`;
+        const response = await apiClient.getWithToken<UserCredentials[]>('/api/users', token);
+        return response;
     } catch (error) {
         throw error;
     }

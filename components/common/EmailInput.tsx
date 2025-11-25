@@ -21,11 +21,31 @@ const EmailInput: React.FC<EmailInputProps> = ({ control, errors }) => {
 			Vibration.vibrate(500);
 
 			Animated.sequence([
-				Animated.timing(shakeAnim, { toValue: 5, duration: 100, useNativeDriver: true }),
-				Animated.timing(shakeAnim, { toValue: -5, duration: 100, useNativeDriver: true }),
-				Animated.timing(shakeAnim, { toValue: 5, duration: 100, useNativeDriver: true }),
-				Animated.timing(shakeAnim, { toValue: -5, duration: 100, useNativeDriver: true }),
-				Animated.timing(shakeAnim, { toValue: 0, duration: 100, useNativeDriver: true }),
+				Animated.timing(shakeAnim, {
+					toValue: 5,
+					duration: 100,
+					useNativeDriver: true,
+				}),
+				Animated.timing(shakeAnim, {
+					toValue: -5,
+					duration: 100,
+					useNativeDriver: true,
+				}),
+				Animated.timing(shakeAnim, {
+					toValue: 5,
+					duration: 100,
+					useNativeDriver: true,
+				}),
+				Animated.timing(shakeAnim, {
+					toValue: -5,
+					duration: 100,
+					useNativeDriver: true,
+				}),
+				Animated.timing(shakeAnim, {
+					toValue: 0,
+					duration: 100,
+					useNativeDriver: true,
+				}),
 			]).start();
 
 			Toast.show({
@@ -70,6 +90,7 @@ const EmailInput: React.FC<EmailInputProps> = ({ control, errors }) => {
 							<TextInput
 								style={styles.inputWithIcon}
 								placeholder="Email"
+								placeholderTextColor="#999"
 								onBlur={onBlur}
 								onChangeText={onChange}
 								value={value}
@@ -85,10 +106,8 @@ const styles = StyleSheet.create({
 	// General
 	formContainer: {
 		flex: 1,
-		backgroundColor: "white",
 		width: "95%",
-		borderRadius: 10,
-		marginBottom: 60,
+		marginBottom: 20,
 	},
 	// Input
 	inputWrapper: {
