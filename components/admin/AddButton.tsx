@@ -34,6 +34,7 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.1,
 		shadowRadius: 5,
 		elevation: 4,
+		width: "100%"
 	},
 	addButtonText: {
 		fontSize: 16,

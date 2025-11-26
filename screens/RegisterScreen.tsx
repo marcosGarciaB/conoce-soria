@@ -4,9 +4,9 @@ import { useForm } from "react-hook-form";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import EmailInput from "../components/common/EmailInput";
-import NameInput from "../components/common/NameInput";
-import PasswordInput from "../components/common/PasswordInput";
+import EmailInput from "../components/inputs/EmailInput";
+import NameInput from "../components/inputs/NameInput";
+import PasswordInput from "../components/inputs/PasswordInput";
 import { authService } from "../services/authService";
 
 type FormData = {

@@ -1,13 +1,14 @@
-import { NewUser, UserCredentials } from "@/services/adminService";
+import { NewUser } from "@/services/adminService";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-import EmailInput from "../common/EmailInput";
+import { UserCredentials } from "@/services/authService";
 import ModalSuccess from "../common/ModalSucces";
-import NameInput from "../common/NameInput";
-import PasswordInput from "../common/PasswordInput";
-import RoleInput from "../common/RoleInput";
+import EmailInput from "../inputs/EmailInput";
+import NameInput from "../inputs/NameInput";
+import PasswordInput from "../inputs/PasswordInput";
+import RoleInput from "../inputs/RoleInput";
 
 interface UserFormProps {
 	initialData?: UserCredentials;

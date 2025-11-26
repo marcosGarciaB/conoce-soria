@@ -5,15 +5,14 @@ import UserItem from "@/components/admin/UserItem";
 import Header from "@/components/common/HeaderItem";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePaginatedFetch } from "@/hooks/usePaginatedFetch";
-import { adminService, UserCredentials } from "@/services/adminService";
+import { adminService } from "@/services/adminService";
+import { UserCredentials } from "@/services/authService";
 import {
-	experienciaService,
-	ExperienciasResponse
+	ExperienciaDetailResponse
 } from "@/services/experienceService";
 
-import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import React, { useState } from "react";
+import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const AdminScreen = ({ navigation }: { navigation: any }) => {
@@ -27,25 +26,32 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 		pageSize: 5,
 	});
 
-	const { data: experiencias, loadData: loadExperiencias, loading: loadingEx, hasMore: hasMoreEx } = usePaginatedFetch<ExperienciasResponse>({
-		fetchFunction: experienciaService.getExperiencias,
+	const { data: experiencias, loadData: loadExperiencias, loading: loadingEx, hasMore: hasMoreEx } = usePaginatedFetch<ExperienciaDetailResponse>({
+		fetchFunction: (offset, limit) => adminService.getAllExperiencesAdmin(token, offset, limit),
 		pageSize: 5,
 	});
 
-	useEffect(() => {
-		const listener = navigation.addListener("focus", () => {
-			if (token) {
-				loadUsers(true);
-				loadExperiencias(true);
-			}
-		});
+	const handleLoadData = (tipo: "usuarios" | "experiencias") => {
+		tipo === "usuarios" ? loadUsers(true) : loadExperiencias(true);
+	}
 
-		return () => listener; 
-	}, [navigation, token, loadUsers, loadExperiencias]);
-
-	const handleToggleExperiencias = () =>
+	const handleToggleExperiencias = () => {
 		setShowExperiencias(!showExperiencias);
-	const handleToggleUsers = () => setShowUsers(!showUsers);
+		setShowUsers(false);
+	}
+	const handleToggleUsers = () => {
+		setShowUsers(!showUsers);
+		setShowExperiencias(false);
+	};
+
+	const handleDeleteExperience = async (id: number) => {
+		try {
+			await adminService.deleteExperiencia(id, token!);
+			loadExperiencias(true)
+		} catch (error) {
+			console.error("Error eliminando experiencia", error);
+		}
+	};
 
 	const handleDeleteUser = async (email: string) => {
 		try {
@@ -60,50 +66,52 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 		<SafeAreaView style={styles.container}>
 			<Header title="Administración" icon="accessibility-outline" />
 
-			<ScrollView>
-				<View style={styles.adminCard}>
-					<Text style={styles.adminTitle}>
-						Panel de Administración
-					</Text>
+				<Buttom
+					title="Gestionar usuarios"
+					onPress={() => { handleToggleUsers(); handleLoadData("usuarios") }}
+					isActive={showUsers}
+				/>
+				<Buttom
+					title="Gestionar experiencias"
+					onPress={() => { handleToggleExperiencias(); handleLoadData("experiencias") }}
+					isActive={showExperiencias}
+				/>
 
-					<Buttom
-						title="Gestionar usuarios"
-						onPress={handleToggleUsers}
-						isActive={showUsers}
+			{showExperiencias && (
+				<>
+					<AddButton
+						title="Añadir experiencia"
+						onPress={() => navigation.navigate("ManageExperience")}
 					/>
-					<Buttom
-						title="Gestionar experiencias"
-						onPress={handleToggleExperiencias}
-						isActive={showExperiencias}
+					<CategoryItem
+						experiencias={experiencias}
+						onDelete={handleDeleteExperience}
+						onEdit={(experiencia) => navigation.navigate("ManageExperience", { experiencia })}
+						loadMore={() => loadExperiencias()}
+						hasMore={hasMoreEx}
+						loading={loadingEx}
 					/>
-				</View>
+				</>
+			)}
 
-				{showExperiencias && (
-					<>
-						<AddButton
-							title="Añadir experiencia"
-							onPress={() => navigation.navigate("AddExperience")}
-						/>
-						<CategoryItem experiencias={experiencias} />
-					</>
-				)}
-
-				{showUsers && (
-					<>
-						<AddButton
-							title="Añadir usuario"
-							onPress={() => navigation.navigate("ManageUser")}
-						/>
-						<UserItem
-							users={users}
-							onDelete={handleDeleteUser}
-							onEdit={(user) =>
-								navigation.navigate("ManageUser", { user })
-							}
-						/>
-					</>
-				)}
-			</ScrollView>
+			{showUsers && (
+				<>
+					<AddButton
+						title="Añadir usuario"
+						onPress={() => navigation.navigate("ManageUser")}
+					/>
+					<UserItem
+						users={users}
+						onDelete={handleDeleteUser}
+						onEdit={(user) =>
+							navigation.navigate("ManageUser", { user })
+						}
+						loadMore={() => loadUsers()}
+						hasMore={hasMoreEx}
+						loading={loadingEx}
+					/>
+				</>
+			)}
 		</SafeAreaView>
 	);
 };
@@ -113,29 +121,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: "#FAFAFA",
 		padding: 5,
-	},
-	// Admin
-	adminCard: {
-		marginTop: 10,
-		backgroundColor: "white",
-		paddingVertical: 25,
-		paddingHorizontal: 20,
-		borderRadius: 20,
-		shadowColor: "#000",
-		shadowOffset: { width: 0, height: 4 },
-		shadowOpacity: 0.08,
-		shadowRadius: 8,
-		elevation: 3,
-		borderColor: "#929190ff",
-		borderWidth: 2,
-	},
-	adminTitle: {
-		fontSize: 18,
-		fontWeight: "600",
-		color: "#333",
-		marginBottom: 20,
-		alignSelf: "center",
-		letterSpacing: 0.5,
+		marginBottom: "15%"
 	},
 });
 

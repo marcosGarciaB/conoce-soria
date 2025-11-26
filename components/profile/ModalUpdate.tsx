@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Modal, TextInput } from 'react-native';
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-import EmailInput from '../common/EmailInput';
-import NameInput from '../common/NameInput';
-import PasswordInput from '../common/PasswordInput';
 import { Control, FieldErrors } from 'react-hook-form';
+import EmailInput from '../inputs/EmailInput';
+import NameInput from '../inputs/NameInput';
+import PasswordInput from '../inputs/PasswordInput';
 
 interface ModalUpdateProps {
     title: string;

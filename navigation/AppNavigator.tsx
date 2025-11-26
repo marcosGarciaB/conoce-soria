@@ -7,11 +7,12 @@ import React from "react";
 import DetailsScreen from "@/screens/DetailsScreen";
 import InicioScreen from "@/screens/HomeScreen";
 import LoginScreen from "@/screens/LoginScreen";
+import ManageExperienceScreen from "@/screens/ManageExperienceScreen";
 import ManageUserScreen from "@/screens/ManageUserScreen";
 import ProfileScreen from "@/screens/ProfileScreen";
 import RegisterScreen from "@/screens/RegisterScreen";
 import { UserCredentials } from "@/services/authService";
-import { ExperienciasResponse } from "@/services/experienceService";
+import { ExperienciaDetailResponse, ExperienciasResponse } from "@/services/experienceService";
 import { BottomTabs } from "./BottomTabs";
 
 export type RootStackParamList = {
@@ -22,6 +23,7 @@ export type RootStackParamList = {
     Details:  { experiencia: ExperienciasResponse };
     Profile: undefined;
     ManageUser: {user: UserCredentials};
+    ManageExperience: {experiencia: ExperienciaDetailResponse};
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -36,6 +38,7 @@ export const AppNavigator = () => {
             <Stack.Screen name="Details" component={DetailsScreen} />
             <Stack.Screen name="Profile" component={ProfileScreen} />
             <Stack.Screen name="ManageUser" component={ManageUserScreen} />
+            <Stack.Screen name="ManageExperience" component={ManageExperienceScreen} />
         </Stack.Navigator>
     );
 };

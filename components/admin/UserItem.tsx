@@ -1,9 +1,9 @@
-import { UserCredentials } from "@/services/adminService";
+import { UserCredentials } from "@/services/authService";
+import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import {
 	Dimensions,
 	FlatList,
-	Image,
 	StyleSheet,
 	Text,
 	View
@@ -16,17 +16,20 @@ interface UserItemProps {
 	users: UserCredentials[];
 	onDelete: (email: string) => void;
 	onEdit: (user: UserCredentials) => void;
+	loadMore: () => void;
+	hasMore: boolean;
+	loading: boolean;
 }
 
-const UserItem = ({ users, onDelete, onEdit }: UserItemProps) => {
-	const url =
-		"https://r-charts.com/es/miscelanea/procesamiento-imagenes-magick_files/figure-html/recortar-bordes-imagen-r.png";
+const UserItem = ({ users, onDelete, onEdit, loadMore, hasMore, loading }: UserItemProps) => {
+	const url = "https://r-charts.com/es/miscelanea/procesamiento-imagenes-magick_files/figure-html/recortar-bordes-imagen-r.png";
 
 	const renderItem = ({ item }: { item: UserCredentials }) => {
 		return (
 			<View style={styles.userCard}>
 				<View style={styles.userRow}>
-					<Image source={{ uri: url }} style={styles.userImage} />
+					{/* <Image source={{ uri: url }} style={styles.userImage} /> */}
+					<Ionicons style={styles.userImage} name="person" size={80} color="#999" />
 					<View style={styles.userInfo}>
 						<Text style={styles.userName}>{item.nombre}</Text>
 						<Text style={styles.userEmail}>{item.email}</Text>
@@ -51,7 +54,7 @@ const UserItem = ({ users, onDelete, onEdit }: UserItemProps) => {
 				data={users}
 				keyExtractor={(item) => item.email}
 				renderItem={renderItem}
-				scrollEnabled={false}
+				scrollEnabled={true}
 				showsVerticalScrollIndicator={false}
 				numColumns={width > 600 ? 2 : 1}
 				columnWrapperStyle={
@@ -60,6 +63,11 @@ const UserItem = ({ users, onDelete, onEdit }: UserItemProps) => {
 						: undefined
 				}
 				contentContainerStyle={{ paddingBottom: 40 }}
+				onEndReached={() => {
+					if (!loading && hasMore) {
+						loadMore();
+					}
+				}}
 			/>
 		</View>
 	);
@@ -88,10 +96,11 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 	},
 	userImage: {
-		width: 80,
-		height: 80,
-		borderRadius: 40,
+		width: 100,
+		height: 100,
+		borderRadius: 50,
 		marginRight: 15,
+		// backgroundColor: "white"
 	},
 	userInfo: {
 		flex: 1,

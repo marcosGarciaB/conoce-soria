@@ -7,7 +7,7 @@ interface ButtomProps {
 	isActive: boolean;
 }
 
-const Buttom = ({ title, onPress, isActive }: ButtomProps) => {
+const ManageButtom = ({ title, onPress, isActive }: ButtomProps) => {
 	return (
 		<TouchableOpacity style={styles.optionButton} onPress={onPress}>
 			<Ionicons name="people-outline" size={20} color="#333" />
@@ -27,16 +27,16 @@ const Buttom = ({ title, onPress, isActive }: ButtomProps) => {
 
 const styles = StyleSheet.create({
 	optionButton: {
-		backgroundColor: "#F7F7F7",
+		backgroundColor: "white",
 		paddingVertical: 14,
 		paddingHorizontal: 15,
 		borderRadius: 12,
 		flexDirection: "row",
 		alignItems: "center",
 		justifyContent: "space-between",
-		marginBottom: 12,
-		borderWidth: 1,
-		borderColor: "#E6E6E6",
+		borderWidth: 2,
+		borderColor: "#d6d6d6ff",
+		marginTop: 10,
 	},
 	optionText: {
 		flex: 1,
@@ -47,4 +47,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default Buttom;
+export default ManageButtom;

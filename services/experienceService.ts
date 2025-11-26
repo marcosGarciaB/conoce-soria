@@ -4,27 +4,27 @@
 import { apiClient } from './apiClient';
 
 export interface ExperienciasResponse {
-    id:number;
+    id: number;
     categoria: string;
-    foto_url:string;
-    titulo:string;
+    foto_url: string;
+    titulo: string;
 }
 
 export interface ExperienciaDetailResponse {
-    id: string;
+    id: number;
     titulo: string;
     descripcion: string;
     categoria: string;
     imagenPortadaUrl: string;
     direccion: string;
-    ubicacionLat: number | null;
-    ubicacionLng: number | null;
+    ubicacionLat: number;
+    ubicacionLng: number;
     visible: boolean;
 }
 
 const getExperiencias = async (offset = 0, limit = 5): Promise<ExperienciasResponse[]> => {
     try {
-        const url = `/api/experiencias?offset=${offset}&limit=${limit}`;
+        const url = `/api/experiencias/visibles?offset=${offset}&limit=${limit}`;
         const response = await apiClient.get<ExperienciasResponse[]>(url);
         return response;
     } catch (error) {
@@ -35,11 +35,19 @@ const getExperiencias = async (offset = 0, limit = 5): Promise<ExperienciasRespo
 const getExperiencia = async (id: number): Promise<ExperienciaDetailResponse> => {
     try {
         const response = await apiClient.get<ExperienciaDetailResponse>(`/api/experiencias/${id}`);
-        return response;
+        // Parsear a number, que en el backend BigDecimal lo envía como JSON, así podemos tratar los datos.
+        return {
+            ...response,
+            ubicacionLat: Number(response.ubicacionLat),
+            ubicacionLng: Number(response.ubicacionLng),
+        } as ExperienciaDetailResponse;
+
     } catch (error) {
         throw error;
-    }   
+    }
 };
+
+
 
 export const experienciaService = {
     getExperiencias,

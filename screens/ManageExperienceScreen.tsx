@@ -1,80 +1,63 @@
-import UserForm from "@/components/admin/UserForm";
+import ExperienceForm from "@/components/admin/ExperienceForm";
 import Header from "@/components/common/HeaderItem";
 import { useAuth } from "@/contexts/AuthContext";
 import { RootStackParamList } from "@/navigation/AppNavigator";
-import { adminService, NewUser, UpdateCredentials, UserCredentials, } from "@/services/adminService";
+import { adminService, NewExperience } from "@/services/adminService";
+import { ExperienciaDetailResponse } from "@/services/experienceService";
 
 import { RouteProp } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import React, { useState } from "react";
+import { ScrollView, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-type ExperienceRoute = RouteProp<RootStackParamList, "ManageUser">;
+type ExperienceRoute = RouteProp<RootStackParamList, "ManageExperience">;
 
 const ManageExperienceScreen = ({ navigation, route }: { navigation: any, route: ExperienceRoute }) => {
     const { token } = useAuth();
-    const user = route.params?.user;
-    const [editingUser, setEditingUser] = useState<UserCredentials | null>();
-    const [users, setUsers] = useState<UserCredentials[]>([]);
+    const experiencia = route?.params?.experiencia ?? null;
+    const [editingExperience, setEditingExperience] = useState<ExperienciaDetailResponse | null>(
+        experiencia ?? null
+    ); const [experiencias, setExperiencias] = useState<ExperienciaDetailResponse[]>([]);
 
-    useEffect(() => {
-        const loadUser = async () => {
-            if (!token || !user) return;
-
-            try {
-                const data = await adminService.getUserByEmail(user.email, token);
-                setEditingUser(data);
-            } catch (error) {
-                console.error("Error cargando experiencia:", error);
-            }
-        };
-        loadUser();
-    }, [user]);
-
-    const handleSubmitForm = async (data: NewUser | UpdateCredentials) => {
+    const handleSubmitForm = async (data: NewExperience | ExperienciaDetailResponse) => {
         try {
-            if (editingUser) {
-                // Editar
-                const updated = await adminService.updateUser(editingUser.email, data as UpdateCredentials, token!);
-                setEditingUser(updated);
-                // Actualizar la lista local de usuarios si tienes un listado
-                setUsers((prev) =>
-                    prev.map((u) => (u.email === updated.email ? updated : u))
-                );
+            if (editingExperience) {
+                const updated = await adminService.updateExperiencia(experiencia.id, data as ExperienciaDetailResponse, token!);
+                setEditingExperience(updated);
+
+                setExperiencias((prev) => prev.map((u) => (u.id === updated.id ? updated : u)));
+
             } else {
-                // Crear
-                const created = await adminService.createUser(data as NewUser, token!);
-                setUsers((prev) => [...prev, created]);
+                const created = await adminService.createExperiencia(data as NewExperience, token!);
+                setExperiencias((prev) => [...prev, created])
+                console.log(created)
             }
+
         } catch (error) {
-            console.error("Error guardando usuario", error);
+            console.error("Error guardando experiencia", error);
         }
     };
 
-
     return (
-        <View style={styles.container}>
-            <Header title="Gestión usuarios" icon="home-outline" isSecondIcon={true} icon2="chevron-back-circle" onPress={() => navigation.goBack()} />
-            <ScrollView contentContainerStyle={styles.scrollContent}>
-                <UserForm
-                    initialData={editingUser ?? undefined}
+        <SafeAreaView style={styles.container}>
+            <Header title="Gestión Experiencias" icon="map-outline" isSecondIcon={true} icon2="chevron-back-circle" onPress={() => navigation.goBack()} />
+
+            <ScrollView>
+                <ExperienceForm
+                    initialData={editingExperience ?? undefined}
                     onSubmit={handleSubmitForm}
                     navigation={navigation}
                 />
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#FAFAFA"
-    },
-    scrollContent: {
-        flex: 1,                // Hace que ScrollView ocupe todo el espacio
-        justifyContent: "center",   // Centra verticalmente
-        alignItems: "center",       // Centra horizontalmente
-        padding: 16,
+        backgroundColor: "#FAFAFA",
+        padding: 5,
     },
 });
 

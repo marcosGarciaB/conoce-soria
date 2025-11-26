@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 
 interface PaginatedFetchProps<T> {
-    fetchFunction: (offset: number, limit: number) => Promise<T[]>;
+    fetchFunction: (page: number, pageSize: number) => Promise<T[]>;
     pageSize?: number;
 }
 
@@ -17,8 +17,8 @@ export const usePaginatedFetch = <T>({ fetchFunction, pageSize = 10 }: Paginated
 
         setLoading(true);
         try {
-            const offset = reset ? 0 : page * pageSize;
-            const newData = await fetchFunction(offset, pageSize);
+            const currentPage = reset ? 0 : page ;
+            const newData = await fetchFunction(currentPage, pageSize);
 
             if (reset) {
                 setData(newData);

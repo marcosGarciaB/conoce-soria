@@ -3,21 +3,8 @@
 */
 
 import { apiClient } from './apiClient';
-
-export interface UserCredentials {
-    nombre: string;
-    email: string;
-    password?: string;
-    role: string;
-    puntos: number;
-    fechaCreacion?: string;
-}
-
-export interface UpdateCredentials {
-    nombre?: string;
-    email?: string;
-    password?: string;
-}
+import { UpdateCredentials, UserCredentials } from './authService';
+import { ExperienciaDetailResponse, experienciaService, ExperienciasResponse } from './experienceService';
 
 export interface NewUser {
     nombre: string;
@@ -25,7 +12,17 @@ export interface NewUser {
     password: string;
     role: string;
 }
+export interface NewExperience {
+    titulo: string;
+    descripcion: string;
+    categoria: string;
+    imagenPortadaUrl: string;
+    direccion: string;
+    ubicacionLat: number;
+    ubicacionLng: number;
+}
 
+// Sección usuarios
 const getUserData = async (token: string): Promise<UserCredentials> => {
     try {
         const response = await apiClient.getWithToken<UserCredentials>('/api/auth/me', token);
@@ -38,7 +35,7 @@ const getUserData = async (token: string): Promise<UserCredentials> => {
 const getAllUsers = async (token: string, offset = 0, limit = 5): Promise<UserCredentials[]> => {
     try {
         const url = `/api/users?offset=${offset}&limit=${limit}`;
-        const response = await apiClient.getWithToken<UserCredentials[]>('/api/users', token);
+        const response = await apiClient.getWithToken<UserCredentials[]>(url, token);
         return response;
     } catch (error) {
         throw error;
@@ -86,6 +83,47 @@ const isAdmin = async (token: string): Promise<boolean> => {
     }
 }
 
+// Sección experiencias
+const getAllExperiencesAdmin = async (token: string, offset = 0, limit = 5): Promise<ExperienciaDetailResponse[]> => {
+    try {
+        const url = `/api/experiencias/admin?offset=${offset}&limit=${limit}`;
+        const experiencia = await apiClient.getWithToken<ExperienciasResponse[]>(url, token);
+        const detalles: ExperienciaDetailResponse[] = await Promise.all(
+            experiencia.map(e => experienciaService.getExperiencia(e.id))
+        );
+        return detalles;
+    } catch (error) {
+        throw error;
+    }
+};
+
+const createExperiencia = async (data: NewExperience, token: string): Promise<ExperienciaDetailResponse> => {
+    try {
+        const response = await apiClient.postWithToken<ExperienciaDetailResponse>(`/api/experiencias`, data, token);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+const updateExperiencia = async (id: number, data: NewExperience, token: string): Promise<ExperienciaDetailResponse> => {
+    try {
+        const response = await apiClient.putWithToken<ExperienciaDetailResponse>(`/api/experiencias/${id}`, data, token);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+const deleteExperiencia = async (id: number, token: string): Promise<ExperienciaDetailResponse> => {
+    try {
+        const response = await apiClient.deleteWithToken<ExperienciaDetailResponse>(`/api/experiencias/${id}`, token);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const adminService = {
     getAllUsers,
     createUser,
@@ -93,4 +131,8 @@ export const adminService = {
     deleteUser,
     getUserByEmail,
     isAdmin,
+    createExperiencia,
+    updateExperiencia,
+    deleteExperiencia,
+    getAllExperiencesAdmin,
 };
