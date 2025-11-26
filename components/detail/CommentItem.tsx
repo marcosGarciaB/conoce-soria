@@ -34,6 +34,7 @@ const ComentarioItem: React.FC<ComentarioItemProps> = ({
 		null
 	);
 
+	// Queda por hacer que salga bien el edit y el delete, crashea la aplicación.
 	const panGesture = Gesture.Pan()
 		.onUpdate((e) => {
 			translate.value = Math.max(-MAX, Math.min(e.translationX, MAX));
