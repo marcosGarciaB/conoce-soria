@@ -12,7 +12,7 @@ import {
 import Toast from "react-native-toast-message";
 
 interface FormData {
-    role: string;
+    direction: string;
 }
 
 interface DirectionInputProps {
@@ -23,9 +23,10 @@ interface DirectionInputProps {
 const DirectionInput: React.FC<DirectionInputProps> = ({ control, errors }) => {
     const shakeAnim = useRef(new Animated.Value(0)).current;
     const [open, setOpen] = useState(false);
+    const [height, setHeight] = useState(50);
 
     useEffect(() => {
-        if (errors.role) {
+        if (errors.direction) {
             Vibration.vibrate(500);
 
             Animated.sequence([
@@ -60,13 +61,13 @@ const DirectionInput: React.FC<DirectionInputProps> = ({ control, errors }) => {
                 type: "error",
                 position: "top",
                 text1: "Error en la ubicación",
-                text2: errors.role.message,
+                text2: errors.direction.message,
                 visibilityTime: 4000,
                 autoHide: true,
                 topOffset: 60,
             });
         }
-    }, [errors.role]);
+    }, [errors.direction]);
 
     return (
         <View style={styles.formContainer}>
@@ -86,7 +87,7 @@ const DirectionInput: React.FC<DirectionInputProps> = ({ control, errors }) => {
                                 style={[
                                     styles.inputWrapper,
                                     { transform: [{ translateX: shakeAnim }] },
-                                    errors.role && styles.inputError,
+                                    errors.direction && styles.inputError,
                                 ]}
                             >
                                 <Ionicons
@@ -97,12 +98,16 @@ const DirectionInput: React.FC<DirectionInputProps> = ({ control, errors }) => {
                                 />
 
                                 <TextInput
-                                    style={[styles.inputWithIcon, { height: 80 }]}
+                                    style={[styles.inputWithIcon]}
                                     placeholder="Dirección"
                                     placeholderTextColor="#999"
                                     onBlur={onBlur}
                                     onChangeText={onChange}
                                     value={value}
+                                    multiline={true}
+                                    onContentSizeChange={(e) =>
+                                        setHeight(e.nativeEvent.contentSize.height)
+                                    }
                                 />
 
                             </Animated.View>
@@ -118,14 +123,13 @@ const styles = StyleSheet.create({
 	// General
 	formContainer: {
 		flex: 1,
-		width: "95%",
 		marginBottom: 20,
 	},
 	// Input
 	inputWrapper: {
 		flexDirection: "row",
 		alignItems: "center",
-		height: 50,
+		height: 80,
 		fontSize: 16,
 		backgroundColor: "white",
 		borderColor: "#ffbf8bff",

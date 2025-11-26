@@ -8,13 +8,13 @@ import { usePaginatedFetch } from "@/hooks/usePaginatedFetch";
 import debounce from "lodash.debounce";
 import React, { useCallback, useEffect, useState } from "react";
 import {
-	ActivityIndicator,
-	Dimensions,
-	FlatList,
-	LayoutAnimation,
-	Platform,
-	StyleSheet,
-	UIManager
+    ActivityIndicator,
+    Dimensions,
+    FlatList,
+    LayoutAnimation,
+    Platform,
+    StyleSheet,
+    UIManager
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -34,7 +34,6 @@ const SearchScreen = ({ navigation }: { navigation: any }) => {
         pageSize: 10,
     });
 
-    // Filtros locales
     const [searchText, setSearchText] = useState("");
     const [selectedCat, setSelectedCat] = useState<string | null>(null);
     const [filteredExperiencias, setFilteredExperiencias] = useState<ExperienciasResponse[]>([]);
@@ -114,6 +113,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#FAFAFA",
+        padding: 5
     },
 });
 

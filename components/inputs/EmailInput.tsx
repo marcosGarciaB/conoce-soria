@@ -106,7 +106,6 @@ const styles = StyleSheet.create({
 	// General
 	formContainer: {
 		flex: 1,
-		width: "95%",
 		marginBottom: 20,
 	},
 	// Input

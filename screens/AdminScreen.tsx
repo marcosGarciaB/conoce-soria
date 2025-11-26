@@ -39,6 +39,7 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 		setShowExperiencias(!showExperiencias);
 		setShowUsers(false);
 	}
+	
 	const handleToggleUsers = () => {
 		setShowUsers(!showUsers);
 		setShowExperiencias(false);

@@ -1,91 +1,116 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { ScrollView, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import { NewExperience } from "@/services/adminService";
 import { ExperienciaDetailResponse } from "@/services/experienceService";
 import ModalSuccess from "../common/ModalSucces";
-import CategoryInput from '../inputs/CategoryInput';
+import CategoryInput from "../inputs/CategoryInput";
 import CoordsInput from "../inputs/CoordsInput";
-import DescInput from '../inputs/DescInput';
+import DescInput from "../inputs/DescInput";
 import DirectionInput from "../inputs/DirectionInput";
-import ImageUrlInput from '../inputs/ImageUrlInput';
-import TitleInput from '../inputs/TitleInput';
+import ImageUrlInput from "../inputs/ImageUrlInput";
+import TitleInput from "../inputs/TitleInput";
 
 interface ExperienceFormProps {
-    initialData?: ExperienciaDetailResponse;
-    onSubmit: (data: NewExperience) => void;
-    navigation: any;
+	initialData?: ExperienciaDetailResponse;
+	onSubmit: (data: NewExperience) => void;
+	navigation: any;
 }
 
-const ExperienceForm = ({ initialData, onSubmit, navigation }: ExperienceFormProps) => {
-    const [showSuccess, setShowSuccess] = useState(false);
+const ExperienceForm = ({
+	initialData,
+	onSubmit,
+	navigation,
+}: ExperienceFormProps) => {
+	const [showSuccess, setShowSuccess] = useState(false);
 
-    const { control, handleSubmit, reset, formState: { errors } } = useForm<NewExperience>({
-        defaultValues: {
-            titulo: "",
-            descripcion: "",
-            categoria: "AIRE_LIBRE",
-            imagenPortadaUrl: "",
-            direccion: "",
-            ubicacionLat: 0,
-            ubicacionLng: 0,
-        },
-    });
+	const {
+		control,
+		handleSubmit,
+		reset,
+		formState: { errors },
+	} = useForm<NewExperience>({
+		defaultValues: {
+			titulo: "",
+			descripcion: "",
+			categoria: "AIRE_LIBRE",
+			imagenPortadaUrl: "",
+			direccion: "",
+			ubicacionLat: 0,
+			ubicacionLng: 0,
+		},
+	});
 
-    useEffect(() => {
-        if (initialData) {
-            reset({
-                titulo: initialData.titulo,
-                descripcion: initialData.descripcion,
-                categoria: initialData.categoria,
-                imagenPortadaUrl: initialData.imagenPortadaUrl,
-                direccion: initialData.direccion,
-                ubicacionLat: initialData.ubicacionLat,
-                ubicacionLng: initialData.ubicacionLng,
-            });
-        }
-    }, [initialData]);
+	useEffect(() => {
+		if (initialData) {
+			reset({
+				titulo: initialData.titulo,
+				descripcion: initialData.descripcion,
+				categoria: initialData.categoria,
+				imagenPortadaUrl: initialData.imagenPortadaUrl,
+				direccion: initialData.direccion,
+				ubicacionLat: initialData.ubicacionLat,
+				ubicacionLng: initialData.ubicacionLng,
+			});
+		}
+	}, [initialData]);
 
-    const submitHandler = (data: NewExperience) => {
-        console.log(data);
-        onSubmit(data);
-        setShowSuccess(true);
-    };
+	const submitHandler = (data: NewExperience) => {
+		console.log(data);
+		onSubmit(data);
+		setShowSuccess(true);
+	};
 
-    return (
-        <ScrollView contentContainerStyle={styles.formContainer}>
+	return (
+		<KeyboardAwareScrollView
+			contentContainerStyle={styles.formContainer}
+			enableOnAndroid={true}
+			extraScrollHeight={50}
+			keyboardShouldPersistTaps="handled"
+		>
+			<TitleInput control={control} errors={errors} />
+			<DescInput control={control} errors={errors} />
+			<CategoryInput control={control} errors={errors} />
+			<ImageUrlInput control={control} errors={errors} />
+			<DirectionInput control={control} errors={errors} />
+			<CoordsInput control={control} errors={errors} isLat={true} />
+			<CoordsInput control={control} errors={errors} />
 
-            <TitleInput control={control} errors={errors}/>
-            <DescInput control={control} errors={errors}/>
-            <CategoryInput control={control} errors={errors}/>
-            <ImageUrlInput control={control} errors={errors}/>
-            <DirectionInput control={control} errors={errors}/>
-            <CoordsInput control={control} errors={errors} isLat={true}/>
-            <CoordsInput control={control} errors={errors}/>
+			<TouchableOpacity
+				style={styles.submitButton}
+				onPress={handleSubmit(submitHandler)}
+			>
+				<Text style={styles.submitText}>
+					{initialData ? "Actualizar Experiencia" : "Crear Experiencia"}
+				</Text>
+			</TouchableOpacity>
 
-            <TouchableOpacity style={styles.submitButton} onPress={handleSubmit(submitHandler)}>
-                <Text style={styles.submitText}>{initialData ? "Actualizar" : "Crear"}</Text>
-            </TouchableOpacity>
-
-            <ModalSuccess
-                title={initialData ? "¡Experiencia actualizada!" : "¡Experiencia creada!"}
-                message={initialData
-                    ? "La experiencia se ha actualizado correctamente."
-                    : "La experiencia se ha creado correctamente."}
-                isVisible={showSuccess}
-                onClose={() => {
-                    setShowSuccess(false);
-                    navigation.goBack();
-                }}
-            />
-        </ScrollView>
-    );
+			<ModalSuccess
+				title={
+					initialData
+						? "¡Experiencia actualizada!"
+						: "¡Experiencia creada!"
+				}
+				message={
+					initialData
+						? "La experiencia se ha actualizado correctamente."
+						: "La experiencia se ha creado correctamente."
+				}
+				isVisible={showSuccess}
+				onClose={() => {
+					setShowSuccess(false);
+					navigation.goBack();
+				}}
+			/>
+		</KeyboardAwareScrollView>
+	);
 };
 
 const styles = StyleSheet.create({
 	formContainer: {
-		flex: 1,
+		flexGrow: 1,
 		backgroundColor: "#fff",
 		borderRadius: 16,
 		padding: 20,

@@ -84,7 +84,11 @@ const UserForm = ({ initialData, onSubmit, navigation }: UserFormProps) => {
 				style={styles.submitButton}
 				onPress={handleSubmit(submitHandler)}
 			>
-				<Text style={styles.submitText}>Guardar</Text>
+				<Text style={styles.submitText}>
+					{initialData
+						? "Actualizar Usuario"
+						: "Crear Usuario"}
+				</Text>
 			</TouchableOpacity>
 
 			<ModalSuccess

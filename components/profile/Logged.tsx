@@ -152,10 +152,6 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 							onClose={() => setPrivacyVisible(false)}
 						/>
 
-						<TouchableOpacity style={styles.actionButton}>
-							<Text style={styles.actionText}>Cambiar tema</Text>
-						</TouchableOpacity>
-
 						<TouchableOpacity
 							style={[
 								styles.actionButton,

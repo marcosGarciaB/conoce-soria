@@ -1,4 +1,5 @@
 import Header from "@/components/common/HeaderItem";
+import MapComponent from "@/components/seeker/MapComponent";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePaginatedFetch } from "@/hooks/usePaginatedFetch";
 import { experienciaService, ExperienciasResponse, } from "@/services/experienceService";
@@ -81,9 +82,9 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
 					/>
 				</View>
 
-				{/* <View style={styles.mapContainer}>
+				<View style={styles.mapContainer}>
 					<MapComponent />
-				</View> */}
+				</View>
 			</ScrollView>
 		</SafeAreaView>
 	);
@@ -122,7 +123,6 @@ const styles = StyleSheet.create({
 	card: {
 		width: width * 0.7,
 		borderRadius: 15,
-		overflow: "hidden",
 		backgroundColor: "#fff",
 		margin: 10,
 		shadowColor: "#000000ff",
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
 		width: "100%",
 		marginVertical: 10,
 		borderRadius: 10,
-		marginBottom: 70,
+		marginBottom: 80,
 	},
 });
 

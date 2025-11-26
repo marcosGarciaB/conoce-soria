@@ -1,7 +1,16 @@
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+	Alert,
+	KeyboardAvoidingView,
+	Platform,
+	ScrollView,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import EmailInput from "../components/inputs/EmailInput";
@@ -40,48 +49,55 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
 	};
 
 	return (
-		<SafeAreaView style={styles.container}>
-			<View style={styles.innerContainer}>
-				<View style={styles.formContainer}>
-					<Text style={styles.title}>Iniciar Sesión</Text>
+		<KeyboardAvoidingView
+			style={{ flex: 1 }}
+			behavior={Platform.OS === "ios" ? "padding" : "height"}
+		>
+			<ScrollView
+				contentContainerStyle={{ flexGrow: 1 }}
+				keyboardShouldPersistTaps="handled"
+			>
+				<SafeAreaView style={styles.container}>
+					<View style={styles.innerContainer}>
+						<View style={styles.formContainer}>
+							<Text style={styles.title}>Iniciar Sesión</Text>
 
-					<View style={styles.inputContainer}>
-						<EmailInput control={control} errors={errors} />
-					</View>
+							<EmailInput control={control} errors={errors} />
+							<PasswordInput control={control} errors={errors} />
 
-					<View style={styles.inputContainer}>
-						<PasswordInput control={control} errors={errors} />
-					</View>
+							<TouchableOpacity
+								style={styles.button}
+								onPress={handleSubmit(onSubmit)}
+								disabled={isLoading}
+							>
+								<Text style={styles.buttonText}>
+									{isLoading
+										? "Iniciando..."
+										: "Iniciar Sesión"}
+								</Text>
+							</TouchableOpacity>
 
-					<TouchableOpacity
-						style={styles.button}
-						onPress={handleSubmit(onSubmit)}
-						disabled={isLoading}
-					>
-						<Text style={styles.buttonText}>
-							{isLoading ? "Iniciando..." : "Iniciar Sesión"}
-						</Text>
-					</TouchableOpacity>
-
-					<TouchableOpacity
-						style={styles.buttonRegister}
-						onPress={() => navigation.navigate("Register")}
-					>
-						<View style={styles.buttonWrapper}>
-							<Ionicons
-								name={"person-add-sharp"}
-								size={20}
-								color={"black"}
-							/>
-							<Text style={styles.buttonRegisterText}>
-								{" "}
-								Crear Cuenta
-							</Text>
+							<TouchableOpacity
+								style={styles.buttonRegister}
+								onPress={() => navigation.navigate("Register")}
+							>
+								<View style={styles.buttonWrapper}>
+									<Ionicons
+										name={"person-add-sharp"}
+										size={20}
+										color={"black"}
+									/>
+									<Text style={styles.buttonRegisterText}>
+										{" "}
+										Crear Cuenta
+									</Text>
+								</View>
+							</TouchableOpacity>
 						</View>
-					</TouchableOpacity>
-				</View>
-			</View>
-		</SafeAreaView>
+					</View>
+				</SafeAreaView>
+			</ScrollView>
+		</KeyboardAvoidingView>
 	);
 };
 
@@ -148,9 +164,6 @@ const styles = StyleSheet.create({
 	buttonRegisterText: {
 		color: "black",
 		fontSize: 16,
-	},
-	inputContainer: {
-		marginBottom: 40,
 	},
 });
 
