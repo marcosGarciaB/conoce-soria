@@ -112,7 +112,6 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 						/>
 
 						<Button title="Cerrar sesión" onPress={onPress} />
-
 					</View>
 				</View>
 			</ScrollView>

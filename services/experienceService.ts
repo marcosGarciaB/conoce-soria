@@ -35,7 +35,7 @@ const getExperiencias = async (offset = 0, limit = 5): Promise<ExperienciasRespo
 const getExperiencia = async (id: number): Promise<ExperienciaDetailResponse> => {
     try {
         const response = await apiClient.get<ExperienciaDetailResponse>(`/api/experiencias/${id}`);
-        // Parsear a number, que en el backend BigDecimal lo envía como JSON, así podemos tratar los datos.
+
         return {
             ...response,
             ubicacionLat: Number(response.ubicacionLat),
@@ -46,8 +46,6 @@ const getExperiencia = async (id: number): Promise<ExperienciaDetailResponse> =>
         throw error;
     }
 };
-
-
 
 export const experienciaService = {
     getExperiencias,

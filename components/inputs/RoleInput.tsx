@@ -135,7 +135,6 @@ const RoleInput: React.FC<RoleInputProps> = ({ control, errors }) => {
 
 const styles = StyleSheet.create({
 	formContainer: {
-		width: "95%",
 		marginBottom: 20,
 	},
 	inputWrapper: {

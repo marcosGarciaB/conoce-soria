@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
 	interpolateColor,
+	runOnJS,
 	useAnimatedStyle,
 	useSharedValue,
 	withSpring,
@@ -19,6 +20,7 @@ interface ComentarioItemProps {
 }
 
 const MAX = 200;
+const THRESHOLD = MAX * 0.6;
 
 const ComentarioItem: React.FC<ComentarioItemProps> = ({
 	comentario,
@@ -32,19 +34,29 @@ const ComentarioItem: React.FC<ComentarioItemProps> = ({
 		null
 	);
 
+	// Queda por hacer que salga bien el edit y el delete, crashea la aplicación.
 	const panGesture = Gesture.Pan()
 		.onUpdate((e) => {
 			translate.value = Math.max(-MAX, Math.min(e.translationX, MAX));
 		})
 		.onEnd(() => {
-			if (translate.value == MAX && onUpdate) {
-				setActionType("update");
-				setModalVisible(true);
-			} else if (translate.value == -MAX && onDelete) {
-				setActionType("delete");
-				setModalVisible(true);
-			}
-			translate.value = withSpring(0);
+			translate.value = withSpring(
+				0,
+				{ damping: 15, stiffness: 120 },
+				() => {
+					if (translate.value >= THRESHOLD && onUpdate) {
+						runOnJS(() => {
+							setActionType("update");
+							setModalVisible(true);
+						})();
+					} else if (translate.value <= -THRESHOLD && onDelete) {
+						runOnJS(() => {
+							setActionType("delete");
+							setModalVisible(true);
+						})();
+					}
+				}
+			);
 		});
 
 	const animatedStyle = useAnimatedStyle(() => ({
@@ -70,13 +82,12 @@ const ComentarioItem: React.FC<ComentarioItemProps> = ({
 	};
 
 	return (
-		<View>
+		<View style={{ marginVertical: 4 }}>
 			<GestureDetector gesture={panGesture}>
 				<Animated.View style={[styles.commentItem, animatedStyle]}>
 					<Text style={styles.commentUser}>
 						{comentario.autorNombre}
 					</Text>
-
 					<Text style={styles.commentText}>{comentario.texto}</Text>
 					<Text style={styles.commentDate}>
 						{new Date(comentario.fecha).toLocaleString()}
@@ -158,7 +169,6 @@ const styles = StyleSheet.create({
 		color: "#fff",
 		fontWeight: "600",
 	},
-	// Admin
 	adminBadge: {
 		position: "absolute",
 		right: 10,
@@ -175,10 +185,10 @@ const styles = StyleSheet.create({
 		borderRadius: 8,
 	},
 	editIcon: {
-		backgroundColor: "#fbff00ff", // azul
+		backgroundColor: "#fbff00ff",
 	},
 	deleteIcon: {
-		backgroundColor: "#ff4d4f", // rojo
+		backgroundColor: "#ff4d4f",
 	},
 });
 

@@ -34,7 +34,6 @@ const SearchScreen = ({ navigation }: { navigation: any }) => {
         pageSize: 10,
     });
 
-    // Filtros locales
     const [searchText, setSearchText] = useState("");
     const [selectedCat, setSelectedCat] = useState<string | null>(null);
     const [filteredExperiencias, setFilteredExperiencias] = useState<ExperienciasResponse[]>([]);
@@ -114,7 +113,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#FAFAFA",
-        padding: 5,
+        padding: 5
     },
 });
 

@@ -3,6 +3,7 @@ import MapView, { Marker } from "react-native-maps";
 
 const MapComponent = () => {
 	return (
+		//Hacer render como en ManageExperience para poder coger lat, lon, id y title
 		<MapView
 			style={{ width: "100%", height: "100%" }}
 			initialRegion={{

@@ -12,7 +12,7 @@ import {
 import Toast from "react-native-toast-message";
 
 interface FormData {
-	role: string;
+	categoria: string;
 }
 
 interface CategoryInputProps {
@@ -25,7 +25,7 @@ const CategoryInput: React.FC<CategoryInputProps> = ({ control, errors }) => {
 	const [open, setOpen] = useState(false);
 
 	useEffect(() => {
-		if (errors.role) {
+		if (errors.categoria) {
 			Vibration.vibrate(500);
 
 			Animated.sequence([
@@ -60,13 +60,13 @@ const CategoryInput: React.FC<CategoryInputProps> = ({ control, errors }) => {
 				type: "error",
 				position: "top",
 				text1: "Error en la categoría",
-				text2: errors.role.message,
+				text2: errors.categoria.message,
 				visibilityTime: 4000,
 				autoHide: true,
 				topOffset: 60,
 			});
 		}
-	}, [errors.role]);
+	}, [errors.categoria]);
 
 	return (
 		<View style={styles.formContainer}>
@@ -86,7 +86,7 @@ const CategoryInput: React.FC<CategoryInputProps> = ({ control, errors }) => {
 								style={[
 									styles.inputWrapper,
 									{ transform: [{ translateX: shakeAnim }] },
-									errors.role && styles.inputError,
+									errors.categoria && styles.inputError,
 								]}
 							>
 								<Ionicons
@@ -96,7 +96,7 @@ const CategoryInput: React.FC<CategoryInputProps> = ({ control, errors }) => {
 									style={{ marginRight: 10 }}
 								/>
 
-								<Text style={styles.roleText}>
+								<Text style={styles.categoriaText}>
 									{value || "Seleccionar Categoría"}
 								</Text>
 
@@ -135,7 +135,7 @@ const CategoryInput: React.FC<CategoryInputProps> = ({ control, errors }) => {
 
 const styles = StyleSheet.create({
 	formContainer: {
-		width: "95%",
+		flex:1,
 		marginBottom: 20,
 	},
 	inputWrapper: {
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "white",
 		marginBottom: 5,
 	},
-	roleText: {
+	categoriaText: {
 		flex: 1,
 		fontSize: 16,
 		color: "#333",

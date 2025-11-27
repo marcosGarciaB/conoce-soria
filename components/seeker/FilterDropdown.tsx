@@ -34,7 +34,6 @@ const Filters: React.FC<FiltersProps> = ({
 	onFilterByText,
 	onFilterByCategory,
 }) => {
-	// Comprobar si está logueado
 	const [open, setOpen] = useState(false);
 
 	const toggleOpen = () => {

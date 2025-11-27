@@ -23,6 +23,7 @@ interface ImageUrlInputProps {
 const ImageUrlInput: React.FC<ImageUrlInputProps> = ({ control, errors }) => {
     const shakeAnim = useRef(new Animated.Value(0)).current;
     const [open, setOpen] = useState(false);
+    const [height, setHeight] = useState(50);
 
     useEffect(() => {
         if (errors.role) {
@@ -103,6 +104,10 @@ const ImageUrlInput: React.FC<ImageUrlInputProps> = ({ control, errors }) => {
                                     onBlur={onBlur}
                                     onChangeText={onChange}
                                     value={value}
+                                    multiline={true}
+                                    onContentSizeChange={(e) =>
+                                        setHeight(e.nativeEvent.contentSize.height)
+                                    }
                                 />
 
                             </Animated.View>
@@ -118,14 +123,13 @@ const styles = StyleSheet.create({
 	// General
 	formContainer: {
 		flex: 1,
-		width: "95%",
 		marginBottom: 20,
 	},
 	// Input
 	inputWrapper: {
 		flexDirection: "row",
 		alignItems: "center",
-		height: 50,
+		height: 100,
 		fontSize: 16,
 		backgroundColor: "white",
 		borderColor: "#ffbf8bff",
@@ -137,7 +141,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		fontSize: 16,
 		color: "#333",
-		height: 50,
+		height: 100,
 	},
 	iconLeft: {
 		marginRight: 8,

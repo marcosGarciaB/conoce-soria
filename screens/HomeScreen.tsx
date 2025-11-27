@@ -234,7 +234,6 @@ const styles = StyleSheet.create({
 	card: {
 		width: width * 0.7,
 		borderRadius: 15,
-		overflow: "hidden",
 		backgroundColor: "#fff",
 		margin: 10,
 		shadowColor: "#000000ff",
@@ -262,7 +261,7 @@ const styles = StyleSheet.create({
 		width: "100%",
 		marginVertical: 10,
 		borderRadius: 10,
-		marginBottom: 70,
+		marginBottom: 80,
 	},
 	// Pasaporte
 	passportCard: {

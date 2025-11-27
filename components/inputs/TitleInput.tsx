@@ -12,7 +12,7 @@ import {
 import Toast from "react-native-toast-message";
 
 interface FormData {
-    role: string;
+    title: string;
 }
 
 interface TitleInputProps {
@@ -23,9 +23,10 @@ interface TitleInputProps {
 const TitleInput: React.FC<TitleInputProps> = ({ control, errors }) => {
     const shakeAnim = useRef(new Animated.Value(0)).current;
     const [open, setOpen] = useState(false);
+    const [height, setHeight] = useState(50);
 
     useEffect(() => {
-        if (errors.role) {
+        if (errors.title) {
             Vibration.vibrate(500);
 
             Animated.sequence([
@@ -60,13 +61,13 @@ const TitleInput: React.FC<TitleInputProps> = ({ control, errors }) => {
                 type: "error",
                 position: "top",
                 text1: "Error en el título",
-                text2: errors.role.message,
+                text2: errors.title.message,
                 visibilityTime: 4000,
                 autoHide: true,
                 topOffset: 60,
             });
         }
-    }, [errors.role]);
+    }, [errors.title]);
 
     return (
         <View style={styles.formContainer}>
@@ -86,7 +87,7 @@ const TitleInput: React.FC<TitleInputProps> = ({ control, errors }) => {
                                 style={[
                                     styles.inputWrapper,
                                     { transform: [{ translateX: shakeAnim }] },
-                                    errors.role && styles.inputError,
+                                    errors.title && styles.inputError,
                                 ]}
                             >
                                 <Ionicons
@@ -103,6 +104,10 @@ const TitleInput: React.FC<TitleInputProps> = ({ control, errors }) => {
                                     onBlur={onBlur}
                                     onChangeText={onChange}
                                     value={value}
+                                    multiline={true}
+                                    onContentSizeChange={(e) =>
+                                        setHeight(e.nativeEvent.contentSize.height)
+                                    }
                                 />
 
                             </Animated.View>
@@ -118,14 +123,13 @@ const styles = StyleSheet.create({
 	// General
 	formContainer: {
 		flex: 1,
-		width: "95%",
 		marginBottom: 20,
 	},
 	// Input
 	inputWrapper: {
 		flexDirection: "row",
 		alignItems: "center",
-		height: 50,
+		height: 70,
 		fontSize: 16,
 		backgroundColor: "white",
 		borderColor: "#ffbf8bff",
@@ -137,7 +141,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		fontSize: 16,
 		color: "#333",
-		height: 50,
+		height: 70,
 	},
 	iconLeft: {
 		marginRight: 8,

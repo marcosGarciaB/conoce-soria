@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
 	// Contenedores generales
 	container: {
 		flex: 1,
-		backgroundColor: "#fff8f8ff",
+		backgroundColor: "#FAFAFA",
 		padding: 5,
 	},
 	innerContainer: {
