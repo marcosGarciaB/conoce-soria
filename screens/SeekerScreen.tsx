@@ -8,13 +8,13 @@ import { usePaginatedFetch } from "@/hooks/usePaginatedFetch";
 import debounce from "lodash.debounce";
 import React, { useCallback, useEffect, useState } from "react";
 import {
-	ActivityIndicator,
-	Dimensions,
-	FlatList,
-	LayoutAnimation,
-	Platform,
-	StyleSheet,
-	UIManager
+    ActivityIndicator,
+    Dimensions,
+    FlatList,
+    LayoutAnimation,
+    Platform,
+    StyleSheet,
+    UIManager
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -114,6 +114,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#FAFAFA",
+        padding: 5,
     },
 });
 

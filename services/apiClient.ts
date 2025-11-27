@@ -4,6 +4,7 @@
 
 //const API_URL = "http://192.168.1.133:8080";
 const API_URL = "http://localhost:8080";
+//const API_URL = "https://soria-backend-production.up.railway.app";
 
 // Define la estructura de las cabeceras HTTP.
 interface Headers {
@@ -42,11 +43,17 @@ const request = async <T>(
 };
 
 export const apiClient = {
-	get: <T>(endpoint: string) => request<T>("GET", endpoint),
+	get: <T>(endpoint: string) => 
+		request<T>("GET", endpoint),
+
 	post: <T>(endpoint: string, body: any) =>
 		request<T>("POST", endpoint, body),
-	put: <T>(endpoint: string, body: any) => request<T>("PUT", endpoint, body),
-	delete: <T>(endpoint: string) => request<T>("DELETE", endpoint),
+
+	put: <T>(endpoint: string, body: any) => 
+		request<T>("PUT", endpoint, body),
+
+	delete: <T>(endpoint: string) => 
+		request<T>("DELETE", endpoint),
 
 	postWithToken: <T>(endpoint: string, body: any, token: string) =>
 		request<T>("POST", endpoint, body, token),

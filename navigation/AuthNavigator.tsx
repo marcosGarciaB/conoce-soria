@@ -4,6 +4,7 @@
 
 import ManageExperienceScreen from "@/screens/ManageExperienceScreen";
 import ManageUserScreen from "@/screens/ManageUserScreen";
+import PassportScreen from "@/screens/PassportScreen";
 import { UserCredentials } from "@/services/authService";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
@@ -21,6 +22,7 @@ export type AuthStackParamList = {
     Profile: undefined;
     ManageUser: { user: UserCredentials };
     ManageExperience: { experiencia: ExperienciaDetailResponse };
+    PassportScreen: undefined;
 };
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
@@ -32,6 +34,7 @@ export const AuthNavigator = () => {
             <Stack.Screen name="Details" component={DetailsScreen} />
             <Stack.Screen name="ManageUser" component={ManageUserScreen} />
             <Stack.Screen name="ManageExperience" component={ManageExperienceScreen} />
+            <Stack.Screen name="PassportScreen" component={PassportScreen} />
         </Stack.Navigator>
     );
 };

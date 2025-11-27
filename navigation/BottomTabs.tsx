@@ -9,12 +9,14 @@ import ProfileScreen from "../screens/ProfileScreen";
 import SearchScreen from "../screens/SeekerScreen";
 
 import CustomTabBar from "@/components/navigation/CustomTabBar";
+import TopSoriaScreen from "@/screens/TopSoriaScreen";
 
 type BottomTabParamList = {
 	Inicio: undefined;
 	Buscador: undefined;
 	Profile: undefined;
 	Admin: undefined;
+	Top: undefined;
 };
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();
@@ -30,6 +32,7 @@ export const BottomTabs = () => {
 		>
 			<Tab.Screen name="Inicio" component={InicioScreen} />
 			<Tab.Screen name="Buscador" component={SearchScreen} />
+			<Tab.Screen name="Top" component={TopSoriaScreen} />
 			<Tab.Screen name="Profile" component={ProfileScreen} />
 			{isAdminUser && <Tab.Screen name="Admin" component={AdminScreen} />}
 		</Tab.Navigator>

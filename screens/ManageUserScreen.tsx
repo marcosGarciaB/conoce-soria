@@ -44,7 +44,6 @@ const ManageUserScreen = ({ navigation, route, }: { navigation: any; route: User
 				// Actualizar la lista local de usuarios si tienes un listado
 				setUsers((prev) => prev.map((u) => (u.email === updated.email ? updated : u)));
 			} else {
-				// Crear
 				const created = await adminService.createUser(data as NewUser,token!);
 				setUsers((prev) => [...prev, created]);
 			}

@@ -39,9 +39,9 @@ type FormData = {
 	comentario: string;
 };
 
-const DetailsScreen = ({ navigation, route, }: { navigation: any; route: DetailsRoute;}) => {
+const DetailsScreen = ({ navigation, route, }: { navigation: any; route: DetailsRoute; }) => {
 	const { experiencia } = route.params;
-	const [detalle, setDetalle] = useState<ExperienciaDetailResponse | null>( null );
+	const [detalle, setDetalle] = useState<ExperienciaDetailResponse | null>(null);
 	const [comentarios, setComentarios] = useState<ComentariosResponse[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const { token } = useAuth();
@@ -155,10 +155,10 @@ const DetailsScreen = ({ navigation, route, }: { navigation: any; route: Details
 
 	return (
 		<SafeAreaView style={styles.container}>
-			<Header title={detalle.titulo} icon="search-sharp" isSecondIcon={true} icon2="chevron-back-circle" onPress={() => navigation.goBack()}/>
+			<Header title={detalle.titulo} icon="search-sharp" isSecondIcon={true} icon2="chevron-back-circle" onPress={() => navigation.goBack()} />
 
 			<ScrollView ref={flatListRef} showsVerticalScrollIndicator={true}>
-				
+
 				<ExperienceDetail detail={detalle} />
 
 				<View>
@@ -172,28 +172,27 @@ const DetailsScreen = ({ navigation, route, }: { navigation: any; route: Details
 							}
 						/>
 					))}
-
-					<AddComment
-						control={control}
-						handleSubmit={handleSubmit}
-						onSubmit={onSubmit}
-						errors={errors}
-					/>
 				</View>
 
-				<TouchableOpacity
-					style={styles.inputButton}
-					onPress={() => console.log("Registrar experiencia")}
-				>
-					<Ionicons
-						name="qr-code"
-						size={30}
-						color="white"
-						style={{ marginRight: 10 }}
-					/>
-					<Text style={styles.buttonText}>Registrar experiencia</Text>
-				</TouchableOpacity>
 			</ScrollView>
+			<AddComment
+				control={control}
+				handleSubmit={handleSubmit}
+				onSubmit={onSubmit}
+				errors={errors}
+			/>
+			<TouchableOpacity
+				style={styles.inputButton}
+				onPress={() => console.log("Registrar experiencia")}
+			>
+				<Ionicons
+					name="qr-code"
+					size={30}
+					color="white"
+					style={{ marginRight: 10 }}
+				/>
+				<Text style={styles.buttonText}>Registrar experiencia</Text>
+			</TouchableOpacity>
 		</SafeAreaView>
 	);
 };

@@ -15,12 +15,10 @@ const CustomTabBar: React.FC<BottomTabBarProps> = ({
 				const focused = state.index === index;
 				const iconName: keyof typeof Ionicons.glyphMap =
 					route.name === "Inicio"
-						? "home-outline"
-						: route.name === "Buscador"
-						? "search-outline"
-						: route.name === "Profile"
-						? "person"
-						: "accessibility";
+						? "home" : route.name === "Buscador"
+						? "search" : route.name === "Profile"
+						? "person": route.name === "Top"
+						? "trophy" : "accessibility";
 
 				return (
 					<TabButton

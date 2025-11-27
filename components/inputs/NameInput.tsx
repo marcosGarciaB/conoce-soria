@@ -68,8 +68,8 @@ const NameInput: React.FC<NameInputProps> = ({ control, errors }) => {
 				rules={{
 					required: "Nombre de usuario obligatorio",
 					minLength: {
-						value: 6,
-						message: "Debe tener al menos 6 caracteres",
+						value: 5,
+						message: "Debe tener al menos 5 caracteres",
 					},
 				}}
 				render={({ field: { onChange, onBlur, value } }) => (

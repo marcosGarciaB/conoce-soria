@@ -2,19 +2,18 @@ import React, { useState } from "react";
 import {
 	ScrollView,
 	StyleSheet,
-	Text,
-	TouchableOpacity,
-	View,
+	View
 } from "react-native";
 
 import { useAdmin } from "@/hooks/useAdmin";
 import { UserCredentials, authService } from "@/services/authService";
-import { Ionicons } from "@expo/vector-icons";
 import { useForm } from "react-hook-form";
 import Toast from "react-native-toast-message";
 import Header from "../common/HeaderItem";
+import Button from "./Button";
 import ModalUpdate from "./ModalUpdate";
 import PrivacyModal from "./PrivacyModal";
+import UserChips from "./UserChips";
 
 interface UserLogguedProps {
 	user: UserCredentials;
@@ -97,78 +96,23 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 			<ScrollView contentContainerStyle={styles.scrollContent}>
 				<Header title="Mi Cuenta" icon="information-circle-outline" />
 
+				<UserChips nombre={currentUser.nombre} email={currentUser.email} puntos={currentUser.puntos} />
+
 				<View style={styles.profileContainer}>
-					<Ionicons name="person-circle" size={120} color="#FF6B00" />
-					<Text style={styles.profileName}>{currentUser.nombre}</Text>
-					<Text style={styles.profileEmail}>{currentUser.email}</Text>
-
-					<View style={styles.infoChips}>
-						<View style={styles.chip}>
-							<Text style={styles.chipText}>
-								Puntos: {currentUser.puntos}
-							</Text>
-						</View>
-					</View>
-
 					<View style={styles.actionButtons}>
-						<TouchableOpacity
-							style={styles.actionButton}
-							onPress={() => openModal("nombre")}
-						>
-							<Text style={styles.actionText}>
-								Cambiar nombre
-							</Text>
-						</TouchableOpacity>
 
-						<TouchableOpacity
-							style={styles.actionButton}
-							onPress={() => openModal("email")}
-						>
-							<Text style={styles.actionText}>
-								Cambiar correo
-							</Text>
-						</TouchableOpacity>
-
-						<TouchableOpacity
-							style={styles.actionButton}
-							onPress={() => openModal("password")}
-						>
-							<Text style={styles.actionText}>
-								Cambiar contraseña
-							</Text>
-						</TouchableOpacity>
-
-						<TouchableOpacity
-							style={styles.actionButton}
-							onPress={() => setPrivacyVisible(true)}
-						>
-							<Text style={styles.actionText}>
-								Política de privacidad
-							</Text>
-						</TouchableOpacity>
+						<Button title="Cambiar nombre" onPress={() => openModal("nombre")} />
+						<Button title="Cambiar correo" onPress={() => openModal("email")} />
+						<Button title="Cambiar contraseña" onPress={() => openModal("password")} />
+						<Button title="Política de privacidad" onPress={() => setPrivacyVisible(true)} />
 
 						<PrivacyModal
 							isVisible={privacyVisible}
 							onClose={() => setPrivacyVisible(false)}
 						/>
 
-						<TouchableOpacity style={styles.actionButton}>
-							<Text style={styles.actionText}>Cambiar tema</Text>
-						</TouchableOpacity>
+						<Button title="Cerrar sesión" onPress={onPress} />
 
-						<TouchableOpacity
-							style={[
-								styles.actionButton,
-								{ backgroundColor: "#FF6B00" },
-							]}
-							onPress={onPress}
-						>
-							<Text
-								style={[styles.actionText, { color: "white" }]}
-							>
-								Cerrar sesión
-							</Text>
-						</TouchableOpacity>
 					</View>
 				</View>
 			</ScrollView>
@@ -178,8 +122,8 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 					modalField === "nombre"
 						? "Actualizar Nombre"
 						: modalField === "email"
-						? "Actualizar Email"
-						: "Actualizar Contraseña"
+							? "Actualizar Email"
+							: "Actualizar Contraseña"
 				}
 				isVisible={modalVisible}
 				onSave={saveModal}

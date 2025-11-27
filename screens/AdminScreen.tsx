@@ -6,23 +6,27 @@ import Header from "@/components/common/HeaderItem";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePaginatedFetch } from "@/hooks/usePaginatedFetch";
 import { adminService } from "@/services/adminService";
-import { UserCredentials } from "@/services/authService";
+import { authService, UserCredentials } from "@/services/authService";
 import {
 	ExperienciaDetailResponse
 } from "@/services/experienceService";
+import { useIsFocused } from "@react-navigation/native";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const AdminScreen = ({ navigation }: { navigation: any }) => {
 	const [showExperiencias, setShowExperiencias] = useState(false);
 	const [showUsers, setShowUsers] = useState(false);
+	const [buttonPressed, setButtonPressed] = useState<string>();
 	const { token } = useAuth();
+	const isFocused = useIsFocused();
+	const isFirstRender = useRef(true);
 
 	if (!token) return;
 	const { data: users, loadData: loadUsers, loading, hasMore } = usePaginatedFetch<UserCredentials>({
-		fetchFunction: (offset, limit) => adminService.getAllUsers(token, offset, limit),
+		fetchFunction: (offset, limit) => authService.getAllUsers(token, offset, limit),
 		pageSize: 5,
 	});
 
@@ -31,8 +35,19 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 		pageSize: 5,
 	});
 
+	useEffect(() => {
+		const handleLoadChange = async () => {
+			if (isFocused) {
+				loadUsers(true);
+				loadExperiencias(true);
+			}
+		}
+		handleLoadChange();
+	}, [isFocused]);
+
+
 	const handleLoadData = (tipo: "usuarios" | "experiencias") => {
-		tipo === "usuarios" ? loadUsers(true) : loadExperiencias(true);
+		setButtonPressed(tipo);
 	}
 
 	const handleToggleExperiencias = () => {

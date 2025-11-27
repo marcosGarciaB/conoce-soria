@@ -1,7 +1,5 @@
 /*
-* Utiliza el apiClient para definir funciones claras.
-* - Coge las llamadas de la API de autentcación.
-* - Define los tipos de datos que se envían y reciben.
+ * Aquí se definen los tipos y funciones relacionadas con los usuarios.
 */
 
 import { apiClient } from './apiClient';
@@ -71,9 +69,32 @@ const updateUserData = async (token: string, credentials: UpdateCredentials): Pr
     }
 }
 
+const getAllUsers = async (token: string, offset = 0, limit = 5): Promise<UserCredentials[]> => {
+    try {
+        const url = `/api/users?offset=${offset}&limit=${limit}`;
+        const response = await apiClient.getWithToken<UserCredentials[]>(url, token);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
+const emailExists = async(email: string): Promise<Boolean> => {
+    try {
+        const url = `/api/auth/check-email?email=${encodeURIComponent(email)}`;
+        const response = await apiClient.get<{ exists: boolean }>(url);
+        return response.exists;
+
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const authService = {
     login,
     register,
     getUserData,
     updateUserData,
+    getAllUsers,
+    emailExists,
 };

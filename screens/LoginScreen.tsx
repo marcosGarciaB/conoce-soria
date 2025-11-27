@@ -1,9 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { authService } from "@/services/authService";
+import Toast from "react-native-toast-message";
 import EmailInput from "../components/inputs/EmailInput";
 import PasswordInput from "../components/inputs/PasswordInput";
 import { useAuth } from "../contexts/AuthContext";
@@ -25,15 +27,45 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
 
 	const onSubmit = async (data: FormData) => {
 		setIsLoading(true);
+
 		try {
-			await login({ email: data.email, password: data.password });
-			navigation.navigate("MainTabs");
+			const exists = await authService.emailExists(data.email);
+
+			if (!exists) {
+				Toast.show({
+					type: "error",
+					position: "top",
+					text1: "No existe ninguna cuenta con ese correo.",
+					visibilityTime: 2000,
+					autoHide: true,
+					topOffset: 60,
+				});
+
+			} else {
+				try {
+					await login({ email: data.email, password: data.password });
+					let message = "Bienvenido " + data.email; 
+
+					Toast.show({
+						type: "success",
+						position: "top",
+						text1: message,
+						visibilityTime: 3000,
+						autoHide: true,
+						topOffset: 60,
+					});
+
+					setTimeout(() => {
+						navigation.navigate("MainTabs");
+					}, 5000);
+				} catch (error) {
+					console.error("Error en login:", error);
+				}
+			}
+
 		} catch (error) {
 			console.error("Error en login:", error);
-			Alert.alert(
-				"Error",
-				"No se pudo iniciar sesión. Revisa tus credenciales e inténtalo de nuevo."
-			);
+
 		} finally {
 			setIsLoading(false);
 		}

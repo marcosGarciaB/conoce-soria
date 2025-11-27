@@ -32,16 +32,6 @@ const getUserData = async (token: string): Promise<UserCredentials> => {
     }
 }
 
-const getAllUsers = async (token: string, offset = 0, limit = 5): Promise<UserCredentials[]> => {
-    try {
-        const url = `/api/users?offset=${offset}&limit=${limit}`;
-        const response = await apiClient.getWithToken<UserCredentials[]>(url, token);
-        return response;
-    } catch (error) {
-        throw error;
-    }
-}
-
 const getUserByEmail = async (email: string, token: string): Promise<UserCredentials> => {
     try {
         return await apiClient.getWithToken<UserCredentials>(`/api/users/${email}`, token);
@@ -125,7 +115,6 @@ const deleteExperiencia = async (id: number, token: string): Promise<Experiencia
 };
 
 export const adminService = {
-    getAllUsers,
     createUser,
     updateUser,
     deleteUser,

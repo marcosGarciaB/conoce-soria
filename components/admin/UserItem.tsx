@@ -22,7 +22,6 @@ interface UserItemProps {
 }
 
 const UserItem = ({ users, onDelete, onEdit, loadMore, hasMore, loading }: UserItemProps) => {
-	const url = "https://r-charts.com/es/miscelanea/procesamiento-imagenes-magick_files/figure-html/recortar-bordes-imagen-r.png";
 
 	const renderItem = ({ item }: { item: UserCredentials }) => {
 		return (
@@ -79,7 +78,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "#FAFAFA",
 	},
 	userCard: {
-		backgroundColor: "#F7F7F7",
+		backgroundColor: "white",
 		padding: 15,
 		borderRadius: 12,
 		marginBottom: 10,

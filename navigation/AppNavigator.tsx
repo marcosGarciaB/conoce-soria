@@ -9,8 +9,10 @@ import InicioScreen from "@/screens/HomeScreen";
 import LoginScreen from "@/screens/LoginScreen";
 import ManageExperienceScreen from "@/screens/ManageExperienceScreen";
 import ManageUserScreen from "@/screens/ManageUserScreen";
+import PassportScreen from "@/screens/PassportScreen";
 import ProfileScreen from "@/screens/ProfileScreen";
 import RegisterScreen from "@/screens/RegisterScreen";
+import TopSoriaScreen from "@/screens/TopSoriaScreen";
 import { UserCredentials } from "@/services/authService";
 import { ExperienciaDetailResponse, ExperienciasResponse } from "@/services/experienceService";
 import { BottomTabs } from "./BottomTabs";
@@ -20,10 +22,12 @@ export type RootStackParamList = {
     Login: undefined;
     Register: undefined;
     MainTabs: undefined;
-    Details:  { experiencia: ExperienciasResponse };
+    Details: { experiencia: ExperienciasResponse };
     Profile: undefined;
-    ManageUser: {user: UserCredentials};
-    ManageExperience: {experiencia: ExperienciaDetailResponse};
+    ManageUser: { user: UserCredentials };
+    ManageExperience: { experiencia: ExperienciaDetailResponse };
+    Passport: undefined;
+    Top: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -39,6 +43,8 @@ export const AppNavigator = () => {
             <Stack.Screen name="Profile" component={ProfileScreen} />
             <Stack.Screen name="ManageUser" component={ManageUserScreen} />
             <Stack.Screen name="ManageExperience" component={ManageExperienceScreen} />
+            <Stack.Screen name="Passport" component={PassportScreen} />
+            <Stack.Screen name="Top" component={TopSoriaScreen} />
         </Stack.Navigator>
     );
 };
