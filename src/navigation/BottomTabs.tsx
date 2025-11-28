@@ -16,7 +16,7 @@ type BottomTabParamList = {
     Inicio: undefined;
     Buscador: undefined;
     Profile: undefined;
-    PassportScreen: undefined;   // ⭐ AÑADIDO — NECESARIO PARA NAVEGAR
+    PassportScreen: undefined;
 };
 
 const Tab = createBottomTabNavigator<BottomTabParamList>();

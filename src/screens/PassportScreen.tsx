@@ -54,7 +54,6 @@ const PassportScreen = () => {
     return (
         <ScrollView style={styles.container}>
 
-            {/* BARRA SUPERIOR */}
             <View style={styles.topBar}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Ionicons name="chevron-back" size={28} color="#777" />
@@ -65,7 +64,6 @@ const PassportScreen = () => {
                 <Ionicons name="location-outline" size={26} color="#777" />
             </View>
 
-            {/* TARJETA DE PUNTOS */}
             <View style={styles.headerCard}>
                 <Text style={styles.pointsValue}>{totalPuntos}</Text>
 
@@ -76,7 +74,6 @@ const PassportScreen = () => {
                 )}
             </View>
 
-            {/* LISTA */}
             <Text style={styles.sectionTitle}>Historial de experiencias</Text>
 
             {registros.map((reg, index) => (
@@ -104,10 +101,6 @@ const PassportScreen = () => {
 
 export default PassportScreen;
 
-
-// ------------------------------------------
-// ESTILOS
-// ------------------------------------------
 const styles = StyleSheet.create({
     container: {
         padding: 16,

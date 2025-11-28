@@ -1,73 +1,50 @@
+# Welcome to your Expo app 👋
 
-------------------------- Pasos para crear la aplicación -------------------------
-- Instalar Node.js.
-- Instalar Expo CLI: 
-        -> npm install -g expo-cli
-- Crear el proyecto con TypeScript.
-        -> npx create-expo-app front-mobile --template expo-template-blank-typescript
-- Navegar al directorio del proyecto.
-- Inciar el servidor:
-        -> npx expo start
-- Para poder verlo en la web instalar lo siguiente:
-        -> npx expo install react-dom react-native-web
+This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
+## Get started
 
+1. Install dependencies
 
+   ```bash
+   npm install
+   ```
 
--------------------------- Extensiones del VS Code --------------------------
-- ES7+ React/Redux/React-Native snippets
-- REST Client
-- React Native Tools
-- Spring Boot Extension Pack (para la parte del backend)
+2. Start the app
 
+   ```bash
+   npx expo start
+   ```
 
+In the output, you'll find options to open the app in a
 
+- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
+- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
+- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
+- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
 
--------------------------- Paquetes a instalar en bash --------------------------
-- npm install @react-navigation/native
-- expo install react-native-screens react-native-safe-area-context
-- npx expo install react-native-web react-dom
-- npx expo install @react-native-async-storage/async-storage
-- npm install @react-navigation/native-stack
-- npm install @react-navigation/bottom-tabs
-- npm install react-native-snap-carousel
-- npm install @expo/vector-icons
-- npm install react-hook-form
-- npm install react-native-gesture-handler
-- npm install react-native-gesture-handler react-native-reanimated
-- npm install react-native-toast-message
-- npm install react-native-element-dropdown --save
+You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
+## Get a fresh project
 
+When you're ready, run:
 
--------------------------- Proceso de la app --------------------------
-Marcos
-- Registro -> pulir pequeñas cosas,
-- Login -> pulir pequeñas cosas,
-- Inicio -> añadir lo de Michelle,
-- Buscador -> pulir pequeñas cosas,
-- Experiencias detalles -> me queda hacerlo,
-- Perfil ( para editar la contraseña, nombre, etc) -> me queda hacerlo.
+```bash
+npm run reset-project
+```
 
-Michelle
-- QR
-- Top
-- Pasaporte
+This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
 
+## Learn more
 
+To learn more about developing your project with Expo, look at the following resources:
 
--------------------------- Enlaces de interés --------------------------
-- Estaría bien meter notificaciones
-https://gravitec.net/es/blog/notificaciones-push-en-react-native-guia-completa/
+- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
+- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
 
+## Join the community
 
-- Web para los componentes de React Native
-https://urianviera.com/react-native/animated-api-en-react-native
+Join our community of developers creating universal apps.
 
-
-
-
-
-
-    
-
+- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
+- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
