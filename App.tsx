@@ -5,7 +5,7 @@
 
 import { NavigationContainer } from "@react-navigation/native";
 import React, { useState } from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { ActivityIndicator, StatusBar, StyleSheet, View } from "react-native";
 import "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
@@ -42,6 +42,7 @@ export default function App() {
 		<SafeAreaProvider>
 			<GestureHandlerRootView style={{ flex: 1 }}>
 				<AuthProvider>
+					<StatusBar barStyle={("dark-content")} />
 					<NavigationContainer>
 						<AppContent />
 						<Toast />

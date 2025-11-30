@@ -10,7 +10,8 @@ import { UpdateCredentials, UserCredentials } from "@/services/authService";
 
 import { RouteProp } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type UserRoute = RouteProp<RootStackParamList, "ManageUser">;
@@ -61,13 +62,17 @@ const ManageUserScreen = ({ navigation, route, }: { navigation: any; route: User
 				icon2="chevron-back-circle"
 				onPress={() => navigation.goBack()}
 			/>
-			<ScrollView>
-				<UserForm
+			<KeyboardAwareScrollView
+				contentContainerStyle={styles.formContainer}
+				enableOnAndroid={true}
+				keyboardShouldPersistTaps="handled"
+			>				
+			<UserForm
 					initialData={editingUser ?? undefined}
 					onSubmit={handleSubmitForm}
 					navigation={navigation}
 				/>
-			</ScrollView>
+			</KeyboardAwareScrollView>
 		</SafeAreaView>
 	);
 };
@@ -77,6 +82,19 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: "#FAFAFA",
 		padding: 5,
+	},
+		formContainer: {
+		flexGrow: 1,
+		backgroundColor: "#fff",
+		borderRadius: 16,
+		padding: 10,
+		margin: 16,
+		maxHeight: "60%",
+		shadowColor: "#000",
+		shadowOpacity: 0.05,
+		shadowRadius: 10,
+		shadowOffset: { width: 0, height: 4 },
+		elevation: 3,
 	},
 });
 

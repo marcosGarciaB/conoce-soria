@@ -1,18 +1,19 @@
+import useShakeAnimation from "@/hooks/useShakeAnimation";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Control, Controller, FieldErrors } from "react-hook-form";
 import {
     Animated,
     StyleSheet,
     TextInput,
     TouchableOpacity,
-    Vibration,
-    View,
+    View
 } from "react-native";
-import Toast from "react-native-toast-message";
+import showErrorToast from "../utils/showErrorToast";
 
 interface FormData {
-	coord: string;
+	ubicacionLat: string;
+	ubicacionLng: string;
 }
 
 interface CoordsInputProps {
@@ -26,61 +27,18 @@ const CoordsInput: React.FC<CoordsInputProps> = ({
 	errors,
 	isLat,
 }) => {
-	const shakeAnim = useRef(new Animated.Value(0)).current;
+    const {shakeAnim, shake} = useShakeAnimation();
 	const [open, setOpen] = useState(false);
     const [inputValue, setInputValue] = useState("");
 
-	useEffect(() => {
-		if (errors.coord) {
-			Vibration.vibrate(500);
-
-			Animated.sequence([
-				Animated.timing(shakeAnim, {
-					toValue: 5,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: -5,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: 5,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: -5,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: 0,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-			]).start();
-
-			let text1 = isLat ? "Error en la latitud" : "Error en la longitud";
-
-			Toast.show({
-				type: "error",
-				position: "top",
-				text1,
-				text2: errors.coord.message,
-				visibilityTime: 4000,
-				autoHide: true,
-				topOffset: 60,
-			});
-		}
-	}, [errors.coord]);
+    const fieldName = isLat ? "ubicacionLat" : "ubicacionLng";
+    const fieldError = isLat ? errors.ubicacionLat : errors.ubicacionLng;
 
 	return (
         <View style={styles.formContainer}>
             <Controller
             control={control}
-            name={isLat ? "ubicacionLat" : "ubicacionLng"}
+            name={fieldName}
             rules={{
                 required: isLat ? "Debes poner una latitud" : "Debes poner una longitud",
                 pattern: {
@@ -98,7 +56,7 @@ const CoordsInput: React.FC<CoordsInputProps> = ({
                 return (
                     <View>
                         <TouchableOpacity onPress={() => {}} activeOpacity={0.8}>
-                            <Animated.View style={[styles.inputWrapper, { transform: [{ translateX: shakeAnim }] }, errors.coord && styles.inputError]}>
+                            <Animated.View style={[styles.inputWrapper, { transform: [{ translateX: shakeAnim }] }, fieldError && styles.inputError]}>
                                 <Ionicons name="analytics-outline" size={22} color="#ffbf8bff" style={{ marginRight: 10 }} />
                                 <TextInput
                                     style={[styles.inputWithIcon, { height: 80 }]}
@@ -111,6 +69,11 @@ const CoordsInput: React.FC<CoordsInputProps> = ({
                                         const normalized = parseFloat(inputValue.replace(",", "."));
                                         onChange(isNaN(normalized) ? 0 : normalized);
                                         onBlur();
+
+										if (fieldError) {
+                                                shake();
+                                                showErrorToast("Error en la coordenada" , fieldError.message!);
+                                            }
                                     }}
                                 />
                             </Animated.View>
@@ -128,6 +91,7 @@ const styles = StyleSheet.create({
 	formContainer: {
 		flex: 1,
 		marginBottom: 20,
+        padding: 1
 	},
 	// Input
 	inputWrapper: {

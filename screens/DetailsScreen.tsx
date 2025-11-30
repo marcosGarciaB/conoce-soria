@@ -1,7 +1,9 @@
 import Header from "@/components/common/HeaderItem";
-import AddComment from "@/components/detail/AddComment";
+import LoadingScreen from "@/components/common/Loading";
 import ComentarioItem from "@/components/detail/CommentItem";
+import EmptyComments from "@/components/detail/EmptyComments";
 import ExperienceDetail from "@/components/detail/ExperienceInfo";
+import AddComment from "@/components/inputs/AddCommentInput";
 import { useAuth } from "@/contexts/AuthContext";
 import { RootStackParamList } from "@/navigation/AppNavigator";
 import {
@@ -18,16 +20,16 @@ import { RouteProp } from "@react-navigation/native";
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
+	FlatList,
 	Platform,
 	ScrollView,
 	StyleSheet,
 	Text,
 	TouchableOpacity,
 	UIManager,
-	View
+	View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 
 if (Platform.OS === "android") {
 	UIManager.setLayoutAnimationEnabledExperimental?.(true);
@@ -39,16 +41,24 @@ type FormData = {
 	comentario: string;
 };
 
-const DetailsScreen = ({ navigation, route, }: { navigation: any; route: DetailsRoute; }) => {
+const DetailsScreen = ({
+	navigation,
+	route,
+}: {
+	navigation: any;
+	route: DetailsRoute;
+}) => {
 	const { experiencia } = route.params;
-	const [detalle, setDetalle] = useState<ExperienciaDetailResponse | null>(null);
+	const [detalle, setDetalle] = useState<ExperienciaDetailResponse | null>(
+		null
+	);
 	const [comentarios, setComentarios] = useState<ComentariosResponse[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const { token } = useAuth();
+	const listRef = useRef<FlatList<ComentariosResponse>>(null);
 
 	const flatListRef = useRef<ScrollView>(null);
 
-	// Cargar detalles y comentarios
 	useEffect(() => {
 		const loadExperiencia = async () => {
 			try {
@@ -99,7 +109,10 @@ const DetailsScreen = ({ navigation, route, }: { navigation: any; route: Details
 			);
 			setComentarios(updatedComentarios);
 			reset({ comentario: "" });
-			flatListRef.current?.scrollToEnd({ animated: true });
+
+			setTimeout(() => {
+				listRef.current?.scrollToEnd({ animated: true });
+			}, 150);
 		} catch (error) {
 			console.error("Error al enviar comentario:", error);
 		} finally {
@@ -151,30 +164,39 @@ const DetailsScreen = ({ navigation, route, }: { navigation: any; route: Details
 		}
 	};
 
-	if (!detalle) return <Text>Cargando...</Text>;
+	if (!detalle) return <LoadingScreen />;
 
 	return (
 		<SafeAreaView style={styles.container}>
-			<Header title={detalle.titulo} icon="search-sharp" isSecondIcon={true} icon2="chevron-back-circle" onPress={() => navigation.goBack()} />
+			<Header
+				title={detalle.titulo}
+				icon="search-sharp"
+				isSecondIcon={true}
+				icon2="chevron-back-circle"
+				onPress={() => navigation.goBack()}
+			/>
 
 			<ScrollView ref={flatListRef} showsVerticalScrollIndicator={true}>
-
 				<ExperienceDetail detail={detalle} />
 
 				<View>
-					{comentarios.map((comentario) => (
-						<ComentarioItem
-							key={comentario.id}
-							comentario={comentario}
-							onDelete={(id) => handleDelete(id)}
-							onUpdate={(id, newText) =>
-								handleUpdate(id, newText)
-							}
-						/>
-					))}
+					{comentarios.length === 0 ? (
+						<EmptyComments />
+					) : (
+						comentarios.map((comentario) => (
+							<ComentarioItem
+								key={comentario.id}
+								comentario={comentario}
+								onDelete={(id) => handleDelete(id)}
+								onUpdate={(id, newText) =>
+									handleUpdate(id, newText)
+								}
+							/>
+						))
+					)}
 				</View>
-
 			</ScrollView>
+
 			<AddComment
 				control={control}
 				handleSubmit={handleSubmit}
@@ -207,7 +229,7 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		alignItems: "center",
 		justifyContent: "center",
-		backgroundColor: "orange",
+		backgroundColor: "#FF6B00",
 		height: 50,
 		borderRadius: 30,
 	},

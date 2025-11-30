@@ -1,9 +1,10 @@
 import { NewUser } from "@/services/adminService";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
 import { UserCredentials } from "@/services/authService";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import ModalSuccess from "../common/ModalSucces";
 import EmailInput from "../inputs/EmailInput";
 import NameInput from "../inputs/NameInput";
@@ -70,7 +71,10 @@ const UserForm = ({ initialData, onSubmit, navigation }: UserFormProps) => {
 	};
 
 	return (
-		<View style={styles.formContainer}>
+		<KeyboardAwareScrollView
+			enableOnAndroid={true}
+			keyboardShouldPersistTaps="handled"
+		>
 			<NameInput control={control} errors={errors} />
 			<EmailInput control={control} errors={errors} />
 			<PasswordInput
@@ -85,9 +89,7 @@ const UserForm = ({ initialData, onSubmit, navigation }: UserFormProps) => {
 				onPress={handleSubmit(submitHandler)}
 			>
 				<Text style={styles.submitText}>
-					{initialData
-						? "Actualizar Usuario"
-						: "Crear Usuario"}
+					{initialData ? "Actualizar Usuario" : "Crear Usuario"}
 				</Text>
 			</TouchableOpacity>
 
@@ -106,25 +108,13 @@ const UserForm = ({ initialData, onSubmit, navigation }: UserFormProps) => {
 					navigation.goBack();
 				}}
 			/>
-		</View>
+		</KeyboardAwareScrollView>
 	);
 };
 
 const styles = StyleSheet.create({
-	formContainer: {
-		flex: 1,
-		backgroundColor: "#fff",
-		borderRadius: 16,
-		padding: 20,
-		margin: 16,
-		shadowColor: "#000",
-		shadowOpacity: 0.05,
-		shadowRadius: 10,
-		shadowOffset: { width: 0, height: 4 },
-		elevation: 3,
-	},
 	submitButton: {
-		backgroundColor: "#ffbf8b",
+		backgroundColor: "#FF6B00",
 		paddingVertical: 14,
 		borderRadius: 12,
 		marginTop: 20,

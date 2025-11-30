@@ -111,7 +111,6 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
 										color={"black"}
 									/>
 									<Text style={styles.buttonRegisterText}>
-										{" "}
 										Crear Cuenta
 									</Text>
 								</View>

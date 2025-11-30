@@ -1,8 +1,9 @@
+import useShakeAnimation from "@/hooks/useShakeAnimation";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { Control, Controller, FieldErrors } from "react-hook-form";
-import { Animated, StyleSheet, TextInput, Vibration, View } from "react-native";
-import Toast from "react-native-toast-message";
+import { Animated, StyleSheet, TextInput, View } from "react-native";
+import showErrorToast from "../utils/showErrorToast";
 
 interface FormData {
 	nombre: string;
@@ -14,51 +15,7 @@ interface NameInputProps {
 }
 
 const NameInput: React.FC<NameInputProps> = ({ control, errors }) => {
-	const shakeAnim = useRef(new Animated.Value(0)).current;
-
-	useEffect(() => {
-		if (errors.nombre) {
-			Vibration.vibrate(500);
-
-			Animated.sequence([
-				Animated.timing(shakeAnim, {
-					toValue: 5,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: -5,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: 5,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: -5,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: 0,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-			]).start();
-
-			Toast.show({
-				type: "error",
-				position: "top",
-				text1: "Error en el nombre de usuario",
-				text2: errors.nombre.message,
-				visibilityTime: 4000,
-				autoHide: true,
-				topOffset: 60,
-			});
-		}
-	}, [errors.nombre]);
+	const { shakeAnim, shake } = useShakeAnimation();
 
 	return (
 		<View style={styles.formContainer}>
@@ -91,9 +48,18 @@ const NameInput: React.FC<NameInputProps> = ({ control, errors }) => {
 								style={styles.inputWithIcon}
 								placeholder="Nombre de usuario"
 								placeholderTextColor="#999"
-								onBlur={onBlur}
 								onChangeText={onChange}
 								value={value}
+								onBlur={() => {
+									onBlur();
+									if (errors.nombre) {
+										shake();
+										showErrorToast(
+											"Error en el nombre",
+											errors.nombre.message!
+										);
+									}
+								}}
 							/>
 						</Animated.View>
 					</View>
@@ -108,6 +74,7 @@ const styles = StyleSheet.create({
 	formContainer: {
 		flex: 1,
 		marginBottom: 20,
+        padding: 1
 	},
 	// Input
 	inputWrapper: {

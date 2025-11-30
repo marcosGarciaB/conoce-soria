@@ -1,15 +1,16 @@
+import useShakeAnimation from "@/hooks/useShakeAnimation";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Control, Controller, FieldErrors } from "react-hook-form";
 import {
+	Animated,
 	KeyboardAvoidingView,
 	Platform,
 	StyleSheet,
-	Text,
 	TextInput,
-	TouchableOpacity,
-	View,
+	TouchableOpacity
 } from "react-native";
+import showErrorToast from "../utils/showErrorToast";
 
 interface FormData {
 	comentario: string;
@@ -28,6 +29,9 @@ const AddComment = ({
 	onSubmit,
 	errors,
 }: AddCommentProps) => {
+
+	const { shakeAnim, shake } = useShakeAnimation();
+
 	return (
 		<KeyboardAvoidingView
 			behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -43,7 +47,11 @@ const AddComment = ({
 					},
 				}}
 				render={({ field: { onChange, onBlur, value } }) => (
-					<View style={styles.inputContainer}>
+					<Animated.View style={[styles.inputContainer,
+							{ transform: [{ translateX: shakeAnim }] },
+							errors.comentario && styles.inputError,
+					]}
+					>
 						<Ionicons
 							name="chatbox"
 							size={20}
@@ -53,21 +61,25 @@ const AddComment = ({
 						<TextInput
 							style={styles.inputWithIcon}
 							placeholder="Escribe tu comentario"
-							onBlur={onBlur}
 							onChangeText={onChange}
 							value={value}
+							onBlur={() => {
+								onBlur;
+								if (errors.comentario) {
+									shake();
+									showErrorToast(
+										"Comentario no válido",
+										errors.comentario.message!
+									);
+								}
+							}}
 						/>
 						<TouchableOpacity onPress={handleSubmit(onSubmit)}>
 							<Ionicons name="send" size={25} color="#FF6B00" />
 						</TouchableOpacity>
-					</View>
+					</Animated.View>
 				)}
 			/>
-			{errors.comentario && (
-				<Text style={styles.errorText}>
-					{errors.comentario.message}
-				</Text>
-			)}
 		</KeyboardAvoidingView>
 	);
 };
@@ -96,9 +108,9 @@ const styles = StyleSheet.create({
 		color: "#333",
 	},
 	// Error
-	errorText: {
-		color: "red",
-		marginTop: 5,
+		inputError: {
+		borderColor: "red",
+		backgroundColor: "#ffe6e6",
 	},
 });
 

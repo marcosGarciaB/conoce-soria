@@ -1,15 +1,14 @@
+import useShakeAnimation from "@/hooks/useShakeAnimation";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { Control, Controller, FieldErrors } from "react-hook-form";
 import {
 	Animated,
 	StyleSheet,
 	Text,
 	TouchableOpacity,
-	Vibration,
-	View,
+	View
 } from "react-native";
-import Toast from "react-native-toast-message";
 
 interface FormData {
 	categoria: string;
@@ -21,52 +20,8 @@ interface CategoryInputProps {
 }
 
 const CategoryInput: React.FC<CategoryInputProps> = ({ control, errors }) => {
-	const shakeAnim = useRef(new Animated.Value(0)).current;
+    const {shakeAnim, shake} = useShakeAnimation();
 	const [open, setOpen] = useState(false);
-
-	useEffect(() => {
-		if (errors.categoria) {
-			Vibration.vibrate(500);
-
-			Animated.sequence([
-				Animated.timing(shakeAnim, {
-					toValue: 5,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: -5,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: 5,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: -5,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: 0,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-			]).start();
-
-			Toast.show({
-				type: "error",
-				position: "top",
-				text1: "Error en la categoría",
-				text2: errors.categoria.message,
-				visibilityTime: 4000,
-				autoHide: true,
-				topOffset: 60,
-			});
-		}
-	}, [errors.categoria]);
 
 	return (
 		<View style={styles.formContainer}>
@@ -137,6 +92,7 @@ const styles = StyleSheet.create({
 	formContainer: {
 		flex:1,
 		marginBottom: 20,
+        padding: 1
 	},
 	inputWrapper: {
 		flexDirection: "row",

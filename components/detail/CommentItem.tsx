@@ -1,3 +1,4 @@
+import * as Haptics from "expo-haptics";
 import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
@@ -9,7 +10,6 @@ import Animated, {
 	withSpring,
 } from "react-native-reanimated";
 
-import { useAuth } from "@/contexts/AuthContext";
 import { ComentariosResponse } from "@/services/commentService";
 import ModalComment from "./ModalComment";
 
@@ -19,44 +19,45 @@ interface ComentarioItemProps {
 	onUpdate?: (id: string, newText: string) => void;
 }
 
-const MAX = 200;
-const THRESHOLD = MAX * 0.6;
+const MAX = 50;
+const THRESHOLD = MAX * 0.25;
 
 const ComentarioItem: React.FC<ComentarioItemProps> = ({
 	comentario,
 	onDelete,
 	onUpdate,
 }) => {
-	const { token } = useAuth();
 	const translate = useSharedValue(0);
 	const [modalVisible, setModalVisible] = useState(false);
 	const [actionType, setActionType] = useState<"delete" | "update" | null>(
 		null
 	);
 
-	// Queda por hacer que salga bien el edit y el delete, crashea la aplicación.
+	const resetPosition = () => {
+		translate.value = withSpring(0, { damping: 15, stiffness: 120 });
+	};
+
+	const triggerAction = (type: "delete" | "update") => {
+		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+		setActionType(type);
+		setModalVisible(true);
+		resetPosition();
+	};
+
 	const panGesture = Gesture.Pan()
 		.onUpdate((e) => {
 			translate.value = Math.max(-MAX, Math.min(e.translationX, MAX));
 		})
 		.onEnd(() => {
-			translate.value = withSpring(
-				0,
-				{ damping: 15, stiffness: 120 },
-				() => {
-					if (translate.value >= THRESHOLD && onUpdate) {
-						runOnJS(() => {
-							setActionType("update");
-							setModalVisible(true);
-						})();
-					} else if (translate.value <= -THRESHOLD && onDelete) {
-						runOnJS(() => {
-							setActionType("delete");
-							setModalVisible(true);
-						})();
-					}
-				}
-			);
+			const value = translate.value;
+
+			if (value >= THRESHOLD) {
+				runOnJS(triggerAction)("update");
+			} else if (value <= -THRESHOLD) {
+				runOnJS(triggerAction)("delete");
+			} else {
+				resetPosition();
+			}
 		});
 
 	const animatedStyle = useAnimatedStyle(() => ({
@@ -64,7 +65,7 @@ const ComentarioItem: React.FC<ComentarioItemProps> = ({
 		backgroundColor: interpolateColor(
 			translate.value,
 			[-MAX, 0, MAX],
-			["#ffdfdfff", "#fff", "#eef2ffff"]
+			["#ffcccc", "#ffffff", "#e5f2ff"]
 		),
 	}));
 
@@ -82,7 +83,7 @@ const ComentarioItem: React.FC<ComentarioItemProps> = ({
 	};
 
 	return (
-		<View style={{ marginVertical: 4 }}>
+		<View style={{ marginVertical: 8 }}>
 			<GestureDetector gesture={panGesture}>
 				<Animated.View style={[styles.commentItem, animatedStyle]}>
 					<Text style={styles.commentUser}>
@@ -113,82 +114,27 @@ const ComentarioItem: React.FC<ComentarioItemProps> = ({
 const styles = StyleSheet.create({
 	commentItem: {
 		padding: 15,
-		marginVertical: 6,
-		margin: 2,
 		borderRadius: 20,
 		shadowColor: "#000",
 		shadowOffset: { width: 0, height: 3 },
-		shadowOpacity: 0.2,
-		shadowRadius: 4,
+		shadowOpacity: 0.15,
+		shadowRadius: 5,
 		elevation: 5,
+		backgroundColor: "#fff",
 	},
-	commentUser: {
-		fontWeight: "600",
-		color: "#333",
+	commentUser: { 
+		fontWeight: "600", 
+		color: "#333" 
 	},
-	commentText: {
-		color: "#555",
-		marginTop: 2,
+	commentText: { 
+		color: "#555", 
+		marginTop: 4 
 	},
 	commentDate: {
-		color: "#999",
+		color: "#777",
 		fontSize: 12,
-		marginTop: 2,
+		marginTop: 4,
 		alignSelf: "flex-end",
-	},
-	modalBackground: {
-		flex: 1,
-		backgroundColor: "rgba(0,0,0,0.5)",
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	modalContainer: {
-		backgroundColor: "#fff",
-		borderRadius: 12,
-		padding: 20,
-		width: "70%",
-	},
-	modalTitle: {
-		fontSize: 18,
-		fontWeight: "600",
-		marginBottom: 20,
-		textAlign: "center",
-	},
-	modalButtons: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-	},
-	modalButton: {
-		flex: 1,
-		marginHorizontal: 5,
-		paddingVertical: 10,
-		borderRadius: 10,
-		alignItems: "center",
-	},
-	modalButtonText: {
-		color: "#fff",
-		fontWeight: "600",
-	},
-	adminBadge: {
-		position: "absolute",
-		right: 10,
-		flexDirection: "row",
-		borderRadius: 12,
-		overflow: "hidden",
-	},
-	adminIcon: {
-		width: 30,
-		height: 30,
-		justifyContent: "center",
-		alignItems: "center",
-		marginLeft: 5,
-		borderRadius: 8,
-	},
-	editIcon: {
-		backgroundColor: "#fbff00ff",
-	},
-	deleteIcon: {
-		backgroundColor: "#ff4d4f",
 	},
 });
 

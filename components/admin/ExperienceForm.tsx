@@ -54,6 +54,7 @@ const ExperienceForm = ({
 				ubicacionLat: initialData.ubicacionLat,
 				ubicacionLng: initialData.ubicacionLng,
 			});
+			console.log(initialData.direccion);
 		}
 	}, [initialData]);
 
@@ -65,7 +66,6 @@ const ExperienceForm = ({
 
 	return (
 		<KeyboardAwareScrollView
-			contentContainerStyle={styles.formContainer}
 			enableOnAndroid={true}
 			extraScrollHeight={50}
 			keyboardShouldPersistTaps="handled"
@@ -109,20 +109,8 @@ const ExperienceForm = ({
 };
 
 const styles = StyleSheet.create({
-	formContainer: {
-		flexGrow: 1,
-		backgroundColor: "#fff",
-		borderRadius: 16,
-		padding: 20,
-		margin: 16,
-		shadowColor: "#000",
-		shadowOpacity: 0.05,
-		shadowRadius: 10,
-		shadowOffset: { width: 0, height: 4 },
-		elevation: 3,
-	},
 	submitButton: {
-		backgroundColor: "#ffbf8b",
+		backgroundColor: "#FF6B00",
 		paddingVertical: 14,
 		borderRadius: 12,
 		marginTop: 20,
