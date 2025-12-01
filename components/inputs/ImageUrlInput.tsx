@@ -1,122 +1,89 @@
+import useShakeAnimation from "@/hooks/useShakeAnimation";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { Control, Controller, FieldErrors } from "react-hook-form";
 import {
-    Animated,
-    StyleSheet,
-    TextInput,
-    TouchableOpacity,
-    Vibration,
-    View,
+	Animated,
+	StyleSheet,
+	TextInput,
+	TouchableOpacity,
+	View,
 } from "react-native";
-import Toast from "react-native-toast-message";
+import showErrorToast from "../utils/showErrorToast";
 
 interface FormData {
-    role: string;
+	imagenPortadaUrl: string;
 }
 
 interface ImageUrlInputProps {
-    control: Control<any>;
-    errors: FieldErrors<FormData>;
+	control: Control<any>;
+	errors: FieldErrors<FormData>;
 }
 
 const ImageUrlInput: React.FC<ImageUrlInputProps> = ({ control, errors }) => {
-    const shakeAnim = useRef(new Animated.Value(0)).current;
-    const [open, setOpen] = useState(false);
-    const [height, setHeight] = useState(50);
+	const { shakeAnim, shake } = useShakeAnimation();
+	const [open, setOpen] = useState(false);
+	const [height, setHeight] = useState(50);
 
-    useEffect(() => {
-        if (errors.role) {
-            Vibration.vibrate(500);
+	return (
+		<View style={styles.formContainer}>
+			<Controller
+				control={control}
+				name="imagenPortadaUrl"
+				rules={{
+					required: "Debes poner una url",
+				}}
+				render={({ field: { onChange, onBlur, value } }) => (
+					<View>
+						<TouchableOpacity
+							onPress={() => setOpen(!open)}
+							activeOpacity={0.8}
+						>
+							<Animated.View
+								style={[
+									styles.inputWrapper,
+									{ transform: [{ translateX: shakeAnim }] },
+									errors.imagenPortadaUrl &&
+										styles.inputError,
+								]}
+							>
+								<Ionicons
+									name="image-outline"
+									size={22}
+									color="#ffbf8bff"
+									style={{ marginRight: 10 }}
+								/>
 
-            Animated.sequence([
-                Animated.timing(shakeAnim, {
-                    toValue: 5,
-                    duration: 100,
-                    useNativeDriver: true,
-                }),
-                Animated.timing(shakeAnim, {
-                    toValue: -5,
-                    duration: 100,
-                    useNativeDriver: true,
-                }),
-                Animated.timing(shakeAnim, {
-                    toValue: 5,
-                    duration: 100,
-                    useNativeDriver: true,
-                }),
-                Animated.timing(shakeAnim, {
-                    toValue: -5,
-                    duration: 100,
-                    useNativeDriver: true,
-                }),
-                Animated.timing(shakeAnim, {
-                    toValue: 0,
-                    duration: 100,
-                    useNativeDriver: true,
-                }),
-            ]).start();
-
-            Toast.show({
-                type: "error",
-                position: "top",
-                text1: "Error en la url de la imagen",
-                text2: errors.role.message,
-                visibilityTime: 4000,
-                autoHide: true,
-                topOffset: 60,
-            });
-        }
-    }, [errors.role]);
-
-    return (
-        <View style={styles.formContainer}>
-            <Controller
-                control={control}
-                name="imagenPortadaUrl"
-                rules={{
-                    required: "Debes poner una url",
-                }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                    <View>
-                        <TouchableOpacity
-                            onPress={() => setOpen(!open)}
-                            activeOpacity={0.8}
-                        >
-                            <Animated.View
-                                style={[
-                                    styles.inputWrapper,
-                                    { transform: [{ translateX: shakeAnim }] },
-                                    errors.role && styles.inputError,
-                                ]}
-                            >
-                                <Ionicons
-                                    name="image-outline"
-                                    size={22}
-                                    color="#ffbf8bff"
-                                    style={{ marginRight: 10 }}
-                                />
-
-                                <TextInput
-                                    style={styles.inputWithIcon}
-                                    placeholder="https://..."
-                                    placeholderTextColor="#999"
-                                    onBlur={onBlur}
-                                    onChangeText={onChange}
-                                    value={value}
-                                    multiline={true}
-                                    onContentSizeChange={(e) =>
-                                        setHeight(e.nativeEvent.contentSize.height)
-                                    }
-                                />
-
-                            </Animated.View>
-                        </TouchableOpacity>
-                    </View>
-                )}
-            />
-        </View>
-    );
+								<TextInput
+									style={styles.inputWithIcon}
+									placeholder="https://..."
+									placeholderTextColor="#999"
+									onBlur={() => {
+										onBlur();
+										if (errors.imagenPortadaUrl) {
+											shake();
+											showErrorToast(
+												"Error en la imagen",
+												errors.imagenPortadaUrl.message!
+											);
+										}
+									}}
+									onChangeText={onChange}
+									value={value}
+									multiline={true}
+									onContentSizeChange={(e) =>
+										setHeight(
+											e.nativeEvent.contentSize.height
+										)
+									}
+								/>
+							</Animated.View>
+						</TouchableOpacity>
+					</View>
+				)}
+			/>
+		</View>
+	);
 };
 
 const styles = StyleSheet.create({
@@ -124,6 +91,7 @@ const styles = StyleSheet.create({
 	formContainer: {
 		flex: 1,
 		marginBottom: 20,
+        padding: 1
 	},
 	// Input
 	inputWrapper: {
@@ -152,6 +120,5 @@ const styles = StyleSheet.create({
 		backgroundColor: "#ffe6e6",
 	},
 });
-
 
 export default ImageUrlInput;

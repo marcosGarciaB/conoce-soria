@@ -1,15 +1,14 @@
+import useShakeAnimation from "@/hooks/useShakeAnimation";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { Control, Controller, FieldErrors } from "react-hook-form";
 import {
 	Animated,
 	StyleSheet,
 	Text,
 	TouchableOpacity,
-	Vibration,
-	View,
+	View
 } from "react-native";
-import Toast from "react-native-toast-message";
 
 interface FormData {
 	role: string;
@@ -21,52 +20,8 @@ interface RoleInputProps {
 }
 
 const RoleInput: React.FC<RoleInputProps> = ({ control, errors }) => {
-	const shakeAnim = useRef(new Animated.Value(0)).current;
+    const {shakeAnim, shake} = useShakeAnimation();
 	const [open, setOpen] = useState(false);
-
-	useEffect(() => {
-		if (errors.role) {
-			Vibration.vibrate(500);
-
-			Animated.sequence([
-				Animated.timing(shakeAnim, {
-					toValue: 5,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: -5,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: 5,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: -5,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: 0,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-			]).start();
-
-			Toast.show({
-				type: "error",
-				position: "top",
-				text1: "Error en el rol",
-				text2: errors.role.message,
-				visibilityTime: 4000,
-				autoHide: true,
-				topOffset: 60,
-			});
-		}
-	}, [errors.role]);
 
 	return (
 		<View style={styles.formContainer}>
@@ -136,6 +91,7 @@ const RoleInput: React.FC<RoleInputProps> = ({ control, errors }) => {
 const styles = StyleSheet.create({
 	formContainer: {
 		marginBottom: 20,
+		padding: 1,	
 	},
 	inputWrapper: {
 		flexDirection: "row",

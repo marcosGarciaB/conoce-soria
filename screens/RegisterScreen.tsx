@@ -81,55 +81,6 @@ const RegisterScreen = ({ navigation }: { navigation: any }) => {
 			}
 		};
 
-	// 	return (
-	// 		<SafeAreaView style={styles.container}>
-	// 			<View style={styles.innerContainer}>
-	// 				<View style={styles.formContainer}>
-	// 					<Text style={styles.title}>Crear Cuenta</Text>
-
-	// 					<View style={styles.inputContainer}>
-	// 						<NameInput control={control} errors={errors} />
-	// 					</View>
-
-	// 					<View style={styles.inputContainer}>
-	// 						<EmailInput control={control} errors={errors} />
-	// 					</View>
-
-	// 					<View style={styles.inputContainer}>
-	// 						<PasswordInput control={control} errors={errors} />
-	// 					</View>
-
-	// 					<TouchableOpacity
-	// 						style={styles.button}
-	// 						onPress={handleSubmit(handleRegister)}
-	// 						disabled={isLoading}
-	// 					>
-	// 						<Text style={styles.buttonText}>
-	// 							{isLoading ? "Registrando..." : "Registrarse"}
-	// 						</Text>
-	// 					</TouchableOpacity>
-
-	// 					<TouchableOpacity
-	// 						style={styles.buttonRegister}
-	// 						onPress={() => navigation.navigate("Login")}
-	// 					>
-	// 						<View style={styles.buttonWrapper}>
-	// 							<Text style={styles.buttonRegisterText}>
-	// 								Inicia Sesión
-	// 							</Text>
-	// 							<Ionicons
-	// 								name={"log-in-sharp"}
-	// 								size={20}
-	// 								color={"black"}
-	// 							/>
-	// 						</View>
-	// 					</TouchableOpacity>
-	// 				</View>
-	// 			</View>
-	// 		</SafeAreaView>
-	// 	);
-	// };
-
 	return (
 		<KeyboardAvoidingView
 			style={{ flex: 1 }}

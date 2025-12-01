@@ -59,15 +59,12 @@ const CategoryItem = ({ experiencias, onDelete, onEdit, loadMore, hasMore, loadi
 						color="orange"
 					/>
 					<Text style={styles.labelText}>{item.direccion}</Text>
-
-
 				</View>
 
 				<View style={styles.coordsContainer}>
 					<Text style={styles.coordText}>Latitud: {item.ubicacionLat}</Text>
 					<Text style={styles.coordText}>Longitud: {item.ubicacionLng}</Text>
 				</View>
-
 			</View>
 
 			<View style={styles.userActions}>
@@ -75,8 +72,6 @@ const CategoryItem = ({ experiencias, onDelete, onEdit, loadMore, hasMore, loadi
 				<ItemButton title="Eliminar" onPress={() => onDelete(item.id)} />
 			</View>
 		</View>
-
-
 	);
 
 	return (
@@ -115,11 +110,10 @@ const styles = StyleSheet.create({
 		backgroundColor: "#fff",
 		borderRadius: 16,
 		marginVertical: 12,
-		overflow: "hidden",
 		shadowColor: "#000",
 		shadowOffset: { width: 0, height: 3 },
-		shadowOpacity: 0.08,
-		shadowRadius: 6,
+		shadowOpacity: 0.2,
+		shadowRadius: 10,
 		elevation: 3,
 	},
 	expImage: {

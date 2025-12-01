@@ -1,8 +1,9 @@
+import useShakeAnimation from "@/hooks/useShakeAnimation";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { Control, Controller, FieldErrors } from "react-hook-form";
-import { Animated, StyleSheet, TextInput, Vibration, View } from "react-native";
-import Toast from "react-native-toast-message";
+import { Animated, StyleSheet, TextInput, View } from "react-native";
+import showErrorToast from "../utils/showErrorToast";
 
 interface FormData {
 	email: string;
@@ -14,51 +15,7 @@ interface EmailInputProps {
 }
 
 const EmailInput: React.FC<EmailInputProps> = ({ control, errors }) => {
-	const shakeAnim = useRef(new Animated.Value(0)).current;
-
-	useEffect(() => {
-		if (errors.email) {
-			Vibration.vibrate(500);
-
-			Animated.sequence([
-				Animated.timing(shakeAnim, {
-					toValue: 5,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: -5,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: 5,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: -5,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: 0,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-			]).start();
-
-			Toast.show({
-				type: "error",
-				position: "top",
-				text1: "Error en el email del usuario",
-				text2: errors.email.message,
-				visibilityTime: 4000,
-				autoHide: true,
-				topOffset: 60,
-			});
-		}
-	}, [errors.email]);
+	const { shakeAnim, shake } = useShakeAnimation();
 
 	return (
 		<View style={styles.formContainer}>
@@ -91,7 +48,16 @@ const EmailInput: React.FC<EmailInputProps> = ({ control, errors }) => {
 								style={styles.inputWithIcon}
 								placeholder="Email"
 								placeholderTextColor="#999"
-								onBlur={onBlur}
+								onBlur={() => {
+									onBlur();
+									if (errors.email) {
+										shake();
+										showErrorToast(
+											"Error en el email",
+											errors.email.message!
+										);
+									}
+								}}
 								onChangeText={onChange}
 								value={value}
 							/>
@@ -107,6 +73,7 @@ const styles = StyleSheet.create({
 	formContainer: {
 		flex: 1,
 		marginBottom: 20,
+        padding: 1
 	},
 	// Input
 	inputWrapper: {

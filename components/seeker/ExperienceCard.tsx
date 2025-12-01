@@ -62,13 +62,25 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         fontSize: 12,
     },
-    cardTitle: {
-        padding: 10,
-        fontSize: 16,
-        fontWeight: "bold",
-        color: "#333",
-        textAlign: "center",
-    },
+
+	cardTitle: {
+		position: "absolute",
+		width: "100%",
+
+		bottom: 0,
+		backgroundColor: "rgba(0, 0, 0, 0.5)",
+		color: "#fff",
+		fontSize: 15,
+		fontWeight: "700",
+		textAlign: "center",
+		paddingVertical: 6,
+		paddingHorizontal: 10,
+		borderRadius: 12,
+		overflow: "hidden",
+		textShadowColor: "rgba(0, 0, 0, 0.75)",
+		textShadowOffset: { width: 1, height: 1 },
+		textShadowRadius: 4,
+	},
 });
 
 export default ExperienceCard;

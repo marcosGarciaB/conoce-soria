@@ -1,15 +1,15 @@
+import useShakeAnimation from "@/hooks/useShakeAnimation";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { Control, Controller, FieldErrors } from "react-hook-form";
 import {
 	Animated,
 	StyleSheet,
 	TextInput,
 	TouchableOpacity,
-	Vibration,
 	View,
 } from "react-native";
-import Toast from "react-native-toast-message";
+import showErrorToast from "../utils/showErrorToast";
 
 interface FormData {
 	password: string;
@@ -26,52 +26,8 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
 	errors,
 	initialData,
 }) => {
-	const shakeAnim = useRef(new Animated.Value(0)).current;
+	const { shakeAnim, shake } = useShakeAnimation();
 	const [showPass, setShowPass] = useState(false);
-
-	useEffect(() => {
-		if (errors.password) {
-			Vibration.vibrate(500);
-
-			Animated.sequence([
-				Animated.timing(shakeAnim, {
-					toValue: 5,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: -5,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: 5,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: -5,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-				Animated.timing(shakeAnim, {
-					toValue: 0,
-					duration: 100,
-					useNativeDriver: true,
-				}),
-			]).start();
-
-			Toast.show({
-				type: "error",
-				position: "top",
-				text1: "Error en la contraseña del usuario",
-				text2: errors.password.message,
-				visibilityTime: 4000,
-				autoHide: true,
-				topOffset: 60,
-			});
-		}
-	}, [errors.password]);
 
 	return (
 		<View style={styles.formContainer}>
@@ -107,7 +63,16 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
 								placeholder="Contraseña"
 								placeholderTextColor="#999"
 								secureTextEntry={!showPass}
-								onBlur={onBlur}
+								onBlur={() => {
+									onBlur();
+									if (errors.password) {
+										shake();
+										showErrorToast(
+											"Error en la contraseña",
+											errors.password.message!
+										);
+									}
+								}}
 								onChangeText={onChange}
 								value={value}
 							/>
@@ -138,6 +103,7 @@ const styles = StyleSheet.create({
 	formContainer: {
 		flex: 1,
 		marginBottom: 20,
+		padding: 1,
 	},
 	// Input
 	inputWrapper: {
