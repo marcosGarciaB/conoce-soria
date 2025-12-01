@@ -9,7 +9,6 @@ export interface RegistroExperienciaDTO {
     titulo: string;
     categoria: string;
     fechaRegistro: string;
-    opinion: string;
     puntosOtorgados: number;
 }
 
@@ -21,17 +20,15 @@ export interface PasaporteDTO {
 }
 
 export const passportService = {
+
     async getPasaporte(token: string): Promise<PasaporteDTO> {
         return apiClient.getWithToken("/api/pasaporte", token);
     },
 
-    async registrar(uid: string, opinion: string, token: string) {
+    async registerFromQr(token: string, uid: string) {
         return apiClient.postWithToken(
-            "/pasaporte/registrar",
-            {
-                uidScaneado: uid,
-                opinion
-            },
+            "/api/pasaporte/registrar",
+            { uidScaneado: uid },
             token
         );
     }

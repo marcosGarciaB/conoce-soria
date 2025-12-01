@@ -11,6 +11,7 @@ import ManageExperienceScreen from "@/screens/ManageExperienceScreen";
 import ManageUserScreen from "@/screens/ManageUserScreen";
 import PassportScreen from "@/screens/PassportScreen";
 import ProfileScreen from "@/screens/ProfileScreen";
+import QrScannerScreen from "@/screens/QrScannerScreen";
 import RegisterScreen from "@/screens/RegisterScreen";
 import TopSoriaScreen from "@/screens/TopSoriaScreen";
 import { UserCredentials } from "@/services/authService";
@@ -28,6 +29,7 @@ export type RootStackParamList = {
     ManageExperience: { experiencia: ExperienciaDetailResponse };
     Passport: undefined;
     Top: undefined;
+    QrScanner: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -45,6 +47,7 @@ export const AppNavigator = () => {
             <Stack.Screen name="ManageExperience" component={ManageExperienceScreen} />
             <Stack.Screen name="Passport" component={PassportScreen} />
             <Stack.Screen name="Top" component={TopSoriaScreen} />
+            <Stack.Screen name="QrScanner" component={QrScannerScreen} />
         </Stack.Navigator>
     );
 };

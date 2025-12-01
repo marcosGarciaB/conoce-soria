@@ -185,7 +185,7 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
 							))}
 						</ScrollView>
 
-						<Text style={styles.passportMore}>ver más…</Text>
+						
 					</TouchableOpacity>
 				)}
 
@@ -204,10 +204,11 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
 const styles = StyleSheet.create({
 	// Contenedores generales
 	container: {
-		backgroundColor: "#FAFAFA",
-		padding: 5,
-		marginBottom: 30,
-	},
+    flex: 1,
+    backgroundColor: "#FAFAFA",
+    padding: 5,
+    paddingBottom: 90,
+},
 	carouselContainer: {
 		width: "100%",
 		marginTop: 30,
