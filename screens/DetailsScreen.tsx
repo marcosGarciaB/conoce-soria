@@ -176,7 +176,7 @@ const DetailsScreen = ({
 				onPress={() => navigation.goBack()}
 			/>
 
-			<ScrollView ref={flatListRef} showsVerticalScrollIndicator={true}>
+			<ScrollView ref={flatListRef} showsVerticalScrollIndicator={false}>
 				<ExperienceDetail detail={detalle} />
 
 				<View>

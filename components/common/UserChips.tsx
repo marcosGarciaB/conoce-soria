@@ -18,7 +18,7 @@ const UserChips = ({ nombre, email, puntos, userRank }: UserChipsProps) => {
 
     return (
         <View style={styles.currentUserCard}>
-            <Ionicons name="person-circle" size={100} color="grey" />
+            <Ionicons name="person-circle" size={80} color="grey" />
             <Text style={styles.profileName}>{nombre}</Text>
             <Text style={styles.profileEmail}>{email}</Text>
             <Text style={styles.chip}>Puntos: {puntos} </Text>
@@ -34,15 +34,15 @@ const UserChips = ({ nombre, email, puntos, userRank }: UserChipsProps) => {
 const styles = StyleSheet.create({
     // Perfil
     profileName: {
-        fontSize: 28,
+        fontSize: 25,
         fontWeight: "bold",
         color: "#333",
-        marginTop: 10,
+        marginTop: 5,
     },
     profileEmail: {
         fontSize: 16,
         color: "grey",
-        marginBottom: 20,
+        marginBottom: 10,
     },
     chip: {
         backgroundColor: "#ffe6d5",
@@ -53,8 +53,11 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
     currentUserCard: {
-        width: "100%",
+        justifyContent: "center",
         alignItems: "center",
+        width: "100%",
+        height: "25%",
+        minHeight: 210,
         backgroundColor: "#fff",
         marginTop: 10,
         marginBottom: 20,

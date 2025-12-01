@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import { StyleSheet, Text, View } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { StyleSheet, Text } from "react-native";
 
 interface HeaderProps {
 	title: string;
@@ -19,29 +20,37 @@ const Header = ({
 	navigation,
 }: HeaderProps) => {
 	return (
-		<View style={styles.headerPanel}>
-			{isSecondIcon ? (
-				<Ionicons
-					style={{ marginLeft: 15 }}
-					name={icon2}
-					size={30}
-					color={"orange"}
-					onPress={onPress}
-				/>
-			) : (
-				false
-			)}
+		<>
 
-			<Text style={[isSecondIcon ? styles.title1 : styles.title2]}>
-				{title}
-			</Text>
-			<Ionicons
-				style={{ marginRight: 15 }}
-				name={icon}
-				size={30}
-				color={"orange"}
-			/>
-		</View>
+			<LinearGradient
+				colors={["#ffffffff", "#faebd7ff"]}
+				start={{ x: 0, y: 0 }}
+				end={{ x: 1, y: 0 }}
+				style={styles.headerPanel}
+			>
+				{isSecondIcon ? (
+					<Ionicons
+						style={{ marginLeft: 15 }}
+						name={icon2}
+						size={30}
+						color={"#5e5e5eff"}
+						onPress={onPress}
+					/>
+				) : null}
+
+				<Text style={[isSecondIcon ? styles.title1 : styles.title2]}>
+					{title}
+				</Text>
+
+				<Ionicons
+					style={{ marginRight: 15 }}
+					name={icon}
+					size={30}
+					color={"#5e5e5eff"}
+				/>
+			</LinearGradient>
+
+		</>
 	);
 };
 
@@ -51,24 +60,25 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between",
 		alignItems: "center",
 		elevation: 5,
-		backgroundColor: "white",
 		borderRadius: 30,
+		marginBottom: 5,
 		height: 60,
 		shadowColor: "#000",
 		shadowOffset: { width: 0, height: 5 },
 		shadowOpacity: 0.1,
 		shadowRadius: 5,
+		paddingHorizontal: 10,
 	},
 	title1: {
 		fontSize: 20,
 		fontWeight: "bold",
-		color: "#FF6B00",
+		color: "#5e5e5eff",
 		maxWidth: 200,
 	},
 	title2: {
 		fontSize: 20,
 		fontWeight: "bold",
-		color: "#FF6B00",
+		color: "#5e5e5eff",
 		marginLeft: 25,
 		maxWidth: 200,
 	},

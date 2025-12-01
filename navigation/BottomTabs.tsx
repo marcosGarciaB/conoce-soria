@@ -9,7 +9,7 @@ import ProfileScreen from "../screens/ProfileScreen";
 import SearchScreen from "../screens/SeekerScreen";
 
 import CustomTabBar from "@/components/navigation/CustomTabBar";
-import TopSoriaScreen from "@/screens/TopSoriaScreen";
+import TopSoriaScreen from "@/screens/TopScreen";
 
 type BottomTabParamList = {
 	Inicio: undefined;

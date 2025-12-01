@@ -1,34 +1,61 @@
-import { StyleSheet, Text, View } from "react-native";
+/*
+ * Este es el archivo raíz de la aplicación.
+ */
 
-export default function Page() {
-  return (
-    <View style={styles.container}>
-      <View style={styles.main}>
-        <Text style={styles.title}>Hello World</Text>
-        <Text style={styles.subtitle}>This is the first page of your app.</Text>
-      </View>
-    </View>
-  );
+import { NavigationContainer } from "@react-navigation/native";
+import React, { useState } from "react";
+import { ActivityIndicator, StatusBar, StyleSheet, View } from "react-native";
+import "react-native-gesture-handler";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import "react-native-reanimated";
+import Toast from "react-native-toast-message";
+
+import AnimatedSplash from "@/components/splash/AnimatedSplash";
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { AppNavigator } from "@/navigation/AppNavigator";
+import { AuthNavigator } from "@/navigation/AuthNavigator";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+
+const AppContent = () => {
+	const { status } = useAuth();
+
+	if (status === "checking") {
+		return (
+			<View style={styles.loaderContainer}>
+				<ActivityIndicator size="large" />
+			</View>
+		);
+	}
+
+	return status === "authenticated" ? <AuthNavigator /> : <AppNavigator />;
+};
+
+export default function App() {
+	const [isSplashFinished, setSplashFinished] = useState(false);
+
+	if (!isSplashFinished) {
+		return <AnimatedSplash onFinish={() => setSplashFinished(true)} />;
+	}
+
+	return (
+		<SafeAreaProvider>
+			<GestureHandlerRootView style={{ flex: 1 }}>
+				<AuthProvider>
+					<StatusBar barStyle={("dark-content")} />
+					<NavigationContainer>
+						<AppContent />
+						<Toast />
+					</NavigationContainer>
+				</AuthProvider>
+			</GestureHandlerRootView>
+		</SafeAreaProvider>
+	);
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    padding: 24,
-  },
-  main: {
-    flex: 1,
-    justifyContent: "center",
-    maxWidth: 960,
-    marginHorizontal: "auto",
-  },
-  title: {
-    fontSize: 64,
-    fontWeight: "bold",
-  },
-  subtitle: {
-    fontSize: 36,
-    color: "#38434D",
-  },
+	loaderContainer: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+	},
 });

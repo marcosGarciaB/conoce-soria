@@ -1,16 +1,13 @@
-import React, { createContext, useState, useEffect, ReactNode, useMemo, useContext } from 'react';
+import React, { createContext, ReactNode, useContext, useMemo, useState } from 'react';
 import { experienciaService, ExperienciasResponse } from '../services/experienceService';
 
-// ------------------- TIPOS ------------------- //
 interface ExperienciaContextProps {
     experiencias: ExperienciasResponse[];
     loadExperiencias: () => Promise<void>;
 }
 
-// ------------------- CREAR CONTEXTO ------------------- //
 export const ExperienciaContext = createContext({} as ExperienciaContextProps);
 
-// ------------------- PROVEEDOR ------------------- //
 export const ExperienciaProvider = ({ children }: { children: ReactNode }) => {
     const [experiencias, setExperiencias] = useState<ExperienciasResponse[]>([]);
 
@@ -35,5 +32,4 @@ export const ExperienciaProvider = ({ children }: { children: ReactNode }) => {
     );
 };
 
-// ------------------- HOOK PARA USAR EL CONTEXTO ------------------- //
 export const useExperiencias = () => useContext(ExperienciaContext);

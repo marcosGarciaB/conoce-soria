@@ -95,7 +95,7 @@ const DetailFlatListAnimated: React.FC<DetailFlatListAnimatedProps> = ({
 						style={[
 							{
 								width: "100%",
-								height: itemSize - 50 ,
+								height: itemSize - 50,
 								borderRadius: 12,
 							},
 						]}
@@ -125,7 +125,7 @@ const DetailFlatListAnimated: React.FC<DetailFlatListAnimatedProps> = ({
 	);
 
 	return (
-		<View style={{ flex: 1 }}>
+		<>
 			<Filters
 				searchText={searchText}
 				setSearchText={setSearchText}
@@ -135,21 +135,25 @@ const DetailFlatListAnimated: React.FC<DetailFlatListAnimatedProps> = ({
 				onFilterByText={wordsFilter}
 				onFilterByCategory={buttonFilter}
 			/>
-			<Animated.FlatList
-				data={filteredExperiencias}
-				keyExtractor={(item) => item.id.toString()}
-				renderItem={renderItem}
-				showsVerticalScrollIndicator={true}
-				snapToInterval={itemFullSize}
-				removeClippedSubviews={true}
-				onEndReached={() => loadExperiencias()}
-				onEndReachedThreshold={0.5}
-				decelerationRate="fast"
-				scrollEventThrottle={16}
-				onScroll={onScroll}
-				ListFooterComponent={loading ? <LoadingScreen /> : null}
-			/>
-		</View>
+
+			<View style={{ flex: 1, marginBottom: "15%", marginTop: "5%" }}>
+				<Animated.FlatList
+					data={filteredExperiencias}
+					keyExtractor={(item) => item.id.toString()}
+					renderItem={renderItem}
+					showsVerticalScrollIndicator={false}
+					snapToInterval={itemFullSize}
+					removeClippedSubviews={true}
+					onEndReached={() => loadExperiencias()}
+					onEndReachedThreshold={0.5}
+					decelerationRate="fast"
+					scrollEventThrottle={16}
+					onScroll={onScroll}
+					ListFooterComponent={loading ? <LoadingScreen /> : null}
+				/>
+			</View>
+		</>
+
 	);
 };
 

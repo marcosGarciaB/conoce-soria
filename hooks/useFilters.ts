@@ -5,45 +5,42 @@ import { useCallback, useEffect, useState } from "react";
 import { LayoutAnimation } from "react-native";
 
 export const useFilteredExperiences = () => {
-
 	const categories = ["RESTAURANTE", "MUSEO", "AIRE_LIBRE", "MONUMENTO"];
-
-	const { experiencias, loadExperiencias, loading, hasMore } =
-		useExperiences();
+	const { experiencias, loadExperiencias, loading, hasMore } = useExperiences();
 
 	const [searchText, setSearchText] = useState("");
 	const [selectedCat, setSelectedCat] = useState<string | null>(null);
 	const [filteredExperiencias, setFilteredExperiencias] = useState<ExperienciasResponse[]>([]);
 
-	useEffect(() => {
-		setFilteredExperiencias(experiencias);
+	const applyFilters = useCallback((texto: string, categoria: string | null) => {
+		LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+
+		const filtered = experiencias.filter(exp => {
+			const matchCat = categoria ? exp.categoria.toUpperCase() === categoria.toUpperCase() : true;
+			const matchText = exp.titulo.toLowerCase().includes(texto.toLowerCase());
+			return matchCat && matchText;
+		});
+
+		setFilteredExperiencias(filtered);
 	}, [experiencias]);
 
-	const applyFilters = (texto: string, category: string | null) => {
-			LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-			const filtered = experiencias.filter(exp => {
-				const matchCat = category ? exp.categoria.toUpperCase() === category.toUpperCase() : true;
-				const matchText = exp.titulo.toLowerCase().includes(texto.toLowerCase());
-				return matchCat && matchText;
-			});
-			setFilteredExperiencias(filtered);
-		};
-	
-		const debouncedApplyFilters = useCallback(
-			debounce((texto: string, category: string | null) => applyFilters(texto, category), 300),
-			[experiencias]
-		);
-	
-		const wordsFilter = (texto: string) => {
-			setSearchText(texto);
-			debouncedApplyFilters(texto, selectedCat);
-		};
-	
-		const buttonFilter = (categoria: string) => {
-			const newSelected = selectedCat === categoria ? null : categoria;
-			setSelectedCat(newSelected);
-			applyFilters(searchText, newSelected);
-		};
+	const debouncedApplyFilters = useCallback(
+		debounce((texto: string, categoria: string | null) => applyFilters(texto, categoria), 250),
+		[applyFilters]
+	);
+
+	useEffect(() => {
+		debouncedApplyFilters(searchText, selectedCat);
+	}, [searchText, selectedCat, debouncedApplyFilters]);
+
+	const wordsFilter = (texto: string) => {
+		setSearchText(texto); 
+	};
+
+	const buttonFilter = (categoria: string) => {
+		const newSelected = selectedCat === categoria ? null : categoria;
+		setSelectedCat(newSelected);
+	};
 
 	return {
 		experienciasFiltradas: filteredExperiencias,
@@ -55,7 +52,7 @@ export const useFilteredExperiences = () => {
 		buttonFilter,
 		wordsFilter,
 		loading,
-		hasMore, 
-		categories
+		hasMore,
+		categories,
 	};
 };

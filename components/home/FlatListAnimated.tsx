@@ -13,9 +13,9 @@ import LoadingScreen from "../common/Loading";
 const { width } = Dimensions.get("screen");
 const url =
 	"https://hips.hearstapps.com/hmg-prod/images/castillo-manzanares-el-real-1636196825.jpg?resize=980:*";
-const imageWidth = width * 0.75;
-const imageHeight = imageWidth * 0.75;
-const spacing = 10;
+const imageWidth = width * 0.95;
+const imageHeight = imageWidth * 0.85;
+const spacing = 12;
 
 const FlatListAnimated = () => {
 	const { experiencias, loadExperiencias, loading, hasMore } =
@@ -58,12 +58,14 @@ const FlatListAnimated = () => {
 		}));
 
 		return (
-			<View style={styles.imageContainer}>
-				<Animated.Image
-					source={{ uri: url }}
-					style={[{ flex: 1 }, animation]}
-				/>
-				<Text style={styles.cardTitle}>{item.titulo}</Text>
+			<View style={styles.shadowContainer}>
+				<View style={styles.imageContainer}>
+					<Animated.Image
+						source={{ uri: url }}
+						style={[{ flex: 1 }, animation]}
+					/>
+					<Text style={styles.cardTitle}>{item.titulo}</Text>
+				</View>
 			</View>
 		);
 	};
@@ -92,6 +94,8 @@ const FlatListAnimated = () => {
 				contentContainerStyle={{
 					gap: spacing,
 					paddingHorizontal: (width - imageWidth) / 2,
+					paddingTop: 15,
+					paddingBottom: 35,
 				}}
 				onScroll={onScroll}
 				scrollEventThrottle={16}
@@ -104,7 +108,17 @@ const FlatListAnimated = () => {
 const styles = StyleSheet.create({
 	container: {
 		marginTop: 30,
-		marginBottom: 30,
+	},
+	shadowContainer: {
+		width: imageWidth,
+		height: imageHeight,
+		borderRadius: 18,
+		shadowColor: "#000",
+		shadowOffset: { width: 0, height: 10 },
+		shadowOpacity: 0.35,
+		shadowRadius: 20,
+		elevation: 12,
+		backgroundColor: "transparent",
 	},
 	imageContainer: {
 		width: imageWidth,
@@ -114,11 +128,6 @@ const styles = StyleSheet.create({
 	},
 	card: {
 		borderRadius: 15,
-		shadowColor: "#000",
-		shadowOffset: { width: 0, height: 2 },
-		shadowOpacity: 0.3,
-		shadowRadius: 5,
-		elevation: 4,
 	},
 	cardTitle: {
 		position: "absolute",
@@ -133,9 +142,6 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 10,
 		borderRadius: 12,
 		overflow: "hidden",
-		textShadowColor: "rgba(0, 0, 0, 0.75)",
-		textShadowOffset: { width: 1, height: 1 },
-		textShadowRadius: 4,
 	},
 });
 
