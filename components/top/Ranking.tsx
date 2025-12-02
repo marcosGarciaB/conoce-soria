@@ -1,10 +1,13 @@
+import { useLoadUser } from "@/hooks/useLoadUser";
 import { UsuarioRankingDTO } from "@/services/topService";
-import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Animated, Dimensions, FlatList, StyleSheet, Text, View } from "react-native";
+import ProfileAvatar from "../common/ProfilePhoto";
 import TitleHeader from "../common/TitleHeader";
-import ModalExample from "./ModalInformation";
+import { normasContenido, premioContenido } from "../utils/rankingInformation";
+import ButtonInformation from "./Buttons";
+import InfoModal from "./ModalInformation";
 
 interface RankingProps {
     topUsuarios: UsuarioRankingDTO[];
@@ -23,6 +26,11 @@ const podiumColors = [
 
 const Ranking = ({ topUsuarios, navigation, isHome }: RankingProps) => {
     const scaleAnimations = useRef(topUsuarios.slice(0, 3).map(() => new Animated.Value(0))).current;
+    const { user } = useLoadUser();
+    const [modalVisible, setModalVisible] = useState<{ rules: boolean; prize: boolean }>({
+        rules: false,
+        prize: false,
+    });
 
     useEffect(() => {
         scaleAnimations.forEach((anim, index) => {
@@ -47,12 +55,9 @@ const Ranking = ({ topUsuarios, navigation, isHome }: RankingProps) => {
             <View style={styles.rankCircle}>
                 <Text style={styles.rankText}>{index + 4}</Text>
             </View>
-            <Ionicons
-                style={styles.userImage}
-                name="person-circle"
-                size={50}
-                color="grey"
-            />
+
+            <ProfileAvatar foto={user?.fotoPerfilUrl} size={50} />
+
             <View style={styles.userInfo}>
                 <Text style={styles.userName}>{item.nombre}</Text>
                 <Text style={styles.userPoints}>{item.puntos} pts</Text>
@@ -74,7 +79,7 @@ const Ranking = ({ topUsuarios, navigation, isHome }: RankingProps) => {
                         end={{ x: 1, y: 5 }}
                     >
 
-                        <Ionicons name="person-circle" size={60} color="#fff" />
+                        <ProfileAvatar foto={user?.fotoPerfilUrl} size={70} />
                         <Text style={styles.podiumName}>{item.nombre}</Text>
                         <Text style={styles.podiumPoints}>
                             {item.puntos} pts
@@ -109,20 +114,46 @@ const Ranking = ({ topUsuarios, navigation, isHome }: RankingProps) => {
                     }
                     style={{ marginBottom: "10%" }}
                     ListFooterComponent={
-                        <>
-                            <ModalExample isPrize={true}/>
+                        <View style={styles.container}>
 
-                        </>
+                            <View style={styles.buttonRow}>
+                                <ButtonInformation
+                                    title="Normas del Juego"
+                                    onPress={() => setModalVisible({ ...modalVisible, rules: true })}
+                                />
+                                <ButtonInformation
+                                    title="Premio del Mes"
+                                    onPress={() => setModalVisible({ ...modalVisible, prize: true })}
+                                />
+                            </View>
+
+                            <InfoModal
+                                visible={modalVisible.rules}
+                                title="Normas del Juego"
+                                content={normasContenido}
+                                onClose={() => setModalVisible({ ...modalVisible, rules: false })}
+                            />
+
+                            <InfoModal
+                                visible={modalVisible.prize}
+                                title="Premio Mensual"
+                                content={premioContenido}
+                                onClose={() => setModalVisible({ ...modalVisible, prize: false })}
+                            />
+                        </View>
                     }
                 />
-
-
             }
         </>
     );
 };
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: 20,
+        justifyContent: "center",
+    },
     listContent: {
         paddingHorizontal: 10,
         paddingBottom: 50,
@@ -248,6 +279,11 @@ const styles = StyleSheet.create({
         marginTop: 20,
         paddingHorizontal: 16,
     },
+    buttonRow: {
+        flex: 1,
+        flexDirection: "row",
+        justifyContent: "center",
+    }
 });
 
 export default Ranking;

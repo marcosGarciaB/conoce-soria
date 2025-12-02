@@ -18,9 +18,6 @@ import Animated, {
 import LoadingScreen from "../common/Loading";
 import Filters from "./FilterDropdown";
 
-const url =
-	"https://hips.hearstapps.com/hmg-prod/images/castillo-manzanares-el-real-1636196825.jpg?resize=980:*";
-
 interface DetailFlatListAnimatedProps {
 	onPress: (experiencia: ExperienciasResponse) => void;
 }
@@ -91,7 +88,7 @@ const DetailFlatListAnimated: React.FC<DetailFlatListAnimatedProps> = ({
 			>
 				<Animated.View style={animation}>
 					<Animated.Image
-						source={{ uri: url }}
+						source={{ uri: item.imagenPortadaUrl }}
 						style={[
 							{
 								width: "100%",

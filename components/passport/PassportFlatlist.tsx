@@ -15,7 +15,7 @@ const PassportFlatlist = () => {
     const renderItem = ({ item }: { item: any }) => (
         <View style={styles.card}>
             <Image
-                source={{ uri: item.imagen ?? "https://picsum.photos/200" }}
+                source={{ uri: item.imgPortada }}
                 style={styles.cardImage}
             />
 

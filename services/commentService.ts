@@ -9,6 +9,7 @@ export interface ComentariosResponse {
     autorNombre: string;
     texto:string;
     fecha:string;
+    autorFotoPerfil: string;
 }
 
 export interface ComentarioPost {

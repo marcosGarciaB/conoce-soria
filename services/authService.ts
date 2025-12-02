@@ -26,6 +26,7 @@ export interface UserCredentials {
     role: string;
     puntos: string;
     fechaCreacion?: string;
+    fotoPerfilUrl: string;
 }
 
 export interface UpdateCredentials {

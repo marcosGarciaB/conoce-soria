@@ -1,26 +1,20 @@
+import { useHorizontalFlatlistAnimation } from "@/components/animations/horizontalFlatlistAnimation";
 import { useExperiences } from "@/hooks/useLoadExperiences";
 import { ExperienciasResponse } from "@/services/experienceService";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import Animated, {
-	interpolate,
-	SharedValue,
 	useAnimatedScrollHandler,
-	useAnimatedStyle,
-	useSharedValue,
+	useSharedValue
 } from "react-native-reanimated";
 import LoadingScreen from "../common/Loading";
 
 const { width } = Dimensions.get("screen");
-const url =
-	"https://hips.hearstapps.com/hmg-prod/images/castillo-manzanares-el-real-1636196825.jpg?resize=980:*";
 const imageWidth = width * 0.95;
 const imageHeight = imageWidth * 0.85;
 const spacing = 12;
 
 const FlatListAnimated = () => {
-	const { experiencias, loadExperiencias, loading, hasMore } =
-		useExperiences();
-
+	const { experiencias, loadExperiencias, loading, hasMore } = useExperiences();
 	const scrollX = useSharedValue(0);
 
 	const onScroll = useAnimatedScrollHandler({
@@ -28,40 +22,21 @@ const FlatListAnimated = () => {
 			scrollX.value = e.contentOffset.x / (imageWidth + spacing);
 		},
 	});
-
+	
 	const Photo = ({
 		item,
 		index,
-		scrollX,
 	}: {
 		item: ExperienciasResponse;
 		index: number;
-		scrollX: SharedValue<number>;
 	}) => {
-		const animation = useAnimatedStyle(() => ({
-			transform: [
-				{
-					scale: interpolate(
-						scrollX.value,
-						[index - 1, index, index + 1],
-						[1.4, 1, 1.4]
-					),
-				},
-				{
-					rotate: `${interpolate(
-						scrollX.value,
-						[index - 1, index, index + 1],
-						[5, 0, -5]
-					)}deg`,
-				},
-			],
-		}));
-
+		const animation = useHorizontalFlatlistAnimation(index, scrollX);
+		
 		return (
 			<View style={styles.shadowContainer}>
 				<View style={styles.imageContainer}>
 					<Animated.Image
-						source={{ uri: url }}
+						source={{ uri: item.imagenPortadaUrl }}
 						style={[{ flex: 1 }, animation]}
 					/>
 					<Text style={styles.cardTitle}>{item.titulo}</Text>
@@ -76,7 +51,7 @@ const FlatListAnimated = () => {
 	}: {
 		item: ExperienciasResponse;
 		index: number;
-	}) => <Photo item={item} index={index} scrollX={scrollX} />;
+	}) => <Photo item={item} index={index} />;
 
 	return (
 		<View style={styles.container}>

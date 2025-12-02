@@ -7,22 +7,18 @@ interface MiniPassportProps {
 }
 
 
-const MiniPassport = ({navigation}: MiniPassportProps ) => {
-    const url =
-        "https://r-charts.com/es/miscelanea/procesamiento-imagenes-magick_files/figure-html/recortar-bordes-imagen-r.png";
-
+const MiniPassport = ({ navigation }: MiniPassportProps) => {
     const { passportPoints, passportPreview, loadingPassport, ranking } = useLoadPassport();
 
-
-if (loadingPassport) {
-    return (
-        <LoadingScreen />
-    );
-}
+    if (loadingPassport) {
+        return (
+            <LoadingScreen />
+        );
+    }
     return (
         <TouchableOpacity
             style={styles.passportCard}
-            onPress={ () => navigation.navigate("PassportScreen")}
+            onPress={() => navigation.navigate("PassportScreen")}
             activeOpacity={0.9}
         >
             <Text style={styles.passportTitle}>
@@ -45,17 +41,19 @@ if (loadingPassport) {
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.passportMiniRow}
             >
-                {passportPreview.map((item, i) => (
-                    <View key={i} style={styles.miniItem}>
-                        <Image
-                            source={{ uri: url }}
-                            style={styles.miniImage}
-                        />
-                        <Text style={styles.miniName} numberOfLines={2}>
-                            {item.titulo}
-                        </Text>
-                    </View>
-                ))}
+                {passportPreview.map((item, i) => {
+                    return (
+                        <View key={i} style={styles.miniItem}>
+                            <Image
+                                source={{ uri: item.imgPortada }}
+                                style={styles.miniImage}
+                            />
+                            <Text style={styles.miniName} numberOfLines={4}>
+                                {item.titulo}
+                            </Text>
+                        </View>
+                    );
+                })}
             </ScrollView>
 
             <Text style={styles.passportMore}>ver más…</Text>
@@ -108,10 +106,11 @@ const styles = StyleSheet.create({
     miniItem: {
         alignItems: "center",
         marginRight: 16,
-        width: 76,
-        backgroundColor: "linear-gradient(135deg, #FFF8F0, #FFE6CC)", 
+        width: "20%",
+        backgroundColor: "linear-gradient(135deg, #FFF8F0, #FFE6CC)",
         borderRadius: 20,
-        padding: 8,
+        minWidth: 120,
+        padding: 6,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 6 },
         shadowOpacity: 0.06,
@@ -121,20 +120,22 @@ const styles = StyleSheet.create({
         borderColor: "#E0E0E0",
     },
     miniImage: {
-        width: 64,
-        height: 64,
-        borderRadius: 32,
+        width: "100%",
+        height: 70,
+        borderRadius: 12,
         marginBottom: 6,
         borderWidth: 1,
         borderColor: "#FFDAB3",
     },
     miniName: {
+        color: "#000",
         fontSize: 12,
+        fontWeight: "600",
         textAlign: "center",
-        color: "#555",
-        width: 64,
-        fontWeight: "500",
-        letterSpacing: 0.2,
+        paddingVertical: 6,
+        paddingHorizontal: 10,
+        borderRadius: 12,
+        overflow: "hidden",
     },
     passportMore: {
         fontSize: 14,

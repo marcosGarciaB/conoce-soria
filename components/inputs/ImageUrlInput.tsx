@@ -1,4 +1,4 @@
-import useShakeAnimation from "@/hooks/useShakeAnimation";
+import useShakeAnimation from "@/components/animations/shakeAnimation";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import { Control, Controller, FieldErrors } from "react-hook-form";

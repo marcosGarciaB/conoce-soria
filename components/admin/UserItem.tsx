@@ -1,5 +1,4 @@
 import { UserCredentials } from "@/services/authService";
-import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import {
 	Dimensions,
@@ -8,6 +7,7 @@ import {
 	Text,
 	View
 } from "react-native";
+import ProfileAvatar from "../common/ProfilePhoto";
 import ItemButton from "./ItemButton";
 
 const { width } = Dimensions.get("window");
@@ -27,8 +27,8 @@ const UserItem = ({ users, onDelete, onEdit, loadMore, hasMore, loading }: UserI
 		return (
 			<View style={styles.userCard}>
 				<View style={styles.userRow}>
-					{/* <Image source={{ uri: url }} style={styles.userImage} /> */}
-					<Ionicons style={styles.userImage} name="person" size={80} color="#999" />
+					<ProfileAvatar foto={item.fotoPerfilUrl} size={90}/>
+
 					<View style={styles.userInfo}>
 						<Text style={styles.userName}>{item.nombre}</Text>
 						<Text style={styles.userEmail}>{item.email}</Text>
@@ -103,6 +103,7 @@ const styles = StyleSheet.create({
 	},
 	userInfo: {
 		flex: 1,
+		marginLeft: 10,
 	},
 	userName: {
 		fontSize: 16,

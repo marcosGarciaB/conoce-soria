@@ -1,8 +1,9 @@
 import React from "react";
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Animated, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import { Control, FieldErrors } from "react-hook-form";
+import { useModalAnimation } from "../animations/modalAnimation";
 import EmailInput from "../inputs/EmailInput";
 import NameInput from "../inputs/NameInput";
 import PasswordInput from "../inputs/PasswordInput";
@@ -24,6 +25,8 @@ const ModalUpdate = ({
 	control,
 	errors,
 }: ModalUpdateProps) => {
+	const { scale, opacity } = useModalAnimation(isVisible);
+	
 	return (
 		<View>
 			<Modal
@@ -40,7 +43,13 @@ const ModalUpdate = ({
 					enableOnAndroid
 					extraScrollHeight={60}
 				>
-					<View style={styles.modalOverlay}>
+					<Animated.View style={[
+                        styles.modalOverlay,
+                        {
+                            transform: [{ scale }],
+                            opacity: opacity,
+                        },
+                    ]}>
 						<View style={styles.modalContent}>
 							<Text style={styles.modalTitle}>{title}</Text>
 
@@ -89,7 +98,7 @@ const ModalUpdate = ({
 								</TouchableOpacity>
 							</View>
 						</View>
-					</View>
+					</Animated.View>
 				</KeyboardAwareScrollView>
 			</Modal>
 		</View>

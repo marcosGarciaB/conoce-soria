@@ -2,23 +2,24 @@ import { ExperienciaDetailResponse } from "@/services/experienceService";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
-
-const url =
-    "https://hips.hearstapps.com/hmg-prod/images/castillo-manzanares-el-real-1636196825.jpg?resize=980:*";
+import GalleryFaltist from "./GalleryFlatlist";
 
 interface ExperienceCardProps {
     detail: ExperienciaDetailResponse;
 }
 
 const ExperienceDetail = ({ detail }: ExperienceCardProps) => {
+
     return (
         <View>
-            <Image source={{ uri: url }} style={styles.galleryImage} />
+            <Image source={{ uri: detail.imagenPortadaUrl }} style={styles.galleryImage} />
 
             <View style={styles.sectionTitleRow}>
                 <Ionicons name="images" size={20} color="grey" />
                 <Text style={styles.sectionTitle}>Galería</Text>
             </View>
+
+            <GalleryFaltist galeriaImagenes={detail.galeriaImagenes} />
 
             <View style={styles.aboutSection}>
                 <View style={styles.aboutTitleRow}>

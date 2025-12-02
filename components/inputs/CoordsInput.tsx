@@ -1,13 +1,13 @@
-import useShakeAnimation from "@/hooks/useShakeAnimation";
+import useShakeAnimation from "@/components/animations/shakeAnimation";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import { Control, Controller, FieldErrors } from "react-hook-form";
 import {
-    Animated,
-    StyleSheet,
-    TextInput,
-    TouchableOpacity,
-    View
+	Animated,
+	StyleSheet,
+	TextInput,
+	TouchableOpacity,
+	View
 } from "react-native";
 import showErrorToast from "../utils/showErrorToast";
 

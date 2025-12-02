@@ -1,3 +1,4 @@
+// ButtonInformation.tsx
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
@@ -6,21 +7,20 @@ interface ButtonInformationProps {
     onPress?: () => void;
 }
 
-const ButtonInformation = ({ title, onPress }: ButtonInformationProps) => {
-
-    return (
-        <TouchableOpacity style={styles.button} onPress={onPress}>
-            <Text style={styles.buttonText}>{title}</Text>
-        </TouchableOpacity>
-    );
-}
+const ButtonInformation = ({ title, onPress }: ButtonInformationProps) => (
+    <TouchableOpacity style={styles.button} onPress={onPress}>
+        <Text style={styles.buttonText}>{title}</Text>
+    </TouchableOpacity>
+);
 
 const styles = StyleSheet.create({
     button: {
+        width: "50%",
         backgroundColor: "#4B7BE5",
         padding: 15,
         borderRadius: 12,
-        marginBottom: "25%",
+        marginRight: 20
+
     },
     buttonText: {
         color: "#fff",

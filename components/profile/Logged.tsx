@@ -96,7 +96,7 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 				<Header title="Mi Cuenta" icon="information-circle-outline" />
 
 
-				<UserChips nombre={currentUser.nombre} email={currentUser.email} puntos={currentUser.puntos} />
+				<UserChips nombre={currentUser.nombre} email={currentUser.email} puntos={currentUser.puntos} fotoPerfil={currentUser.fotoPerfilUrl} />
 
 				<View style={styles.profileContainer}>
 					<View style={styles.actionButtons}>

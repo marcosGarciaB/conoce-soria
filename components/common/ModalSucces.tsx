@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Animated, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useModalAnimation } from "../animations/modalAnimation";
 
 interface ModalSuccessProps {
     title: string;
@@ -10,6 +11,8 @@ interface ModalSuccessProps {
 }
 
 const ModalSuccess = ({ title, message, isVisible, onClose }: ModalSuccessProps) => {
+    const { scale, opacity } = useModalAnimation(isVisible);
+
     return (
         <Modal
             animationType="fade"
@@ -17,7 +20,15 @@ const ModalSuccess = ({ title, message, isVisible, onClose }: ModalSuccessProps)
             visible={isVisible}
             onRequestClose={onClose}
         >
-            <View style={styles.overlay}>
+            <Animated.View
+                style={[
+                    styles.overlay,
+                    {
+                        transform: [{ scale }],
+                        opacity: opacity,
+                    },
+                ]}
+            >
                 <View style={styles.card}>
 
                     <View style={styles.iconContainer}>
@@ -32,7 +43,7 @@ const ModalSuccess = ({ title, message, isVisible, onClose }: ModalSuccessProps)
                         <Text style={styles.buttonText}>Aceptar</Text>
                     </TouchableOpacity>
                 </View>
-            </View>
+            </Animated.View>
         </Modal>
     );
 };

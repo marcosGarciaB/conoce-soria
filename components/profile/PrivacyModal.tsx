@@ -1,5 +1,15 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Modal, ScrollView } from 'react-native';
+import React from "react";
+import {
+    Animated,
+    Modal,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
+import { useModalAnimation } from "../animations/modalAnimation";
+
 
 interface PrivacyModalProps {
     isVisible: boolean;
@@ -7,15 +17,25 @@ interface PrivacyModalProps {
 }
 
 const PrivacyModal: React.FC<PrivacyModalProps> = ({ isVisible, onClose }) => {
+    const { scale, opacity } = useModalAnimation(isVisible);
+
     return (
         <Modal
-            animationType="slide"
+            animationType="fade"
             transparent={true}
             visible={isVisible}
             onRequestClose={onClose}
         >
             <View style={styles.modalOverlay}>
-                <View style={styles.modalContent}>
+                <Animated.View
+                    style={[
+                        styles.modalContent,
+                        {
+                            transform: [{ scale }],
+                            opacity: opacity,
+                        },
+                    ]}
+                    >
                     <Text style={styles.modalTitle}>Política de Privacidad</Text>
                     <ScrollView style={styles.scrollContainer}>
                         <Text style={styles.modalText}>
@@ -49,8 +69,8 @@ const PrivacyModal: React.FC<PrivacyModalProps> = ({ isVisible, onClose }) => {
                     <TouchableOpacity style={styles.closeButton} onPress={onClose}>
                         <Text style={styles.closeButtonText}>Cerrar</Text>
                     </TouchableOpacity>
-                </View>
-            </View>
+            </Animated.View>
+        </View>
         </Modal>
     );
 };
@@ -76,7 +96,7 @@ const styles = StyleSheet.create({
         borderColor: 'black',
         borderWidth: 1,
         borderRadius: 20,
-        padding:20
+        padding: 20
     },
     modalTitle: {
         fontSize: 22,

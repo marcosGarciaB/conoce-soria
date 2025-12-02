@@ -6,7 +6,7 @@ import { apiClient } from './apiClient';
 export interface ExperienciasResponse {
     id: number;
     categoria: string;
-    foto_url: string;
+    imagenPortadaUrl: string;
     titulo: string;
 }
 
@@ -19,6 +19,7 @@ export interface ExperienciaDetailResponse {
     direccion: string;
     ubicacionLat: number;
     ubicacionLng: number;
+    galeriaImagenes: string[];
     visible: boolean;
 }
 

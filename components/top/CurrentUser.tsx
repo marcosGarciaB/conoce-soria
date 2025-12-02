@@ -14,6 +14,7 @@ const CurrentUser = () => {
             email={user.email}
             puntos={user.puntos}
             userRank={userRank}
+            fotoPerfil={user.fotoPerfilUrl}
         />
     );
 };
