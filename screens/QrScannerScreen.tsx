@@ -4,16 +4,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { Camera, CameraView } from "expo-camera";
 
-import { useLoadPassport } from "@/hooks/useLoadPassport"; // <--- IMPORTANTE
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Toast from "react-native-toast-message";
+import Toast from "react-native-toast-message"; // <-- IMPORTANTE
 
 
 const QrScannerScreen = () => {
   const { token } = useAuth();
-  const { reload } = useLoadPassport();   // <--- PARA ACTUALIZAR PASAPORTE
   const navigation = useNavigation<any>();
 
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
@@ -31,19 +29,19 @@ const QrScannerScreen = () => {
     setScanned(true);
 
     try {
-      let freshToken = token || await AsyncStorage.getItem("authToken");
+      let freshToken = token;
+
+      if (!freshToken) {
+        freshToken = await AsyncStorage.getItem("authToken");
+      }
 
       if (!freshToken) throw new Error("Token no disponible");
 
       console.log("📤 Enviando QR:", data);
 
-      // --- REGISTRA EXPERIENCIA ---
       await passportService.registerFromQr(freshToken, data);
 
-      // --- ACTUALIZA PASAPORTE ---
-      await reload();
-
-      // --- TOAST ---
+      // --- 1) Mostrar toast ---
       Toast.show({
         type: "success",
         text1: "¡+10 puntos! 🎉",
@@ -51,7 +49,7 @@ const QrScannerScreen = () => {
         position: "top",
       });
 
-      // --- NAVEGAR ---
+      // --- 2) Navegar al pasaporte tras animación ---
       setTimeout(() => {
         navigation.navigate("PassportScreen");
       }, 1200);
@@ -105,7 +103,9 @@ const QrScannerScreen = () => {
         <CameraView
           style={StyleSheet.absoluteFillObject}
           onBarcodeScanned={handleBarCodeScanned}
-          barcodeScannerSettings={{ barcodeTypes: ["qr"] }}
+          barcodeScannerSettings={{
+            barcodeTypes: ["qr"],
+          }}
         />
         <View style={styles.scanMarker} />
       </View>
