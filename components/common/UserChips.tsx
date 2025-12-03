@@ -1,4 +1,5 @@
 
+import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import {
     StyleSheet,
@@ -14,17 +15,31 @@ interface UserChipsProps {
     fotoPerfil: string;
     userRank?: number | null;
     editPhoto?: boolean;
+    onPress: () => void;
 }
 
-const UserChips = ({ nombre, email, puntos, fotoPerfil, userRank, editPhoto }: UserChipsProps) => {
-
+const UserChips = ({ nombre, email, puntos, fotoPerfil, userRank, editPhoto, onPress }: UserChipsProps) => {
     return (
         <View style={styles.currentUserCard}>
-            <ProfileAvatar foto={fotoPerfil} size={100}/>
+            <View style={styles.avatarContainer}>
+                <ProfileAvatar foto={fotoPerfil} size={100} />
+
+                {editPhoto && (
+                    <View style={styles.editIconContainer}>
+                        <Ionicons
+                            name="pencil-sharp"
+                            size={15}
+                            color="#fff"
+                            onPress={onPress}
+                        />
+                    </View>
+                )}
+            </View>
 
             <Text style={styles.profileName}>{nombre}</Text>
             <Text style={styles.profileEmail}>{email}</Text>
             <Text style={styles.chip}>Puntos: {puntos} </Text>
+
             {userRank && userRank <= 10 && (
                 <View style={styles.userRankBadge}>
                     <Text style={styles.userRankText}>#{userRank}</Text>
@@ -60,7 +75,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         width: "100%",
         height: "25%",
-        minHeight: 210,
+        minHeight: 240,
         backgroundColor: "#fff",
         marginTop: 10,
         marginBottom: 20,
@@ -107,6 +122,32 @@ const styles = StyleSheet.create({
         width: "100%",
         height: "100%",
     },
+    avatarContainer: {
+        position: "relative",
+        width: 110,
+        height: 110,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    editIconContainer: {
+        position: "absolute",
+        bottom: 0,
+        right: 0,
+        backgroundColor: "rgba(0,0,0,0.6)",
+        width: 30,
+        height: 30,
+        borderRadius: 20,
+        justifyContent: "center",
+        alignItems: "center",
+        borderWidth: 2,
+        borderColor: "#fff",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+
 });
 
 export default UserChips;

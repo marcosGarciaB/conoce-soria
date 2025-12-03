@@ -12,28 +12,32 @@ import {
 import showErrorToast from "../utils/showErrorToast";
 
 interface FormData {
-	imagenPortadaUrl: string;
+	name: string;
 }
 
 interface ImageUrlInputProps {
 	control: Control<any>;
 	errors: FieldErrors<FormData>;
+	isProfilePhoto?: boolean
 }
 
-const ImageUrlInput: React.FC<ImageUrlInputProps> = ({ control, errors }) => {
+const ImageUrlInput: React.FC<ImageUrlInputProps> = ({ control, errors, isProfilePhoto  }) => {
 	const { shakeAnim, shake } = useShakeAnimation();
 	const [open, setOpen] = useState(false);
 	const [height, setHeight] = useState(50);
 
+	const name = isProfilePhoto ? "fotoPerfilUrl" : "imagenPortadaUrl";
+	
 	return (
 		<View style={styles.formContainer}>
 			<Controller
 				control={control}
-				name="imagenPortadaUrl"
+				name={name}
 				rules={{
 					required: "Debes poner una url",
 				}}
 				render={({ field: { onChange, onBlur, value } }) => (
+					
 					<View>
 						<TouchableOpacity
 							onPress={() => setOpen(!open)}
@@ -43,7 +47,7 @@ const ImageUrlInput: React.FC<ImageUrlInputProps> = ({ control, errors }) => {
 								style={[
 									styles.inputWrapper,
 									{ transform: [{ translateX: shakeAnim }] },
-									errors.imagenPortadaUrl &&
+									errors.name &&
 										styles.inputError,
 								]}
 							>
@@ -60,11 +64,11 @@ const ImageUrlInput: React.FC<ImageUrlInputProps> = ({ control, errors }) => {
 									placeholderTextColor="#999"
 									onBlur={() => {
 										onBlur();
-										if (errors.imagenPortadaUrl) {
+										if (errors.name) {
 											shake();
 											showErrorToast(
 												"Error en la imagen",
-												errors.imagenPortadaUrl.message!
+												errors.name.message!
 											);
 										}
 									}}

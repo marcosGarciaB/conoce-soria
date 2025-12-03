@@ -25,7 +25,7 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 	const [currentUser, setCurrentUser] = useState<UserCredentials>(user);
 	const [modalVisible, setModalVisible] = useState(false);
 	const [modalField, setModalField] = useState<
-		"nombre" | "email" | "password" | null
+		"nombre" | "email" | "password" | "fotoPerfilUrl" | null
 	>(null);
 	const [privacyVisible, setPrivacyVisible] = useState(false);
 	const isAdminUser = useAdmin(token);
@@ -40,25 +40,35 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 			nombre: currentUser.nombre,
 			email: currentUser.email,
 			password: "",
+			fotoPerfilUrl: currentUser.fotoPerfilUrl
 		},
 	});
 
-	const openModal = (field: "nombre" | "email" | "password") => {
+	const openModal = (field: "nombre" | "email" | "password" | "fotoPerfilUrl") => {
 		setModalField(field);
 		setModalVisible(true);
 
 		if (field === "nombre") setValue("nombre", currentUser.nombre);
 		if (field === "email") setValue("email", currentUser.email);
 		if (field === "password") setValue("password", "");
+		if (field === "fotoPerfilUrl") setValue("fotoPerfilUrl", currentUser.fotoPerfilUrl);
 	};
 
 	const saveModal = handleSubmit(async (data) => {
 		if (!modalField) return;
 
+		let updated: UserCredentials;
+
 		try {
-			const updated = await authService.updateUserData(token, {
-				[modalField]: data[modalField],
-			});
+			if (modalField === "fotoPerfilUrl" && data.fotoPerfilUrl) {
+				updated = await authService.changeProfilePhoto(token, data.fotoPerfilUrl);
+
+			} else {
+				updated = await authService.updateUserData(token, {
+					[modalField]: data[modalField],
+				});
+			}
+
 			setCurrentUser({
 				...currentUser,
 				[modalField]: updated[modalField],
@@ -93,27 +103,33 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 
 	return (
 		<SafeAreaView style={styles.container}>
-				<Header title="Mi Cuenta" icon="information-circle-outline" />
+			<Header title="Mi Cuenta" icon="information-circle-outline" />
 
+			<UserChips
+				nombre={currentUser.nombre}
+				email={currentUser.email}
+				puntos={currentUser.puntos}
+				fotoPerfil={currentUser.fotoPerfilUrl ?? ""}
+				editPhoto={true}
+				onPress={() => openModal("fotoPerfilUrl")}
+			/>
 
-				<UserChips nombre={currentUser.nombre} email={currentUser.email} puntos={currentUser.puntos} fotoPerfil={currentUser.fotoPerfilUrl} />
+			<View style={styles.profileContainer}>
+				<View style={styles.actionButtons}>
 
-				<View style={styles.profileContainer}>
-					<View style={styles.actionButtons}>
+					<Button title="Cambiar nombre" onPress={() => openModal("nombre")} />
+					<Button title="Cambiar correo" onPress={() => openModal("email")} />
+					<Button title="Cambiar contraseña" onPress={() => openModal("password")} />
+					<Button title="Política de privacidad" onPress={() => setPrivacyVisible(true)} />
 
-						<Button title="Cambiar nombre" onPress={() => openModal("nombre")} />
-						<Button title="Cambiar correo" onPress={() => openModal("email")} />
-						<Button title="Cambiar contraseña" onPress={() => openModal("password")} />
-						<Button title="Política de privacidad" onPress={() => setPrivacyVisible(true)} />
+					<PrivacyModal
+						isVisible={privacyVisible}
+						onClose={() => setPrivacyVisible(false)}
+					/>
 
-						<PrivacyModal
-							isVisible={privacyVisible}
-							onClose={() => setPrivacyVisible(false)}
-						/>
-
-						<Button title="Cerrar sesión" onPress={onPress} />
-					</View>
+					<Button title="Cerrar sesión" onPress={onPress} />
 				</View>
+			</View>
 
 			<ModalUpdate
 				title={
@@ -121,7 +137,9 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 						? "Actualizar Nombre"
 						: modalField === "email"
 							? "Actualizar Email"
-							: "Actualizar Contraseña"
+							: modalField === "password"
+								? "Actualizar contraseña"
+								: "Actualizar foto de perfil"
 				}
 				isVisible={modalVisible}
 				onSave={saveModal}

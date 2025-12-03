@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     actionButton: {
         backgroundColor: "#fff",
         paddingVertical: 15,
-        borderRadius: 15,
+        borderRadius: 30,
         alignItems: "center",
         elevation: 3,
         shadowColor: "#000",

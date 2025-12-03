@@ -20,19 +20,25 @@ export interface RegisterCredentials {
 }
 
 export interface UserCredentials {
+    id: number;
     nombre: string;
     email: string;
     password: string;
     role: string;
     puntos: string;
     fechaCreacion?: string;
-    fotoPerfilUrl: string;
+    fotoPerfilUrl?: string;
+    activo?: boolean;
 }
 
 export interface UpdateCredentials {
     nombre?: string;
     email?: string;
     password?: string;
+}
+
+export interface UpdateProfilePhoto {
+    fotoPerfilUrl: string;
 }
 
 const login = async (credentials: LoginCredentials): Promise<AuthResponse> => {
@@ -80,11 +86,22 @@ const getAllUsers = async (token: string, offset = 0, limit = 5): Promise<UserCr
     }
 }
 
-const emailExists = async(email: string): Promise<Boolean> => {
+const emailExists = async (email: string): Promise<Boolean> => {
     try {
         const url = `/api/auth/check-email?email=${encodeURIComponent(email)}`;
         const response = await apiClient.get<{ exists: boolean }>(url);
         return response.exists;
+
+    } catch (error) {
+        throw error;
+    }
+}
+
+const changeProfilePhoto = async (token: string, fotoPerfilUrl: string): Promise<UserCredentials> => {
+    try {
+        const response = await apiClient.putWithToken<UserCredentials>
+        ('/api/auth/me/foto-perfil', { fotoPerfilUrl }, token);
+        return response;
 
     } catch (error) {
         throw error;
@@ -98,4 +115,5 @@ export const authService = {
     updateUserData,
     getAllUsers,
     emailExists,
+    changeProfilePhoto
 };

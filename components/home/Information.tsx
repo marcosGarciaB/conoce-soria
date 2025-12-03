@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     heroContainer: {
+        margin: 10,
         paddingHorizontal: 22,
         paddingVertical: 28,
         borderRadius: 24,

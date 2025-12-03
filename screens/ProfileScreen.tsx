@@ -12,18 +12,17 @@ const ProfileScreen = ({ navigation }: { navigation: any }) => {
     const { token, logout } = useAuth();
     const { user } = useLoadUser();
 
-    if (!user) return <UnLogged navigation={navigation}/>;
+    if (!user) return <UnLogged navigation={navigation} />;
 
     return (
-    <SafeAreaView style={styles.container}>
-        { token && user ? (
-            <Logged token={token} user={user} onPress={logout}/>
-        ) : (
-            <UnLogged navigation={navigation}/>
-        )}
-    </SafeAreaView>
-);
-
+        <SafeAreaView style={styles.container}>
+            {token && user ? (
+                <Logged token={token} user={user} onPress={logout} />
+            ) : (
+                <UnLogged navigation={navigation} />
+            )}
+        </SafeAreaView>
+    );
 };
 
 const styles = StyleSheet.create({

@@ -20,7 +20,6 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
 
 	return (
 		<SafeAreaView style={styles.container}>
-
 			{isLogged ? (
 				<Header
 					title="Conoce Soria"
@@ -53,13 +52,15 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#FAFAFA",
-		padding: 5,
 		marginBottom: 30,
+		shadowColor: "#000",
+		shadowOpacity: 0.2,
+		shadowRadius: 20,
 	},
 	carouselContainer: {
 		width: "100%",
 		marginTop: 30,
+
 	},
 	scrollContent: {
 		paddingTop: 20,

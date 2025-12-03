@@ -35,7 +35,7 @@ const PrivacyModal: React.FC<PrivacyModalProps> = ({ isVisible, onClose }) => {
                             opacity: opacity,
                         },
                     ]}
-                    >
+                >
                     <Text style={styles.modalTitle}>Política de Privacidad</Text>
                     <ScrollView style={styles.scrollContainer}>
                         <Text style={styles.modalText}>
@@ -69,8 +69,8 @@ const PrivacyModal: React.FC<PrivacyModalProps> = ({ isVisible, onClose }) => {
                     <TouchableOpacity style={styles.closeButton} onPress={onClose}>
                         <Text style={styles.closeButtonText}>Cerrar</Text>
                     </TouchableOpacity>
-            </Animated.View>
-        </View>
+                </Animated.View>
+            </View>
         </Modal>
     );
 };
@@ -78,17 +78,24 @@ const PrivacyModal: React.FC<PrivacyModalProps> = ({ isVisible, onClose }) => {
 const styles = StyleSheet.create({
     modalOverlay: {
         flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.5)',
+        backgroundColor: "rgba(0,0,0,0.7)",
         justifyContent: 'center',
         alignItems: 'center',
+        paddingHorizontal: 20,
+
     },
     modalContent: {
         width: '85%',
         height: '80%',
         backgroundColor: '#fff',
-        borderRadius: 10,
+        borderRadius: 28,
         padding: 20,
         alignItems: 'center',
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 12 },
+        shadowOpacity: 0.3,
+        shadowRadius: 25,
+        elevation: 15,
     },
     scrollContainer: {
         width: '100%',

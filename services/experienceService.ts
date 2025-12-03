@@ -20,7 +20,8 @@ export interface ExperienciaDetailResponse {
     ubicacionLat: number;
     ubicacionLng: number;
     galeriaImagenes: string[];
-    visible: boolean;
+    puntosOtorgados: number;
+    activo?: boolean;
 }
 
 const getExperiencias = async (offset = 0, limit = 5): Promise<ExperienciasResponse[]> => {

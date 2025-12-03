@@ -68,9 +68,9 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 		}
 	};
 
-	const handleDeleteUser = async (email: string) => {
+	const handleDeleteUser = async (id: number) => {
 		try {
-			await adminService.deleteUser(email, token!);
+			await adminService.deleteUser(id, token!);
 			loadUsers(true);
 		} catch (error) {
 			console.error("Error eliminando usuario", error);
@@ -78,7 +78,7 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 	};
 
 	return (
-		<SafeAreaView style={styles.container}>
+		<>
 			<Header title="Administración" icon="accessibility-outline" />
 
 				<Buttom
@@ -127,7 +127,7 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 					/>
 				</>
 			)}
-		</SafeAreaView>
+		</>
 	);
 };
 

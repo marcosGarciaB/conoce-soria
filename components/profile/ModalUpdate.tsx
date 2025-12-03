@@ -5,6 +5,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { Control, FieldErrors } from "react-hook-form";
 import { useModalAnimation } from "../animations/modalAnimation";
 import EmailInput from "../inputs/EmailInput";
+import ImageUrlInput from "../inputs/ImageUrlInput";
 import NameInput from "../inputs/NameInput";
 import PasswordInput from "../inputs/PasswordInput";
 
@@ -26,7 +27,7 @@ const ModalUpdate = ({
 	errors,
 }: ModalUpdateProps) => {
 	const { scale, opacity } = useModalAnimation(isVisible);
-	
+
 	return (
 		<View>
 			<Modal
@@ -43,14 +44,14 @@ const ModalUpdate = ({
 					enableOnAndroid
 					extraScrollHeight={60}
 				>
-					<Animated.View style={[
-                        styles.modalOverlay,
-                        {
-                            transform: [{ scale }],
-                            opacity: opacity,
-                        },
-                    ]}>
-						<View style={styles.modalContent}>
+					<View style={styles.modalOverlay}>
+						<Animated.View style={[
+							styles.modalContent,
+							{
+								transform: [{ scale }],
+								opacity: opacity,
+							},
+						]}>
 							<Text style={styles.modalTitle}>{title}</Text>
 
 							<View style={styles.inputButton}>
@@ -72,6 +73,14 @@ const ModalUpdate = ({
 									<PasswordInput
 										control={control}
 										errors={errors}
+									/>
+								)}
+
+								{title === "Actualizar foto de perfil" && (
+									<ImageUrlInput
+										control={control}
+										errors={errors}
+										isProfilePhoto={true}
 									/>
 								)}
 							</View>
@@ -97,8 +106,8 @@ const ModalUpdate = ({
 									</Text>
 								</TouchableOpacity>
 							</View>
-						</View>
-					</Animated.View>
+						</Animated.View>
+					</View>
 				</KeyboardAwareScrollView>
 			</Modal>
 		</View>
@@ -109,21 +118,21 @@ const styles = StyleSheet.create({
 	// Modal
 	modalOverlay: {
 		flex: 1,
-		backgroundColor: "rgba(0,0,0,0.5)",
+		backgroundColor: "rgba(0,0,0,0.7)",
 		justifyContent: "center",
 		alignItems: "center",
 	},
 	modalContent: {
 		width: "80%",
 		backgroundColor: "#fff",
-		borderRadius: 10,
+		borderRadius: 28,
 		padding: 20,
 		alignItems: "center",
 		shadowColor: "#000",
-		shadowOffset: { width: 0, height: 5 },
-		shadowOpacity: 0.1,
-		shadowRadius: 5,
-		elevation: 5,
+		shadowOffset: { width: 0, height: 12 },
+		shadowOpacity: 0.3,
+		shadowRadius: 25,
+		elevation: 15,
 	},
 	inputButton: {
 		width: "95%",

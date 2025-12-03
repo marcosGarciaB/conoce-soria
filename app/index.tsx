@@ -39,7 +39,7 @@ export default function App() {
 
 	return (
 		<SafeAreaProvider>
-			<GestureHandlerRootView style={{ flex: 1 }}>
+			<GestureHandlerRootView style={[{ flex: 1 }, styles.appContainer]}>
 				<AuthProvider>
 					<StatusBar barStyle={("dark-content")} />
 					<NavigationContainer>
@@ -57,5 +57,9 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
+		margin: 5,
 	},
+	appContainer: {
+		backgroundColor: "#FAFAFA",
+	}
 });

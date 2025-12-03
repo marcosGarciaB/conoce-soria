@@ -62,20 +62,21 @@ const MiniPassport = ({ navigation }: MiniPassportProps) => {
 }
 
 const styles = StyleSheet.create({
-    passportCard: {
-        width: "100%",
-        backgroundColor: "#FFFFFF",
-        borderRadius: 32,
-        padding: 24,
-        marginBottom: 20,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: 0.08,
-        shadowRadius: 20,
-        elevation: 12,
-        borderWidth: 1,
-        borderColor: "#F0F0F0",
-    },
+passportCard: {
+    marginHorizontal: 10,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 32,
+    padding: 24,
+    marginBottom: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.08,
+    shadowRadius: 20,
+    elevation: 12,
+    borderWidth: 1,
+    borderColor: "#F0F0F0",
+},
+
     passportTitle: {
         fontSize: 22,
         fontWeight: "700",
@@ -106,10 +107,9 @@ const styles = StyleSheet.create({
     miniItem: {
         alignItems: "center",
         marginRight: 16,
-        width: "20%",
         backgroundColor: "linear-gradient(135deg, #FFF8F0, #FFE6CC)",
         borderRadius: 20,
-        minWidth: 120,
+        maxWidth: 110,
         padding: 6,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 6 },

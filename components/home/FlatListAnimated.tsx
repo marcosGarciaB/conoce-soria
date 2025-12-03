@@ -83,9 +83,12 @@ const FlatListAnimated = () => {
 const styles = StyleSheet.create({
 	container: {
 		marginTop: 30,
+		display: 'flex',
+		alignContent: 'center',
+		justifyContent: 'center'
 	},
 	shadowContainer: {
-		width: imageWidth,
+		width:"80%",
 		height: imageHeight,
 		borderRadius: 18,
 		shadowColor: "#000",
