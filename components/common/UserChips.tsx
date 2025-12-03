@@ -1,4 +1,3 @@
-import { Ionicons } from "@expo/vector-icons";
 
 import React from "react";
 import {
@@ -6,19 +5,23 @@ import {
     Text,
     View
 } from "react-native";
+import ProfileAvatar from "./ProfilePhoto";
 
 interface UserChipsProps {
     nombre: string;
     email: string;
     puntos: string;
+    fotoPerfil: string;
     userRank?: number | null;
+    editPhoto?: boolean;
 }
 
-const UserChips = ({ nombre, email, puntos, userRank }: UserChipsProps) => {
+const UserChips = ({ nombre, email, puntos, fotoPerfil, userRank, editPhoto }: UserChipsProps) => {
 
     return (
         <View style={styles.currentUserCard}>
-            <Ionicons name="person-circle" size={100} color="grey" />
+            <ProfileAvatar foto={fotoPerfil} size={100}/>
+
             <Text style={styles.profileName}>{nombre}</Text>
             <Text style={styles.profileEmail}>{email}</Text>
             <Text style={styles.chip}>Puntos: {puntos} </Text>
@@ -34,15 +37,15 @@ const UserChips = ({ nombre, email, puntos, userRank }: UserChipsProps) => {
 const styles = StyleSheet.create({
     // Perfil
     profileName: {
-        fontSize: 28,
+        fontSize: 25,
         fontWeight: "bold",
         color: "#333",
-        marginTop: 10,
+        marginTop: 5,
     },
     profileEmail: {
         fontSize: 16,
         color: "grey",
-        marginBottom: 20,
+        marginBottom: 10,
     },
     chip: {
         backgroundColor: "#ffe6d5",
@@ -53,8 +56,11 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
     currentUserCard: {
-        width: "100%",
+        justifyContent: "center",
         alignItems: "center",
+        width: "100%",
+        height: "25%",
+        minHeight: 210,
         backgroundColor: "#fff",
         marginTop: 10,
         marginBottom: 20,
@@ -83,6 +89,23 @@ const styles = StyleSheet.create({
         color: "#fff",
         fontWeight: "bold",
         fontSize: 20,
+    },
+    profileImageContainer: {
+        width: 100,
+        height: 100,
+        borderRadius: 60,
+        overflow: "hidden",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.2,
+        shadowRadius: 5,
+        elevation: 5,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    profileImage: {
+        width: "100%",
+        height: "100%",
     },
 });
 

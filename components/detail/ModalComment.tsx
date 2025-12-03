@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Animated, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useModalAnimation } from '../animations/modalAnimation';
 
 interface ModalUpdateProps {
     title: string;
@@ -11,19 +12,28 @@ interface ModalUpdateProps {
 
 const ModalComment = ({ title, isVisible, onClose, onSave, initialText = '' }: ModalUpdateProps) => {
     const [text, setText] = useState(initialText);
+    const { scale, opacity } = useModalAnimation(isVisible);
 
     useEffect(() => {
         setText(initialText);
     }, [initialText]);
 
-return (
+    return (
         <Modal
             animationType="fade"
             transparent
             visible={isVisible}
             onRequestClose={onClose}
         >
-            <View style={styles.modalOverlay}>
+            <Animated.View
+                style={[
+                    styles.modalOverlay,
+                    {
+                        transform: [{ scale }],
+                        opacity: opacity,
+                    },
+                ]}
+            >
                 <View style={styles.modalContent}>
                     <Text style={styles.modalTitle}>{title}</Text>
 
@@ -54,7 +64,7 @@ return (
                         </TouchableOpacity>
                     </View>
                 </View>
-            </View>
+            </Animated.View>
         </Modal>
     );
 };

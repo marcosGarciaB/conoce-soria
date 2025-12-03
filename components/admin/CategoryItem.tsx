@@ -120,6 +120,7 @@ const styles = StyleSheet.create({
 		width: "100%",
 		height: 150,
 		resizeMode: "cover",
+		borderRadius: 10,
 	},
 	// Overlay imagen
 	imageOverlay: {

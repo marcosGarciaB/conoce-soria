@@ -13,7 +13,7 @@ import PassportScreen from "@/screens/PassportScreen";
 import ProfileScreen from "@/screens/ProfileScreen";
 import QrScannerScreen from "@/screens/QrScannerScreen";
 import RegisterScreen from "@/screens/RegisterScreen";
-import TopSoriaScreen from "@/screens/TopSoriaScreen";
+import TopSoriaScreen from "@/screens/TopScreen";
 import { UserCredentials } from "@/services/authService";
 import { ExperienciaDetailResponse, ExperienciasResponse } from "@/services/experienceService";
 import { BottomTabs } from "./BottomTabs";

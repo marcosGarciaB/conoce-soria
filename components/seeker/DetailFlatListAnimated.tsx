@@ -18,9 +18,6 @@ import Animated, {
 import LoadingScreen from "../common/Loading";
 import Filters from "./FilterDropdown";
 
-const url =
-	"https://hips.hearstapps.com/hmg-prod/images/castillo-manzanares-el-real-1636196825.jpg?resize=980:*";
-
 interface DetailFlatListAnimatedProps {
 	onPress: (experiencia: ExperienciasResponse) => void;
 }
@@ -91,11 +88,11 @@ const DetailFlatListAnimated: React.FC<DetailFlatListAnimatedProps> = ({
 			>
 				<Animated.View style={animation}>
 					<Animated.Image
-						source={{ uri: url }}
+						source={{ uri: item.imagenPortadaUrl }}
 						style={[
 							{
 								width: "100%",
-								height: itemSize - 50 ,
+								height: itemSize - 50,
 								borderRadius: 12,
 							},
 						]}
@@ -125,7 +122,7 @@ const DetailFlatListAnimated: React.FC<DetailFlatListAnimatedProps> = ({
 	);
 
 	return (
-		<View style={{ flex: 1 }}>
+		<>
 			<Filters
 				searchText={searchText}
 				setSearchText={setSearchText}
@@ -135,21 +132,25 @@ const DetailFlatListAnimated: React.FC<DetailFlatListAnimatedProps> = ({
 				onFilterByText={wordsFilter}
 				onFilterByCategory={buttonFilter}
 			/>
-			<Animated.FlatList
-				data={filteredExperiencias}
-				keyExtractor={(item) => item.id.toString()}
-				renderItem={renderItem}
-				showsVerticalScrollIndicator={true}
-				snapToInterval={itemFullSize}
-				removeClippedSubviews={true}
-				onEndReached={() => loadExperiencias()}
-				onEndReachedThreshold={0.5}
-				decelerationRate="fast"
-				scrollEventThrottle={16}
-				onScroll={onScroll}
-				ListFooterComponent={loading ? <LoadingScreen /> : null}
-			/>
-		</View>
+
+			<View style={{ flex: 1, marginBottom: "15%", marginTop: "5%" }}>
+				<Animated.FlatList
+					data={filteredExperiencias}
+					keyExtractor={(item) => item.id.toString()}
+					renderItem={renderItem}
+					showsVerticalScrollIndicator={false}
+					snapToInterval={itemFullSize}
+					removeClippedSubviews={true}
+					onEndReached={() => loadExperiencias()}
+					onEndReachedThreshold={0.5}
+					decelerationRate="fast"
+					scrollEventThrottle={16}
+					onScroll={onScroll}
+					ListFooterComponent={loading ? <LoadingScreen /> : null}
+				/>
+			</View>
+		</>
+
 	);
 };
 

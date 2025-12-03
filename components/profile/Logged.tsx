@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 import {
-	ScrollView,
 	StyleSheet,
 	View
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useAdmin } from "@/hooks/useAdmin";
 import { UserCredentials, authService } from "@/services/authService";
 import { useForm } from "react-hook-form";
 import Toast from "react-native-toast-message";
 import Header from "../common/HeaderItem";
+import UserChips from "../common/UserChips";
 import Button from "./Button";
 import ModalUpdate from "./ModalUpdate";
 import PrivacyModal from "./PrivacyModal";
-import UserChips from "./UserChips";
 
 interface UserLogguedProps {
 	user: UserCredentials;
@@ -92,11 +92,11 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 	}
 
 	return (
-		<View>
-			<ScrollView contentContainerStyle={styles.scrollContent}>
+		<SafeAreaView style={styles.container}>
 				<Header title="Mi Cuenta" icon="information-circle-outline" />
 
-				<UserChips nombre={currentUser.nombre} email={currentUser.email} puntos={currentUser.puntos} />
+
+				<UserChips nombre={currentUser.nombre} email={currentUser.email} puntos={currentUser.puntos} fotoPerfil={currentUser.fotoPerfilUrl} />
 
 				<View style={styles.profileContainer}>
 					<View style={styles.actionButtons}>
@@ -114,7 +114,6 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 						<Button title="Cerrar sesión" onPress={onPress} />
 					</View>
 				</View>
-			</ScrollView>
 
 			<ModalUpdate
 				title={
@@ -130,13 +129,13 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 				control={control}
 				errors={errors}
 			/>
-		</View>
+		</SafeAreaView>
 	);
 };
 
 const styles = StyleSheet.create({
 	// Contenedores generales
-	scrollContent: {
+	container: {
 		padding: 5,
 	},
 	// Botones

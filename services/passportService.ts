@@ -9,6 +9,11 @@ export interface RegistroExperienciaDTO {
     titulo: string;
     categoria: string;
     fechaRegistro: string;
+<<<<<<< HEAD
+=======
+    opinion: string;
+    imgPortada: string;
+>>>>>>> origin/master
     puntosOtorgados: number;
 }
 
@@ -35,4 +40,6 @@ export const passportService = {
         token
     );
     }
+
+    
 };

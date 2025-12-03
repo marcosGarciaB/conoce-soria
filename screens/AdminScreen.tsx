@@ -12,7 +12,7 @@ import {
 } from "@/services/experienceService";
 import { useIsFocused } from "@react-navigation/native";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -22,7 +22,6 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 	const [buttonPressed, setButtonPressed] = useState<string>();
 	const { token } = useAuth();
 	const isFocused = useIsFocused();
-	const isFirstRender = useRef(true);
 
 	if (!token) return;
 	const { data: users, loadData: loadUsers, loading, hasMore } = usePaginatedFetch<UserCredentials>({

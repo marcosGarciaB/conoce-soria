@@ -1,30 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { StyleSheet } from 'react-native';
 
 import { useAuth } from '../contexts/AuthContext';
-import { authService, UserCredentials } from "../services/authService";
 
+import { useLoadUser } from '@/hooks/useLoadUser';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Logged from '../components/profile/Logged';
 import UnLogged from '../components/profile/UnLogged';
 
 const ProfileScreen = ({ navigation }: { navigation: any }) => {
     const { token, logout } = useAuth();
-    const [user, setUser] = useState<UserCredentials>();
-
-    useEffect(() => {
-        const loadUser = async () => {
-            if (!token) return;
-
-            try {
-                const data = await authService.getUserData(token);
-                setUser(data);
-            } catch (error) {
-                console.error('Error cargando el usuario:', error);
-            }
-        }
-        loadUser();
-    }, [token]);
+    const { user } = useLoadUser();
 
     if (!user) return <UnLogged navigation={navigation}/>;
 

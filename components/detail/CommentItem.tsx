@@ -1,6 +1,6 @@
 import * as Haptics from "expo-haptics";
 import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
 	interpolateColor,
@@ -10,6 +10,7 @@ import Animated, {
 	withSpring,
 } from "react-native-reanimated";
 
+import { useLoadUser } from "@/hooks/useLoadUser";
 import { ComentariosResponse } from "@/services/commentService";
 import ModalComment from "./ModalComment";
 
@@ -32,6 +33,8 @@ const ComentarioItem: React.FC<ComentarioItemProps> = ({
 	const [actionType, setActionType] = useState<"delete" | "update" | null>(
 		null
 	);
+
+	const { user } = useLoadUser();
 
 	const resetPosition = () => {
 		translate.value = withSpring(0, { damping: 15, stiffness: 120 });
@@ -85,14 +88,29 @@ const ComentarioItem: React.FC<ComentarioItemProps> = ({
 	return (
 		<View style={{ marginVertical: 8 }}>
 			<GestureDetector gesture={panGesture}>
+
 				<Animated.View style={[styles.commentItem, animatedStyle]}>
-					<Text style={styles.commentUser}>
-						{comentario.autorNombre}
-					</Text>
-					<Text style={styles.commentText}>{comentario.texto}</Text>
-					<Text style={styles.commentDate}>
-						{new Date(comentario.fecha).toLocaleString()}
-					</Text>
+					<View style={styles.row}>
+
+						<View style={styles.commentImageContainer}>
+							<Image
+								source={{ uri: comentario.autorFotoPerfil }}
+								style={styles.commentImage}
+								resizeMode="cover"
+							/>
+						</View>
+
+						<View style={styles.commentContent}>
+							<Text style={styles.commentUser}>{comentario.autorNombre}</Text>
+							<Text style={styles.commentText}>{comentario.texto}</Text>
+							<View style={styles.commentDateRow}>
+								<Text style={styles.commentDate}>
+									{new Date(comentario.fecha).toLocaleDateString()}
+								</Text>
+							</View>
+						</View>
+
+					</View>
 				</Animated.View>
 			</GestureDetector>
 
@@ -122,20 +140,51 @@ const styles = StyleSheet.create({
 		elevation: 5,
 		backgroundColor: "#fff",
 	},
-	commentUser: { 
-		fontWeight: "600", 
-		color: "#333" 
+	row: {
+		flexDirection: "row",
+		alignItems: "flex-start",
+		gap: 12,
 	},
-	commentText: { 
-		color: "#555", 
-		marginTop: 4 
+	commentImageContainer: {
+		width: 45,
+		height: 45,
+		borderRadius: 22.5,
+		overflow: "hidden",
+		backgroundColor: "#eee",
+		shadowColor: "#000",
+		shadowOffset: { width: 0, height: 1 },
+		shadowOpacity: 0.12,
+		shadowRadius: 2,
+		elevation: 2,
+	},
+	commentImage: {
+		width: "100%",
+		height: "100%",
+	},
+	commentContent: {
+		flex: 1,
+	},
+	commentUser: {
+		fontWeight: "600",
+		fontSize: 14,
+		color: "#181818"
+	},
+	commentText: {
+		fontSize: 14,
+		color: "#444",
+		marginTop: 2
+	},
+	commentDateRow: {
+		width: "100%",
+		alignItems: "flex-end",
+		marginTop: 4
 	},
 	commentDate: {
-		color: "#777",
-		fontSize: 12,
-		marginTop: 4,
-		alignSelf: "flex-end",
+		fontSize: 11,
+		color: "#999",
+		marginTop: 6
 	},
+
 });
 
 export default ComentarioItem;

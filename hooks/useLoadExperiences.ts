@@ -1,5 +1,3 @@
-// src/hooks/useExperiences.ts
-
 import {
 	experienciaService,
 	ExperienciasResponse,

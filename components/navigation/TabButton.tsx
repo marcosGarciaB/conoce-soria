@@ -46,7 +46,7 @@ const TabButton: React.FC<TabButtonProps> = ({
 				<Ionicons
 					name={iconName}
 					size={28}
-					color={focused ? "#FF6B00" : "gray"}
+					color={focused ? "#FF6B00" : "#5e5e5eff"}
 				/>
 			</Animated.View>
 		</TouchableWithoutFeedback>
