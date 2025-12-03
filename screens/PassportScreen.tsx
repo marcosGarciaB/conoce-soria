@@ -1,14 +1,17 @@
 import { topService } from "@/services/topService";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
     Image,
     ScrollView,
     StyleSheet,
-    Text, TouchableOpacity,
+    Text,
+    TouchableOpacity,
     View
 } from "react-native";
+
+import { useFocusEffect } from "@react-navigation/native";
 import { useAuth } from "../contexts/AuthContext";
 import { authService } from "../services/authService";
 import { passportService } from "../services/passportService";
@@ -21,44 +24,53 @@ const PassportScreen = () => {
     const [registros, setRegistros] = useState<any[]>([]);
     const [totalPuntos, setTotalPuntos] = useState(0);
     const [ranking, setRanking] = useState<number | null>(null);
-
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const loadPassport = async () => {
-            if (!token) return;
+    // 🔥 SE ACTIVA CADA VEZ QUE ENTRAS EN ESTA PANTALLA
+    useFocusEffect(
+        useCallback(() => {
 
-            try {
-                const data = await passportService.getPasaporte(token);
-                const filtrado = data.registros.filter((r: any) => r.puntosOtorgados > 0);
+            const loadPassport = async () => {
+                if (!token) return;
 
-                setRegistros(filtrado);
-                setTotalPuntos(Number(data.puntosTotales ?? 0));
+                try {
+                    const data = await passportService.getPasaporte(token);
 
-                const user = await authService.getUserData(token);
-                const top = await topService.getRankingData();
+                    const filtrado = data.registros.filter(
+                        (r: any) => r.puntosOtorgados > 0
+                    );
 
-                const pos = top.findIndex(
-                    (u: any) => u.nombre === user.nombre || u.email === user.email
-                );
+                    setRegistros(filtrado);
+                    setTotalPuntos(Number(data.puntosTotales ?? 0));
 
-                setRanking(pos >= 0 ? pos + 1 : null);
+                    // Ranking
+                    const user = await authService.getUserData(token);
+                    const top = await topService.getRankingData();
 
-            } catch (err) {
-                console.log("Error cargando pasaporte:", err);
-            } finally {
-                setLoading(false);
-            }
-        };
+                    const pos = top.findIndex(
+                        (u: any) => u.nombre === user.nombre || u.email === user.email
+                    );
 
-        loadPassport();
-    }, [token]);
+                    setRanking(pos >= 0 ? pos + 1 : null);
+
+                } catch (err) {
+                    console.log("Error recargando pasaporte:", err);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            loadPassport();
+
+        }, [token])
+    );
 
     if (loading) return <Text style={{ padding: 20 }}>Cargando...</Text>;
 
     return (
         <ScrollView style={styles.container}>
 
+            {/* TOP BAR */}
             <View style={styles.topBar}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Ionicons name="chevron-back" size={28} color="#777" />
@@ -69,6 +81,7 @@ const PassportScreen = () => {
                 <Ionicons name="location-outline" size={26} color="#777" />
             </View>
 
+            {/* PUNTOS */}
             <View style={styles.headerCard}>
                 <Text style={styles.pointsValue}>{totalPuntos}</Text>
 
@@ -81,6 +94,7 @@ const PassportScreen = () => {
 
             <Text style={styles.sectionTitle}>Historial de experiencias</Text>
 
+            {/* LISTA */}
             {registros.map((reg, index) => (
                 <View key={index} style={styles.card}>
                     <Image

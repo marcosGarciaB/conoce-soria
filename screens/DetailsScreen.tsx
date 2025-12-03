@@ -205,7 +205,7 @@ const DetailsScreen = ({
 			/>
 			<TouchableOpacity
 				style={styles.inputButton}
-				onPress={() => console.log("Registrar experiencia")}
+				onPress={() => navigation.navigate("QrScanner")}
 			>
 				<Ionicons
 					name="qr-code"

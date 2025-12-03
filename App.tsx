@@ -2,7 +2,6 @@
  * - Este es el archivo raíz de tu aplicación.
  * - Su función es configurar los "proveedores de contexto" y el sistema de navegación.
  */
-
 import { NavigationContainer } from "@react-navigation/native";
 import React, { useState } from "react";
 import { ActivityIndicator, StatusBar, StyleSheet, View } from "react-native";

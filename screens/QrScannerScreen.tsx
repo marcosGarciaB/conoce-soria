@@ -2,19 +2,24 @@ import { useAuth } from "@/contexts/AuthContext";
 import { passportService } from "@/services/passportService";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { BarCodeScanner } from "expo-barcode-scanner";
+import { Camera, CameraView } from "expo-camera";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import Toast from "react-native-toast-message"; // <-- IMPORTANTE
+
 
 const QrScannerScreen = () => {
   const { token } = useAuth();
   const navigation = useNavigation<any>();
+
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState(false);
 
   useEffect(() => {
     (async () => {
-      const { status } = await BarCodeScanner.requestPermissionsAsync();
+      const { status } = await Camera.requestCameraPermissionsAsync();
       setHasPermission(status === "granted");
     })();
   }, []);
@@ -23,21 +28,43 @@ const QrScannerScreen = () => {
     if (scanned) return;
     setScanned(true);
 
-    // data = contenido del QR (por ejemplo: "EXP:123" o un token)
     try {
-      if (!token) throw new Error("Token no disponible");
+      let freshToken = token;
 
-      // Ejemplo: llamamos al servicio para registrar la experiencia
-      // Ajusta el método y parámetros según tu passportService
-      await passportService.registerFromQr(token, data);
+      if (!freshToken) {
+        freshToken = await AsyncStorage.getItem("authToken");
+      }
 
-      Alert.alert("Registrado", "Experiencia registrada correctamente.", [
-        { text: "Ok", onPress: () => navigation.goBack() },
-      ]);
+      if (!freshToken) throw new Error("Token no disponible");
+
+      console.log("📤 Enviando QR:", data);
+
+      await passportService.registerFromQr(freshToken, data);
+
+      // --- 1) Mostrar toast ---
+      Toast.show({
+        type: "success",
+        text1: "¡+10 puntos! 🎉",
+        text2: "Experiencia registrada",
+        position: "top",
+      });
+
+      // --- 2) Navegar al pasaporte tras animación ---
+      setTimeout(() => {
+        navigation.navigate("PassportScreen");
+      }, 1200);
+
     } catch (err: any) {
-      console.error("Error registrando desde QR:", err);
-      Alert.alert("Error", err?.message ?? "No se ha podido registrar.");
-      setScanned(false); // permitir reintento
+      console.error("❌ Error registrando desde QR:", err);
+
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: err?.message ?? "No se ha podido registrar.",
+        position: "top",
+      });
+
+      setScanned(false);
     }
   };
 
@@ -48,11 +75,12 @@ const QrScannerScreen = () => {
       </View>
     );
   }
+
   if (hasPermission === false) {
     return (
       <View style={styles.center}>
         <Text>No se ha concedido acceso a la cámara.</Text>
-        <TouchableOpacity onPress={() => BarCodeScanner.requestPermissionsAsync()}>
+        <TouchableOpacity onPress={() => Camera.requestCameraPermissionsAsync()}>
           <Text style={{ color: "#FF6B00", marginTop: 12 }}>Pedir permiso</Text>
         </TouchableOpacity>
       </View>
@@ -61,6 +89,7 @@ const QrScannerScreen = () => {
 
   return (
     <View style={styles.container}>
+      {/* HEADER */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="chevron-back" size={28} color="#333" />
@@ -69,20 +98,28 @@ const QrScannerScreen = () => {
         <View style={{ width: 28 }} />
       </View>
 
+      {/* SCANNER */}
       <View style={styles.scannerContainer}>
-        <BarCodeScanner
-          onBarCodeScanned={handleBarCodeScanned}
+        <CameraView
           style={StyleSheet.absoluteFillObject}
+          onBarcodeScanned={handleBarCodeScanned}
+          barcodeScannerSettings={{
+            barcodeTypes: ["qr"],
+          }}
         />
         <View style={styles.scanMarker} />
       </View>
 
+      {/* FOOTER */}
       <View style={styles.footer}>
         <Text style={{ color: "#555" }}>
           Apunta la cámara al código QR para registrar la experiencia.
         </Text>
         {scanned && (
-          <TouchableOpacity style={styles.retryBtn} onPress={() => setScanned(false)}>
+          <TouchableOpacity
+            style={styles.retryBtn}
+            onPress={() => setScanned(false)}
+          >
             <Text style={{ color: "white" }}>Volver a intentar</Text>
           </TouchableOpacity>
         )}
@@ -92,6 +129,7 @@ const QrScannerScreen = () => {
 };
 
 export default QrScannerScreen;
+
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#FAFAFA" },

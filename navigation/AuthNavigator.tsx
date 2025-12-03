@@ -5,12 +5,14 @@
 import ManageExperienceScreen from "@/screens/ManageExperienceScreen";
 import ManageUserScreen from "@/screens/ManageUserScreen";
 import PassportScreen from "@/screens/PassportScreen";
+import QrScannerScreen from "@/screens/QrScannerScreen";
 import { UserCredentials } from "@/services/authService";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import DetailsScreen from "../screens/DetailsScreen";
 import { ExperienciaDetailResponse, ExperienciasResponse } from "../services/experienceService";
 import { BottomTabs } from "./BottomTabs";
+
 
 export type AuthStackParamList = {
     Inicio: undefined;
@@ -23,6 +25,7 @@ export type AuthStackParamList = {
     ManageUser: { user: UserCredentials };
     ManageExperience: { experiencia: ExperienciaDetailResponse };
     PassportScreen: undefined;
+    QrScanner: undefined;
 };
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
@@ -35,6 +38,7 @@ export const AuthNavigator = () => {
             <Stack.Screen name="ManageUser" component={ManageUserScreen} />
             <Stack.Screen name="ManageExperience" component={ManageExperienceScreen} />
             <Stack.Screen name="PassportScreen" component={PassportScreen} />
+            <Stack.Screen name="QrScanner" component={QrScannerScreen} />
         </Stack.Navigator>
     );
 };

@@ -22,14 +22,17 @@ export interface PasaporteDTO {
 export const passportService = {
 
     async getPasaporte(token: string): Promise<PasaporteDTO> {
+        if (!token) {
+            throw new Error("Token no disponible para cargar el pasaporte");
+        }
         return apiClient.getWithToken("/api/pasaporte", token);
     },
 
     async registerFromQr(token: string, uid: string) {
-        return apiClient.postWithToken(
-            "/api/pasaporte/registrar",
-            { uidScaneado: uid },
-            token
-        );
+         return apiClient.postWithToken(
+        "/api/pasaporte/registrar",
+        { uid_scaneado: uid, opinion: null },
+        token
+    );
     }
 };
