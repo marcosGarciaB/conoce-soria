@@ -120,7 +120,6 @@ const styles = StyleSheet.create({
 		backgroundColor: "#fffdfdff",
 		marginVertical: 10,
 		paddingHorizontal: 15,
-		margin: 2,
 		borderRadius: 30,
 		paddingVertical: 10,
 		shadowColor: "#000",
@@ -137,7 +136,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "#fff",
 		paddingVertical: 10,
 		paddingHorizontal: 15,
-		borderRadius: 15,
+		borderRadius: 30,
 		borderWidth: 1,
 		borderColor: "black",
 	},
@@ -147,7 +146,7 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 	},
 	filtersContainer: {
-		marginTop: 15,
+		marginTop: 5,
 	},
 	// Input
 	searchContainer: {
@@ -156,10 +155,10 @@ const styles = StyleSheet.create({
 		backgroundColor: "#ffffffff",
 		borderColor: "grey",
 		borderWidth: 1,
-		borderRadius: 15,
+		borderRadius: 30,
 		paddingHorizontal: 10,
 		height: 40,
-		marginBottom: 15,
+		marginBottom: 5,
 	},
 	input: {
 		flex: 1,
@@ -170,17 +169,17 @@ const styles = StyleSheet.create({
 	buttonsContainer: {
 		flexDirection: "row",
 		flexWrap: "wrap",
-		gap: 10,
+		gap: 5,
 	},
 	buttonCategory: {
 		paddingVertical: 8,
 		paddingHorizontal: 15,
-		borderRadius: 20,
+		borderRadius: 30,
 		borderWidth: 1,
 		borderColor: "#FF6B00",
 		backgroundColor: "#fff",
-		marginRight: 10,
-		marginBottom: 10,
+		marginRight: 5,
+		marginBottom: 5,
 	},
 	buttonCategorySelected: {
 		backgroundColor: "#FF6B00",

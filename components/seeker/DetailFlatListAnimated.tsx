@@ -133,7 +133,7 @@ const DetailFlatListAnimated: React.FC<DetailFlatListAnimatedProps> = ({
 				onFilterByCategory={buttonFilter}
 			/>
 
-			<View style={{ flex: 1, marginBottom: "15%", marginTop: "5%" }}>
+			<View style={{ flex: 1 }}>
 				<Animated.FlatList
 					data={filteredExperiencias}
 					keyExtractor={(item) => item.id.toString()}
@@ -165,6 +165,7 @@ const styles = StyleSheet.create({
 		overflow: "hidden",
 		alignSelf: "center",
 		width: "100%",
+		marginTop: 5,
 	},
 	card: {
 		borderRadius: 15,

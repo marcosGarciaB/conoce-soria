@@ -86,7 +86,7 @@ const ComentarioItem: React.FC<ComentarioItemProps> = ({
 	};
 
 	return (
-		<View style={{ marginVertical: 8 }}>
+		<View style={{ marginVertical: 5, margin:10 }}>
 			<GestureDetector gesture={panGesture}>
 
 				<Animated.View style={[styles.commentItem, animatedStyle]}>
@@ -131,8 +131,8 @@ const ComentarioItem: React.FC<ComentarioItemProps> = ({
 
 const styles = StyleSheet.create({
 	commentItem: {
-		padding: 15,
-		borderRadius: 20,
+		padding: 10,
+		borderRadius: 25,
 		shadowColor: "#000",
 		shadowOffset: { width: 0, height: 3 },
 		shadowOpacity: 0.15,
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
 	row: {
 		flexDirection: "row",
 		alignItems: "flex-start",
-		gap: 12,
+		gap: 15,
 	},
 	commentImageContainer: {
 		width: 45,
@@ -166,23 +166,21 @@ const styles = StyleSheet.create({
 	},
 	commentUser: {
 		fontWeight: "600",
-		fontSize: 14,
+		fontSize: 15,
 		color: "#181818"
 	},
 	commentText: {
-		fontSize: 14,
+		fontSize: 13,
 		color: "#444",
 		marginTop: 2
 	},
 	commentDateRow: {
 		width: "100%",
 		alignItems: "flex-end",
-		marginTop: 4
 	},
 	commentDate: {
 		fontSize: 11,
 		color: "#999",
-		marginTop: 6
 	},
 
 });

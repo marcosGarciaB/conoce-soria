@@ -1,15 +1,10 @@
 import React, { useState } from "react";
-import {
-	StyleSheet,
-	View
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, View } from "react-native";
 
 import { useAdmin } from "@/hooks/useAdmin";
 import { UserCredentials, authService } from "@/services/authService";
 import { useForm } from "react-hook-form";
 import Toast from "react-native-toast-message";
-import Header from "../common/HeaderItem";
 import UserChips from "../common/UserChips";
 import Button from "./Button";
 import ModalUpdate from "./ModalUpdate";
@@ -40,18 +35,21 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 			nombre: currentUser.nombre,
 			email: currentUser.email,
 			password: "",
-			fotoPerfilUrl: currentUser.fotoPerfilUrl
+			fotoPerfilUrl: currentUser.fotoPerfilUrl,
 		},
 	});
 
-	const openModal = (field: "nombre" | "email" | "password" | "fotoPerfilUrl") => {
+	const openModal = (
+		field: "nombre" | "email" | "password" | "fotoPerfilUrl"
+	) => {
 		setModalField(field);
 		setModalVisible(true);
 
 		if (field === "nombre") setValue("nombre", currentUser.nombre);
 		if (field === "email") setValue("email", currentUser.email);
 		if (field === "password") setValue("password", "");
-		if (field === "fotoPerfilUrl") setValue("fotoPerfilUrl", currentUser.fotoPerfilUrl);
+		if (field === "fotoPerfilUrl")
+			setValue("fotoPerfilUrl", currentUser.fotoPerfilUrl);
 	};
 
 	const saveModal = handleSubmit(async (data) => {
@@ -61,8 +59,10 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 
 		try {
 			if (modalField === "fotoPerfilUrl" && data.fotoPerfilUrl) {
-				updated = await authService.changeProfilePhoto(token, data.fotoPerfilUrl);
-
+				updated = await authService.changeProfilePhoto(
+					token,
+					data.fotoPerfilUrl
+				);
 			} else {
 				updated = await authService.updateUserData(token, {
 					[modalField]: data[modalField],
@@ -102,9 +102,7 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 	}
 
 	return (
-		<SafeAreaView style={styles.container}>
-			<Header title="Mi Cuenta" icon="information-circle-outline" />
-
+		<>
 			<UserChips
 				nombre={currentUser.nombre}
 				email={currentUser.email}
@@ -114,21 +112,30 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 				onPress={() => openModal("fotoPerfilUrl")}
 			/>
 
-			<View style={styles.profileContainer}>
-				<View style={styles.actionButtons}>
+			<View style={styles.actionButtons}>
+				<Button
+					title="Cambiar nombre"
+					onPress={() => openModal("nombre")}
+				/>
+				<Button
+					title="Cambiar correo"
+					onPress={() => openModal("email")}
+				/>
+				<Button
+					title="Cambiar contraseña"
+					onPress={() => openModal("password")}
+				/>
+				<Button
+					title="Política de privacidad"
+					onPress={() => setPrivacyVisible(true)}
+				/>
 
-					<Button title="Cambiar nombre" onPress={() => openModal("nombre")} />
-					<Button title="Cambiar correo" onPress={() => openModal("email")} />
-					<Button title="Cambiar contraseña" onPress={() => openModal("password")} />
-					<Button title="Política de privacidad" onPress={() => setPrivacyVisible(true)} />
+				<PrivacyModal
+					isVisible={privacyVisible}
+					onClose={() => setPrivacyVisible(false)}
+				/>
 
-					<PrivacyModal
-						isVisible={privacyVisible}
-						onClose={() => setPrivacyVisible(false)}
-					/>
-
-					<Button title="Cerrar sesión" onPress={onPress} />
-				</View>
+				<Button title="Cerrar sesión" onPress={onPress} />
 			</View>
 
 			<ModalUpdate
@@ -136,10 +143,10 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 					modalField === "nombre"
 						? "Actualizar Nombre"
 						: modalField === "email"
-							? "Actualizar Email"
-							: modalField === "password"
-								? "Actualizar contraseña"
-								: "Actualizar foto de perfil"
+						? "Actualizar Email"
+						: modalField === "password"
+						? "Actualizar contraseña"
+						: "Actualizar foto de perfil"
 				}
 				isVisible={modalVisible}
 				onSave={saveModal}
@@ -147,68 +154,19 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 				control={control}
 				errors={errors}
 			/>
-		</SafeAreaView>
+		</>
 	);
 };
 
 const styles = StyleSheet.create({
 	// Contenedores generales
 	container: {
-		padding: 5,
+		flex: 1,
 	},
 	// Botones
 	actionButtons: {
 		width: "100%",
 		gap: 10,
-	},
-	actionButton: {
-		backgroundColor: "#fff",
-		paddingVertical: 15,
-		borderRadius: 15,
-		alignItems: "center",
-		elevation: 3,
-		shadowColor: "#000",
-		shadowOffset: { width: 0, height: 3 },
-		shadowOpacity: 0.1,
-		shadowRadius: 3,
-	},
-	// Perfil
-	profileContainer: {
-		alignItems: "center",
-		paddingVertical: 20,
-	},
-	profileName: {
-		fontSize: 28,
-		fontWeight: "bold",
-		color: "#333",
-		marginTop: 10,
-	},
-	profileEmail: {
-		fontSize: 16,
-		color: "grey",
-		marginBottom: 20,
-	},
-	// Chips
-	infoChips: {
-		flexDirection: "row",
-		justifyContent: "center",
-		gap: 10,
-		marginBottom: 30,
-	},
-	chip: {
-		backgroundColor: "#ffe6d5",
-		paddingHorizontal: 15,
-		paddingVertical: 8,
-		borderRadius: 20,
-	},
-	chipText: {
-		color: "#FF6B00",
-		fontWeight: "bold",
-	},
-	actionText: {
-		fontSize: 16,
-		color: "#333",
-		fontWeight: "bold",
 	},
 });
 

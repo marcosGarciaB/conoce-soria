@@ -15,7 +15,7 @@ interface UserChipsProps {
     fotoPerfil: string;
     userRank?: number | null;
     editPhoto?: boolean;
-    onPress: () => void;
+    onPress?: () => void;
 }
 
 const UserChips = ({ nombre, email, puntos, fotoPerfil, userRank, editPhoto, onPress }: UserChipsProps) => {

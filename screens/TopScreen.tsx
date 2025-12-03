@@ -1,5 +1,4 @@
 import Header from "@/components/common/HeaderItem";
-import CurrentUser from "@/components/top/CurrentUser";
 import Ranking from "@/components/top/Ranking";
 import { useLoadTop } from "@/hooks/useLoadTop";
 
@@ -15,8 +14,6 @@ const TopSoriaScreen = () => {
 	return (
 		<SafeAreaView style={styles.container}>
 			<Header title="Ranking de Puestos" icon="trophy-outline" />
-
-			<CurrentUser />
 			<Ranking topUsuarios={topUsuarios} />
 		</SafeAreaView>
 	);

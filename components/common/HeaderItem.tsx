@@ -11,7 +11,7 @@ const Header = ({
 }: any) => {
 	return (
 		<LinearGradient
-			colors={["#ffffff", "#f7efe8", "#f7e9d9ff"]}
+			colors={["#ffe1c5ff", "#fffbf8ff", "#fde5cfff","#fffbf8ff","#fde5cfff",]}
 			start={{ x: 0, y: 0 }}
 			end={{ x: 1, y: 1 }}
 			style={stylesGR.container}
@@ -35,7 +35,7 @@ const Header = ({
 const stylesGR = StyleSheet.create({
 	container: {
 		height: 65,
-		borderRadius: 25,
+		borderRadius: 30,
 		flexDirection: "row",
 		alignItems: "center",
 		justifyContent: "space-between",
@@ -44,7 +44,6 @@ const stylesGR = StyleSheet.create({
 		shadowColor: "#000",
 		shadowOpacity: 0.2,
 		shadowRadius: 20,
-		marginBottom: 10,
 	},
 	title: {
 		fontSize: 22,

@@ -117,10 +117,10 @@ const RegisterScreen = ({ navigation }: { navigation: any }) => {
 							>
 								<View style={styles.buttonWrapper}>
 									<Text style={styles.buttonRegisterText}>
-										Inicia Sesión{" "}
+										Iniciar Sesión{" "}
 									</Text>
 									<Ionicons
-										name={"log-in-sharp"}
+										name={"log-in-outline"}
 										size={20}
 										color={"black"}
 									/>
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
 		paddingVertical: 14,
 		borderRadius: 50,
 		alignItems: "center",
-		marginTop: 30,
+		marginTop: 10,
 		marginBottom: 10,
 	},
 	buttonRegister: {

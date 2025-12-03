@@ -81,7 +81,6 @@ const DetailsScreen = ({
 			setTimeout(() => {
 				listRef.current?.scrollToEnd({ animated: true });
 			}, 150);
-
 		} catch (error) {
 			console.error("Error al enviar comentario:", error);
 		} finally {
@@ -89,9 +88,8 @@ const DetailsScreen = ({
 		}
 	};
 
-
 	const handleDelete = async (comentarioId: string) => {
-		if (!token) return <LoadingScreen /> ;
+		if (!token) return <LoadingScreen />;
 		setIsLoading(true);
 
 		try {
@@ -100,7 +98,7 @@ const DetailsScreen = ({
 				comentarioId,
 				token
 			);
-			
+
 			await reload();
 		} catch (error) {
 			console.error("Error al enviar comentario:", error);
@@ -120,7 +118,7 @@ const DetailsScreen = ({
 				{ texto: newText },
 				token
 			);
-			
+
 			await reload();
 		} catch (error) {
 			console.error("Error al enviar comentario:", error);
@@ -160,26 +158,26 @@ const DetailsScreen = ({
 						))
 					)}
 				</View>
-			</ScrollView>
 
-			<AddComment
-				control={control}
-				handleSubmit={handleSubmit}
-				onSubmit={onSubmit}
-				errors={errors}
-			/>
-			<TouchableOpacity
-				style={styles.inputButton}
-				onPress={() => console.log("Registrar experiencia")}
-			>
-				<Ionicons
-					name="qr-code"
-					size={30}
-					color="white"
-					style={{ marginRight: 10 }}
+				<AddComment
+					control={control}
+					handleSubmit={handleSubmit}
+					onSubmit={onSubmit}
+					errors={errors}
 				/>
-				<Text style={styles.buttonText}>Registrar experiencia</Text>
-			</TouchableOpacity>
+				<TouchableOpacity
+					style={styles.inputButton}
+					onPress={() => console.log("Registrar experiencia")}
+				>
+					<Ionicons
+						name="qr-code"
+						size={30}
+						color="white"
+						style={{ marginRight: 10 }}
+					/>
+					<Text style={styles.buttonText}>Registrar experiencia</Text>
+				</TouchableOpacity>
+			</ScrollView>
 		</SafeAreaView>
 	);
 };
@@ -187,8 +185,6 @@ const DetailsScreen = ({
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#FAFAFA",
-		padding: 5,
 	},
 	inputButton: {
 		flexDirection: "row",
@@ -197,6 +193,8 @@ const styles = StyleSheet.create({
 		backgroundColor: "#FF6B00",
 		height: 50,
 		borderRadius: 30,
+		marginRight: 10,
+		marginLeft: 10,
 	},
 	buttonText: {
 		fontSize: 19,
