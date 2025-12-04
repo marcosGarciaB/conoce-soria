@@ -1,15 +1,15 @@
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
-	LayoutAnimation,
 	Platform,
 	StyleSheet,
 	Text,
 	TextInput,
 	TouchableOpacity,
 	UIManager,
-	View,
+	View
 } from "react-native";
+import AnimatedDropdown from "../animations/AnimatedDropdown";
 
 if (Platform.OS === "android") {
 	UIManager.setLayoutAnimationEnabledExperimental?.(true);
@@ -37,7 +37,6 @@ const Filters: React.FC<FiltersProps> = ({
 	const [open, setOpen] = useState(false);
 
 	const toggleOpen = () => {
-		LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
 		setOpen(!open);
 	};
 
@@ -63,70 +62,64 @@ const Filters: React.FC<FiltersProps> = ({
 				/>
 			</TouchableOpacity>
 
-			{open && (
-				<View style={styles.filtersContainer}>
-					<View style={styles.searchContainer}>
-						<Ionicons
-							name="search-outline"
-							size={20}
-							color="#c7a899"
-							style={{ marginHorizontal: 10 }}
-						/>
-						<TextInput
-							style={styles.input}
-							placeholder="Buscar experiencia"
-							placeholderTextColor="#c7a899"
-							value={searchText}
-							onChangeText={onFilterByText}
-						/>
-					</View>
-
-					<View style={styles.buttonsContainer}>
-						{categories.map((cat) => (
-							<TouchableOpacity
-								key={cat}
-								style={[
-									styles.button,
-									selectedCat === cat &&
-										styles.buttonCategorySelected,
-								]}
-								onPress={() => handleCategory(cat)}
-							>
-								<Text
-									style={[
-										styles.buttonText,
-										selectedCat === cat &&
-											styles.buttonTextCategorySelected,
-									]}
-								>
-									{cat
-										.replace("_", " ")
-										.toLowerCase()
-										.replace(/\b\w/g, (l) =>
-											l.toUpperCase()
-										)}
-								</Text>
-							</TouchableOpacity>
-						))}
-					</View>
+			<AnimatedDropdown isOpen={open} maxHeight={150}>
+				<View style={styles.searchContainer}>
+					<Ionicons
+						name="search-outline"
+						size={20}
+						color="#c7a899"
+						style={{ marginHorizontal: 10 }}
+					/>
+					<TextInput
+						style={styles.input}
+						placeholder="Buscar experiencia"
+						placeholderTextColor="#c7a899"
+						value={searchText}
+						onChangeText={onFilterByText}
+					/>
 				</View>
-			)}
+
+				<View style={styles.buttonsContainer}>
+					{categories.map((cat) => (
+						<TouchableOpacity
+							key={cat}
+							style={[
+								styles.button,
+								selectedCat === cat && styles.buttonCategorySelected,
+							]}
+							onPress={() => handleCategory(cat)}
+						>
+							<Text
+								style={[
+									styles.buttonText,
+									selectedCat === cat && styles.buttonTextCategorySelected,
+								]}
+							>
+								{cat
+									.replace("_", " ")
+									.toLowerCase()
+									.replace(/\b\w/g, (l) => l.toUpperCase())}
+							</Text>
+						</TouchableOpacity>
+					))}
+				</View>
+			</AnimatedDropdown>
 		</View>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: "#fffdfdff",
-		marginVertical: 10,
+		backgroundColor: "#fff",
+		borderRadius: 20,
 		paddingHorizontal: 15,
-		borderRadius: 30,
 		paddingVertical: 10,
 		shadowColor: "#000",
 		shadowOffset: { width: 0, height: 2 },
 		shadowOpacity: 0.2,
 		shadowRadius: 5,
 		elevation: 3,
+		marginVertical: 5,
 	},
 	// Botón de abrir/cerrar filtros
 	button: {
@@ -134,37 +127,41 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between",
 		alignItems: "center",
 		backgroundColor: "#fff",
-		paddingVertical: 10,
+		paddingVertical: 8,
 		paddingHorizontal: 15,
-		borderRadius: 30,
+		borderRadius: 20,
 		borderWidth: 1,
-		borderColor: "black",
+		borderColor: "#ccc",
 	},
 	buttonText: {
 		color: "#333",
 		fontWeight: "600",
 		fontSize: 16,
 	},
-	filtersContainer: {
-		marginTop: 5,
+	// Contenedor de filtros desplegables
+	filtersInner: {
+		marginTop: 10,
+		paddingBottom: 5,
 	},
 	// Input
 	searchContainer: {
+		marginTop: 10,
+		marginBottom: 10,
 		flexDirection: "row",
 		alignItems: "center",
-		backgroundColor: "#ffffffff",
-		borderColor: "grey",
+		backgroundColor: "#f9f9f9",
+		borderColor: "#ccc",
 		borderWidth: 1,
-		borderRadius: 30,
+		borderRadius: 20,
 		paddingHorizontal: 10,
 		height: 40,
-		marginBottom: 5,
 	},
 	input: {
 		flex: 1,
 		fontSize: 16,
 		color: "#333",
 	},
+
 	// Botones de categorías
 	buttonsContainer: {
 		flexDirection: "row",
@@ -172,13 +169,12 @@ const styles = StyleSheet.create({
 		gap: 5,
 	},
 	buttonCategory: {
-		paddingVertical: 8,
-		paddingHorizontal: 15,
-		borderRadius: 30,
+		paddingVertical: 6,
+		paddingHorizontal: 12,
+		borderRadius: 20,
 		borderWidth: 1,
 		borderColor: "#FF6B00",
 		backgroundColor: "#fff",
-		marginRight: 5,
 		marginBottom: 5,
 	},
 	buttonCategorySelected: {

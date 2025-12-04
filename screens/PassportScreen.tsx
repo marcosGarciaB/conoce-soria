@@ -21,7 +21,7 @@ const PassportScreen = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Header title={"Pasaporte Personal"} icon="card-outline" icon2="chevron-back-circle"
+            <Header title={"Pasaporte Personal"} icon="card-outline" icon2="chevron-back"
                 onPress={() => navigation.goBack()} isSecondIcon={true} />
 
             <HeaderCard />
@@ -36,7 +36,5 @@ export default PassportScreen;
 const styles = StyleSheet.create({
     container: {    
         flex: 1,
-        backgroundColor: "#FAFAFA",
-        padding: 5,
     },
 });

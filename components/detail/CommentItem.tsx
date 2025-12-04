@@ -12,7 +12,7 @@ import Animated, {
 
 import { useLoadUser } from "@/hooks/useLoadUser";
 import { ComentariosResponse } from "@/services/commentService";
-import ModalComment from "./ModalComment";
+import ModalComment from "../modals/ModalComment";
 
 interface ComentarioItemProps {
 	comentario: ComentariosResponse;
@@ -35,6 +35,7 @@ const ComentarioItem: React.FC<ComentarioItemProps> = ({
 	);
 
 	const { user } = useLoadUser();
+	const isOwnComment = comentario.autorId === user?.id.toString();
 
 	const resetPosition = () => {
 		translate.value = withSpring(0, { damping: 15, stiffness: 120 });
@@ -48,6 +49,7 @@ const ComentarioItem: React.FC<ComentarioItemProps> = ({
 	};
 
 	const panGesture = Gesture.Pan()
+		.enabled(isOwnComment)
 		.onUpdate((e) => {
 			translate.value = Math.max(-MAX, Math.min(e.translationX, MAX));
 		})
@@ -75,7 +77,7 @@ const ComentarioItem: React.FC<ComentarioItemProps> = ({
 	const handleConfirm = (newText?: string) => {
 		if (actionType === "delete" && onDelete) onDelete(comentario.id);
 		if (actionType === "update" && onUpdate && newText)
-			onUpdate(comentario.id, newText);
+		onUpdate(comentario.id, newText);
 		setModalVisible(false);
 		setActionType(null);
 	};
@@ -86,7 +88,7 @@ const ComentarioItem: React.FC<ComentarioItemProps> = ({
 	};
 
 	return (
-		<View style={{ marginVertical: 5, margin:10 }}>
+		<View style={{ marginVertical: 5, margin: 10 }}>
 			<GestureDetector gesture={panGesture}>
 
 				<Animated.View style={[styles.commentItem, animatedStyle]}>

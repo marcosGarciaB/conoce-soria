@@ -121,6 +121,8 @@ const DetailFlatListAnimated: React.FC<DetailFlatListAnimatedProps> = ({
 		<Photo item={item} index={index} scrollY={scrollY} onPress={onPress} />
 	);
 
+	if (loading) return <LoadingScreen />
+
 	return (
 		<>
 			<Filters
@@ -146,7 +148,9 @@ const DetailFlatListAnimated: React.FC<DetailFlatListAnimatedProps> = ({
 					decelerationRate="fast"
 					scrollEventThrottle={16}
 					onScroll={onScroll}
-					ListFooterComponent={loading ? <LoadingScreen /> : null}
+					ListFooterComponent={
+						loading ? <LoadingScreen /> : null
+					}
 				/>
 			</View>
 		</>

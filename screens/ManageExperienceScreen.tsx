@@ -7,8 +7,7 @@ import { ExperienciaDetailResponse } from "@/services/experienceService";
 
 import { RouteProp } from "@react-navigation/native";
 import React, { useState } from "react";
-import { StyleSheet } from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type ExperienceRoute = RouteProp<RootStackParamList, "ManageExperience">;
@@ -62,22 +61,19 @@ const ManageExperienceScreen = ({
 				title="Gestión Experiencias"
 				icon="map-outline"
 				isSecondIcon={true}
-				icon2="chevron-back-circle"
+				icon2="chevron-back"
 				onPress={() => navigation.goBack()}
 			/>
 
-			<KeyboardAwareScrollView
-				contentContainerStyle={styles.formContainer}
-				enableOnAndroid={true}
-				extraScrollHeight={50}
-				keyboardShouldPersistTaps="handled"
+			<View
+				style={styles.formContainer}
 			>
 				<ExperienceForm
 					initialData={editingExperience ?? undefined}
 					onSubmit={handleSubmitForm}
 					navigation={navigation}
 				/>
-			</KeyboardAwareScrollView>
+			</View>
 		</SafeAreaView>
 	);
 };
@@ -85,15 +81,13 @@ const ManageExperienceScreen = ({
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#FAFAFA",
-		padding: 5,
 	},
 	formContainer: {
 		flexGrow: 1,
-		backgroundColor: "#fff",
+		backgroundColor: "white",
 		borderRadius: 16,
-		padding: 25,
-		margin: 5,
+		padding: 10,
+		margin: 10,
 		shadowColor: "#000",
 		shadowOpacity: 0.5,
 		shadowRadius: 10,

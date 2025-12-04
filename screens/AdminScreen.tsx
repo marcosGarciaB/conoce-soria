@@ -13,8 +13,7 @@ import {
 import { useIsFocused } from "@react-navigation/native";
 
 import React, { useEffect, useState } from "react";
-import { StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, View } from "react-native";
 
 const AdminScreen = ({ navigation }: { navigation: any }) => {
 	const [showExperiencias, setShowExperiencias] = useState(false);
@@ -78,7 +77,7 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 	};
 
 	return (
-		<>
+		<View style={styles.container}>
 			<Header title="Administración" icon="accessibility-outline" />
 
 				<Buttom
@@ -127,15 +126,14 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 					/>
 				</>
 			)}
-		</>
+		</View>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#FAFAFA",
-		padding: 5,
+		paddingTop: "20%"
 	},
 });
 

@@ -5,13 +5,13 @@ import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
 import { UserCredentials } from "@/services/authService";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import ModalSuccess from "../common/ModalSucces";
 import ActiveInput from "../inputs/ActiveInput";
 import EmailInput from "../inputs/EmailInput";
 import ImageUrlInput from "../inputs/ImageUrlInput";
 import NameInput from "../inputs/NameInput";
 import PasswordInput from "../inputs/PasswordInput";
 import RoleInput from "../inputs/RoleInput";
+import ModalSuccess from "../modals/ModalSucces";
 
 interface UserFormProps {
 	initialData?: UserCredentials;
@@ -72,6 +72,7 @@ const UserForm = ({ initialData, onSubmit, navigation }: UserFormProps) => {
 				email: data.email,
 				password: data.password,
 				role: data.role,
+				fotoPerfilUrl: data.fotoPerfilUrl,
 			};
 			onSubmit(newData);
 		}

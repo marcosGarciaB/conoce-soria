@@ -46,7 +46,7 @@ const TabButton: React.FC<TabButtonProps> = ({
 				<Ionicons
 					name={iconName}
 					size={28}
-					color={focused ? "#FF6B00" : "#5e5e5eff"}
+					color={focused ?  "rgba(255, 123, 0, 0.7)" : "rgba(0, 0, 0, 0.7)"}
 				/>
 			</Animated.View>
 		</TouchableWithoutFeedback>
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
 		width: 70,
 		height: 60,
 		borderRadius: 30,
-		backgroundColor: "#faebd7ff",
+		backgroundColor: "rgba(255, 255, 255, 0.5)",
 	},
 });
 

@@ -5,11 +5,11 @@ import { apiClient } from './apiClient';
 
 export interface ComentariosResponse {
     id:string;
-    autorId: string,
     autorNombre: string;
     texto:string;
     fecha:string;
     autorFotoPerfil: string;
+    autorId: string,
 }
 
 export interface ComentarioPost {

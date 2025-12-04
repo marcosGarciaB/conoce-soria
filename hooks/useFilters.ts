@@ -21,7 +21,10 @@ export const useFilteredExperiences = () => {
 			return matchCat && matchText;
 		});
 
-		setFilteredExperiencias(filtered);
+		const uniqueFiltered = Array.from(new Map(filtered.map(item => [item.id, item])).values());
+
+
+		setFilteredExperiencias(uniqueFiltered);
 	}, [experiencias]);
 
 	const debouncedApplyFilters = useCallback(
@@ -34,7 +37,7 @@ export const useFilteredExperiences = () => {
 	}, [searchText, selectedCat, debouncedApplyFilters]);
 
 	const wordsFilter = (texto: string) => {
-		setSearchText(texto); 
+		setSearchText(texto);
 	};
 
 	const buttonFilter = (categoria: string) => {

@@ -11,6 +11,7 @@ export interface NewUser {
     email: string;
     password: string;
     role: string;
+    fotoPerfilUrl: string;
 }
 export interface NewExperience {
     titulo: string;
@@ -21,7 +22,7 @@ export interface NewExperience {
     ubicacionLat: number;
     ubicacionLng: number;
     puntosOtorgados: number;
-    activo: boolean;
+    activo?: boolean;
 }
 
 // Sección usuarios

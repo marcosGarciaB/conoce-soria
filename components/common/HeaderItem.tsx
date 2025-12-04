@@ -1,57 +1,57 @@
 import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
-import { StyleSheet, Text } from "react-native";
+import { BlurView } from "expo-blur";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-const Header = ({
-	title,
-	icon,
-	isSecondIcon,
-	icon2,
-	onPress,
-}: any) => {
+const Header = ({ title, icon, isSecondIcon, icon2, onPress }: any) => {
 	return (
-		<LinearGradient
-			colors={["#ffe1c5ff", "#fffbf8ff", "#fde5cfff","#fffbf8ff","#fde5cfff",]}
-			start={{ x: 0, y: 0 }}
-			end={{ x: 1, y: 1 }}
-			style={stylesGR.container}
-		>
-			{isSecondIcon && (
-				<Ionicons
-					name={icon2}
-					size={30}
-					color="#5a5a5a"
-					onPress={onPress}
-				/>
-			)}
+		<View style={styles.wrapper}>
+			<BlurView
+				intensity={50}
+				tint="light"
+				style={styles.blurContainer}>
 
-			<Text style={stylesGR.title}>{title}</Text>
+				<View style={styles.container}>
+					{isSecondIcon && (
+						<TouchableOpacity activeOpacity={0.85} onPress={onPress}>
+							<Ionicons name={icon2} size={30} color="rgba(0, 0, 0, 0.7)" />
+						</TouchableOpacity>
+					)}
 
-			<Ionicons name={icon} size={30} color="#5a5a5a" />
-		</LinearGradient>
+					<Text style={styles.title}>{title}</Text>
+
+					<Ionicons name={icon} size={30} color="rgba(0, 0, 0, 0.7)" />
+				</View>
+			</BlurView>
+		</View>
+
 	);
 };
 
-const stylesGR = StyleSheet.create({
+const styles = StyleSheet.create({
+	wrapper: {
+		position: "absolute",
+		top: 0,
+		right: 0,
+		left: 0,
+		zIndex: 999,
+		elevation: 999,
+	},
+	blurContainer: {
+		width: "100%",
+		overflow: "hidden",
+	},
 	container: {
-		height: 65,
-		borderRadius: 30,
+		width: "100%",
 		flexDirection: "row",
+		justifyContent: "space-around",
 		alignItems: "center",
-		justifyContent: "space-between",
-		paddingHorizontal: 20,
-		elevation: 8,
-		shadowColor: "#000",
-		shadowOpacity: 0.2,
-		shadowRadius: 20,
+		height: 70,
+		backgroundColor: "rgba(94, 94, 94, 0.15)",
 	},
 	title: {
 		fontSize: 22,
 		fontWeight: "bold",
 		color: "#5a5a5a",
-		textShadowColor: "#ffffff",
-		textShadowOffset: { width: 0, height: 1 },
-		textShadowRadius: 4,
 	},
 });
 

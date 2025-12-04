@@ -135,7 +135,7 @@ const DetailsScreen = ({
 				title={detalle.titulo}
 				icon="search-sharp"
 				isSecondIcon={true}
-				icon2="chevron-back-circle"
+				icon2="chevron-back"
 				onPress={() => navigation.goBack()}
 			/>
 

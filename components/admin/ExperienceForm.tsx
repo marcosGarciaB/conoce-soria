@@ -5,7 +5,6 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 
 import { NewExperience } from "@/services/adminService";
 import { ExperienciaDetailResponse } from "@/services/experienceService";
-import ModalSuccess from "../common/ModalSucces";
 import ActiveInput from "../inputs/ActiveInput";
 import CategoryInput from "../inputs/CategoryInput";
 import CoordsInput from "../inputs/CoordsInput";
@@ -14,6 +13,7 @@ import DirectionInput from "../inputs/DirectionInput";
 import ImageUrlInput from "../inputs/ImageUrlInput";
 import NumberInput from "../inputs/NumberInput";
 import TitleInput from "../inputs/TitleInput";
+import ModalSuccess from "../modals/ModalSucces";
 
 interface ExperienceFormProps {
 	initialData?: ExperienciaDetailResponse;

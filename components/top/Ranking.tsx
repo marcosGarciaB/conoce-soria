@@ -12,10 +12,10 @@ import {
 } from "react-native";
 import ProfileAvatar from "../common/ProfilePhoto";
 import TitleHeader from "../common/TitleHeader";
-import { normasContenido, premioContenido } from "../utils/rankingInformation";
+import InfoModal from "../modals/ModalInformation";
+import { normasContenido, premioContenido } from "../utils/modalsInformation";
 import ButtonInformation from "./Buttons";
 import CurrentUser from "./CurrentUser";
-import InfoModal from "./ModalInformation";
 
 interface RankingProps {
 	topUsuarios: UsuarioRankingDTO[];
@@ -26,11 +26,8 @@ interface RankingProps {
 const { width } = Dimensions.get("screen");
 
 const podiumColors = [
-	// Oro metálico
 	["#FFD700", "#FFE066", "#FFD700"],
-	// Plata metálica
 	["#C0C0C0", "#E0E0E0", "#C0C0C0"],
-	// Bronce metálico
 	["#CD7F32", "#E3A869", "#CD7F32"],
 ];
 
@@ -55,8 +52,8 @@ const Ranking = ({ topUsuarios, navigation, isHome }: RankingProps) => {
 			<View style={styles.rankCircle}>
 				<Text style={styles.rankText}>{index + 4}</Text>
 			</View>
-
-			<ProfileAvatar foto={user?.fotoPerfilUrl} size={50} />
+			
+			<ProfileAvatar foto={item.fotoPerfilUrl} size={50} />
 
 			<View style={styles.userInfo}>
 				<Text style={styles.userName}>{item.nombre}</Text>
@@ -79,7 +76,7 @@ const Ranking = ({ topUsuarios, navigation, isHome }: RankingProps) => {
 							end={{ x: 1, y: 1 }}
 						>
 							<ProfileAvatar
-								foto={user?.fotoPerfilUrl}
+								foto={item.fotoPerfilUrl}
 								size={70}
 							/>
 							<Text style={styles.podiumName}>{item.nombre}</Text>

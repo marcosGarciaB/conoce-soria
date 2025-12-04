@@ -24,7 +24,6 @@ interface CategoryItemProps {
 }
 
 const CategoryItem = ({ experiencias, onDelete, onEdit, loadMore, hasMore, loading }: CategoryItemProps) => {
-	const url = "https://r-charts.com/es/miscelanea/procesamiento-imagenes-magick_files/figure-html/recortar-bordes-imagen-r.png";
 
 	const renderItem = ({ item }: { item: ExperienciaDetailResponse }) => (
 		<View style={styles.expCard}>
@@ -48,7 +47,7 @@ const CategoryItem = ({ experiencias, onDelete, onEdit, loadMore, hasMore, loadi
 
 				<View style={styles.row}>
 					<Ionicons
-						name="location-outline"
+						name="location-sharp"
 						size={18}
 						color="orange"
 					/>
@@ -143,7 +142,7 @@ const styles = StyleSheet.create({
 		overflow: "hidden",
 	},
 	overlayPoints: {
-		backgroundColor: "rgba(241, 202, 94, 0.3)",
+		backgroundColor: "orange",
 		color: "#333",
 		fontSize: 12,
 		fontWeight: "500",

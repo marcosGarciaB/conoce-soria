@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
 		marginBottom: 20,
 		backgroundColor: "transparent",
 		shadowColor: "#000",
-		shadowOpacity: 0.5,
+		shadowOpacity: 0.1,
 		shadowRadius: 20,
 		elevation: 5,
 	},

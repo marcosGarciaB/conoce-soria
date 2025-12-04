@@ -1,57 +1,25 @@
 import UserForm from "@/components/admin/UserForm";
 import Header from "@/components/common/HeaderItem";
-import { useAuth } from "@/contexts/AuthContext";
+import { useLoadUser } from "@/hooks/useLoadUser";
 import { RootStackParamList } from "@/navigation/AppNavigator";
-import {
-	adminService,
-	NewUser,
-} from "@/services/adminService";
-import { UpdateCredentials, UserCredentials } from "@/services/authService";
 
 import { RouteProp } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
-import { StyleSheet } from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import React, { useEffect } from "react";
+import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type UserRoute = RouteProp<RootStackParamList, "ManageUser">;
 
 const ManageUserScreen = ({ navigation, route, }: { navigation: any; route: UserRoute; }) => {
-	const { token } = useAuth();
 	const user = route.params?.user;
-	const [editingUser, setEditingUser] = useState<UserCredentials | null>();
-	const [users, setUsers] = useState<UserCredentials[]>([]);
+	const { editingUser, loadEditingUser, handleSubmitForm } = useLoadUser();
 
 	useEffect(() => {
-		const loadUser = async () => {
-			if (!token || !user) return;
-
-			try {
-				const data = await adminService.getUserByEmail(user.email,token);
-				setEditingUser(data);
-			} catch (error) {
-				console.error("Error cargando el usuario:", error);
-			}
-		};
-		loadUser();
-	}, [user]);
-
-	const handleSubmitForm = async (data: NewUser | UpdateCredentials) => {
-		try {
-			if (editingUser) {
-				const updated = await adminService.updateUser(editingUser.email, data as UpdateCredentials, token!);
-				setEditingUser(updated);
-
-				// Actualizar la lista local de usuarios si tienes un listado
-				setUsers((prev) => prev.map((u) => (u.email === updated.email ? updated : u)));
-			} else {
-				const created = await adminService.createUser(data as NewUser,token!);
-				setUsers((prev) => [...prev, created]);
-			}
-		} catch (error) {
-			console.error("Error guardando usuario", error);
+		if (user?.email) {
+			loadEditingUser(user.email);
+			console.log(user.email);
 		}
-	};
+	}, [user]);
 
 	return (
 		<SafeAreaView style={styles.container}>
@@ -59,20 +27,18 @@ const ManageUserScreen = ({ navigation, route, }: { navigation: any; route: User
 				title="Creación de usuarios"
 				icon="person-add-outline"
 				isSecondIcon={true}
-				icon2="chevron-back-circle"
+				icon2="chevron-back"
 				onPress={() => navigation.goBack()}
 			/>
-			<KeyboardAwareScrollView
-				contentContainerStyle={styles.formContainer}
-				enableOnAndroid={true}
-				keyboardShouldPersistTaps="handled"
-			>				
+
+			<View style={styles.formContainer}>
+
 			<UserForm
-					initialData={editingUser ?? undefined}
-					onSubmit={handleSubmitForm}
-					navigation={navigation}
-				/>
-			</KeyboardAwareScrollView>
+				initialData={editingUser ?? undefined}
+				onSubmit={handleSubmitForm}
+				navigation={navigation}
+			/>
+			</View>
 		</SafeAreaView>
 	);
 };
@@ -80,16 +46,12 @@ const ManageUserScreen = ({ navigation, route, }: { navigation: any; route: User
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#FAFAFA",
-		padding: 5,
 	},
-		formContainer: {
-		flexGrow: 1,
-		backgroundColor: "#fff",
+	formContainer: {
+		backgroundColor: "white",
 		borderRadius: 16,
 		padding: 10,
-		margin: 16,
-		maxHeight: "60%",
+		margin: 10,
 		shadowColor: "#000",
 		shadowOpacity: 0.05,
 		shadowRadius: 10,
