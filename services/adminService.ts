@@ -20,6 +20,8 @@ export interface NewExperience {
     direccion: string;
     ubicacionLat: number;
     ubicacionLng: number;
+    puntosOtorgados: number;
+    activo: boolean;
 }
 
 // Sección usuarios
@@ -56,9 +58,9 @@ const createUser = async (data: NewUser, token: string): Promise<UserCredentials
     }
 }
 
-const deleteUser = async (email: string, token: string): Promise<void> => {
+const deleteUser = async (id: number, token: string): Promise<void> => {
     try {
-        await apiClient.deleteWithToken(`/api/users/${email}`, token);
+        await apiClient.deleteWithToken(`/api/users/${id}`, token);
     } catch (error) {
         throw error;
     }

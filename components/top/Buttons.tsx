@@ -15,12 +15,10 @@ const ButtonInformation = ({ title, onPress }: ButtonInformationProps) => (
 
 const styles = StyleSheet.create({
     button: {
-        width: "50%",
+        width: "40%",
         backgroundColor: "#4B7BE5",
         padding: 15,
         borderRadius: 12,
-        marginRight: 20
-
     },
     buttonText: {
         color: "#fff",

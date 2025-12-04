@@ -6,7 +6,9 @@ import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { UserCredentials } from "@/services/authService";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import ModalSuccess from "../common/ModalSucces";
+import ActiveInput from "../inputs/ActiveInput";
 import EmailInput from "../inputs/EmailInput";
+import ImageUrlInput from "../inputs/ImageUrlInput";
 import NameInput from "../inputs/NameInput";
 import PasswordInput from "../inputs/PasswordInput";
 import RoleInput from "../inputs/RoleInput";
@@ -31,6 +33,8 @@ const UserForm = ({ initialData, onSubmit, navigation }: UserFormProps) => {
 			email: "",
 			password: "",
 			role: "USER",
+			fotoPerfilUrl: "",
+			activo: true,
 		},
 	});
 
@@ -41,24 +45,28 @@ const UserForm = ({ initialData, onSubmit, navigation }: UserFormProps) => {
 				email: initialData.email,
 				password: initialData.password,
 				role: initialData.role,
+				activo: initialData.activo ?? true,
+				fotoPerfilUrl: initialData.fotoPerfilUrl,
 			});
 		}
 	}, [initialData]);
 
 	const submitHandler = (data: any) => {
 		if (initialData) {
-			// Editar
 			const updatedData: UserCredentials = {
+				id: initialData.id,
 				nombre: data.nombre,
 				email: data.email,
 				password: data.password || initialData.password,
 				role: data.role,
 				puntos: initialData.puntos,
 				fechaCreacion: initialData.fechaCreacion,
+				fotoPerfilUrl: data.fotoPerfilUrl || initialData.fotoPerfilUrl,
+				activo: data.activo !== undefined ? data.activo : initialData.activo,
 			};
 			onSubmit(updatedData);
+
 		} else {
-			// Crear
 			const newData: NewUser = {
 				nombre: data.nombre,
 				email: data.email,
@@ -83,6 +91,8 @@ const UserForm = ({ initialData, onSubmit, navigation }: UserFormProps) => {
 				initialData={!!initialData}
 			/>
 			<RoleInput control={control} errors={errors} />
+			<ImageUrlInput control={control} errors={errors} isProfilePhoto={true} />
+			<ActiveInput control={control} errors={errors} />
 
 			<TouchableOpacity
 				style={styles.submitButton}
@@ -117,7 +127,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "#FF6B00",
 		paddingVertical: 14,
 		borderRadius: 12,
-		marginTop: 20, 
+		marginTop: 20,
 		alignItems: "center",
 		shadowColor: "#000",
 		shadowOpacity: 0.1,

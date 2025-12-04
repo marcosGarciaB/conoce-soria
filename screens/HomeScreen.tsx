@@ -1,16 +1,14 @@
 import Header from "@/components/common/HeaderItem";
 import FlatListAnimated from "@/components/home/FlatListAnimated";
 import Information from "@/components/home/Information";
+import MapComponent from "@/components/home/MapComponent";
 import MiniPassport from "@/components/home/MiniPassport";
 import Ranking from "@/components/top/Ranking";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLoadTop } from "@/hooks/useLoadTop";
 
 import React from "react";
-import {
-	ScrollView,
-	StyleSheet
-} from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const InicioScreen = ({ navigation }: { navigation: any }) => {
@@ -20,7 +18,6 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
 
 	return (
 		<SafeAreaView style={styles.container}>
-
 			{isLogged ? (
 				<Header
 					title="Conoce Soria"
@@ -34,7 +31,7 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
 			)}
 
 			<ScrollView
-				contentContainerStyle={{ paddingBottom: 40 }}
+				contentContainerStyle={{ paddingBottom: 50 }}
 				showsVerticalScrollIndicator={false}
 			>
 				<Information />
@@ -43,8 +40,15 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
 				{isLogged ? (
 					<MiniPassport navigation={navigation} />
 				) : (
-					<Ranking topUsuarios={topUsuarios} navigation={navigation} isHome={true} />
+					<Ranking
+						topUsuarios={topUsuarios}
+						navigation={navigation}
+						isHome={true}
+					/>
 				)}
+				<View style={styles.mapContainer}>
+					<MapComponent />
+				</View>
 			</ScrollView>
 		</SafeAreaView>
 	);
@@ -53,9 +57,10 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#FAFAFA",
-		padding: 5,
 		marginBottom: 30,
+		shadowColor: "#000",
+		shadowOpacity: 0.2,
+		shadowRadius: 20,
 	},
 	carouselContainer: {
 		width: "100%",
@@ -67,7 +72,7 @@ const styles = StyleSheet.create({
 	},
 	mapContainer: {
 		overflow: "hidden",
-		height: 250,
+		height: 300,
 		width: "100%",
 		marginVertical: 10,
 		borderRadius: 10,

@@ -63,6 +63,7 @@ const FlatListAnimated = () => {
 				snapToInterval={imageWidth + spacing}
 				style={{ flexGrow: 0 }}
 				decelerationRate="fast"
+				showsHorizontalScrollIndicator={false}
 				onEndReached={() => loadExperiencias()}
 				showsVerticalScrollIndicator={false}
 				onEndReachedThreshold={0.5}
@@ -82,18 +83,23 @@ const FlatListAnimated = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		marginTop: 30,
+		display: 'flex',
+		alignContent: 'center',
+		justifyContent: 'center',
 	},
 	shadowContainer: {
-		width: imageWidth,
+		width:imageWidth,
 		height: imageHeight,
 		borderRadius: 18,
 		shadowColor: "#000",
 		shadowOffset: { width: 0, height: 10 },
-		shadowOpacity: 0.35,
+		shadowOpacity: 0.05,
 		shadowRadius: 20,
 		elevation: 12,
 		backgroundColor: "transparent",
+		marginTop: 10,
+		marginBottom: 10,
+
 	},
 	imageContainer: {
 		width: imageWidth,

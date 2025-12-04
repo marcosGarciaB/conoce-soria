@@ -1,17 +1,24 @@
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
 const MapComponent = () => {
+	const isAndroid = Platform.OS === "android";
+
+	const initialRegion = {
+		latitude: 41.65,
+		longitude: -2.47,
+		latitudeDelta: 0.6,
+		longitudeDelta: 0.6,
+	};
+
 	return (
 		//Hacer render como en ManageExperience para poder coger lat, lon, id y title
 		<MapView
 			style={{ width: "100%", height: "100%" }}
-			initialRegion={{
-				latitude: 41.65,
-				longitude: -2.47,
-				latitudeDelta: 0.6,
-				longitudeDelta: 0.6,
-			}}
+			initialRegion={initialRegion}
+			provider={isAndroid ? "google" : undefined}
+			showsUserLocation
+			showsMyLocationButton
 		>
 			<Marker
 				key="marker1"

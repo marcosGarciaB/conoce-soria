@@ -9,12 +9,13 @@ import {
 } from "react-native";
 import ProfileAvatar from "../common/ProfilePhoto";
 import ItemButton from "./ItemButton";
+import StatusItem from "./StatusItem";
 
 const { width } = Dimensions.get("window");
 
 interface UserItemProps {
 	users: UserCredentials[];
-	onDelete: (email: string) => void;
+	onDelete: (id: number) => void;
 	onEdit: (user: UserCredentials) => void;
 	loadMore: () => void;
 	hasMore: boolean;
@@ -27,7 +28,7 @@ const UserItem = ({ users, onDelete, onEdit, loadMore, hasMore, loading }: UserI
 		return (
 			<View style={styles.userCard}>
 				<View style={styles.userRow}>
-					<ProfileAvatar foto={item.fotoPerfilUrl} size={90}/>
+					<ProfileAvatar foto={item.fotoPerfilUrl} size={90} />
 
 					<View style={styles.userInfo}>
 						<Text style={styles.userName}>{item.nombre}</Text>
@@ -39,9 +40,11 @@ const UserItem = ({ users, onDelete, onEdit, loadMore, hasMore, loading }: UserI
 					</View>
 				</View>
 
+				<StatusItem isActive={item.activo} />
+
 				<View style={styles.userActions}>
 					<ItemButton title="Editar" onPress={() => onEdit(item)} />
-					<ItemButton title="Eliminar" onPress={() => onDelete(item.email)} />
+					<ItemButton title="Eliminar" onPress={() => onDelete(item.id)} />
 				</View>
 			</View>
 		);

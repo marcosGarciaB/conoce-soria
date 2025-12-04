@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
 	// General
 	formContainer: {
 		flex: 1,
-		marginBottom: 20,
+		marginBottom: 10,
 		padding: 1,
 	},
 	// Input

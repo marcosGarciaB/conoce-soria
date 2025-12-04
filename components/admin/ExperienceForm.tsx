@@ -6,11 +6,13 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { NewExperience } from "@/services/adminService";
 import { ExperienciaDetailResponse } from "@/services/experienceService";
 import ModalSuccess from "../common/ModalSucces";
+import ActiveInput from "../inputs/ActiveInput";
 import CategoryInput from "../inputs/CategoryInput";
 import CoordsInput from "../inputs/CoordsInput";
 import DescInput from "../inputs/DescInput";
 import DirectionInput from "../inputs/DirectionInput";
 import ImageUrlInput from "../inputs/ImageUrlInput";
+import NumberInput from "../inputs/NumberInput";
 import TitleInput from "../inputs/TitleInput";
 
 interface ExperienceFormProps {
@@ -40,6 +42,8 @@ const ExperienceForm = ({
 			direccion: "",
 			ubicacionLat: 0,
 			ubicacionLng: 0,
+			puntosOtorgados: 0,
+			activo: true,
 		},
 	});
 
@@ -53,8 +57,9 @@ const ExperienceForm = ({
 				direccion: initialData.direccion,
 				ubicacionLat: initialData.ubicacionLat,
 				ubicacionLng: initialData.ubicacionLng,
+				puntosOtorgados: initialData.puntosOtorgados || 0,
+				activo: initialData.activo ?? true, 
 			});
-			console.log(initialData.direccion);
 		}
 	}, [initialData]);
 
@@ -77,6 +82,8 @@ const ExperienceForm = ({
 			<DirectionInput control={control} errors={errors} />
 			<CoordsInput control={control} errors={errors} isLat={true} />
 			<CoordsInput control={control} errors={errors} />
+			<NumberInput control={control} errors={errors} />
+			<ActiveInput control={control} errors={errors} />
 
 			<TouchableOpacity
 				style={styles.submitButton}

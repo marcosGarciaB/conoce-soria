@@ -12,7 +12,6 @@ export const useLoadPassport = () => {
     // Para el mini pasaporte
     const [passportPreview, setPassportPreview] = useState<any[]>([]);
     const [passportPoints, setPassportPoints] = useState(0);
-
     // Para pasaporte completo
     const [ranking, setRanking] = useState<number | null>(null);
     const [registros, setRegistros] = useState<any[]>([]);

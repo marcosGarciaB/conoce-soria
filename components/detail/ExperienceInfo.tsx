@@ -48,17 +48,20 @@ const styles = StyleSheet.create({
         width: "100%",
         height: 320,
         borderRadius: 20,
-        marginTop: 10,
         shadowColor: "#000",
-        shadowOpacity: 0.15,
-        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: 0.7,
+        shadowOffset: { width: 0, height: 2 },
         shadowRadius: 10,
         elevation: 5,
+        padding: 10,
+        paddingBottom: 30,
+        paddingTop: 20,
     },
     sectionTitleRow: {
         flexDirection: "row",
         alignItems: "center",
         marginTop: 25,
+        margin: 10,
     },
     sectionTitle: {
         fontSize: 22,
@@ -77,6 +80,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 4 },
         shadowRadius: 10,
         elevation: 3,
+        margin: 10,
     },
     aboutTitleRow: {
         flexDirection: "row",
@@ -92,8 +96,10 @@ const styles = StyleSheet.create({
     commentsTitleRow: {
         flexDirection: "row",
         alignItems: "center",
-        marginTop: 30,
+        marginTop: 20,
         marginBottom: 10,
+        margin: 10,
+        
     },
     commentsTitle: {
         fontSize: 20,

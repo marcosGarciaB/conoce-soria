@@ -25,16 +25,14 @@ const ModalComment = ({ title, isVisible, onClose, onSave, initialText = '' }: M
             visible={isVisible}
             onRequestClose={onClose}
         >
-            <Animated.View
-                style={[
-                    styles.modalOverlay,
+            <View style={styles.modalOverlay}>
+                <Animated.View style={[
+                    styles.modalContent,
                     {
                         transform: [{ scale }],
                         opacity: opacity,
                     },
-                ]}
-            >
-                <View style={styles.modalContent}>
+                ]}>
                     <Text style={styles.modalTitle}>{title}</Text>
 
                     {title !== "Eliminar comentario" && (
@@ -63,8 +61,8 @@ const ModalComment = ({ title, isVisible, onClose, onSave, initialText = '' }: M
                             <Text style={styles.modalButtonText}>Cancelar</Text>
                         </TouchableOpacity>
                     </View>
-                </View>
-            </Animated.View>
+                </Animated.View>
+            </View>
         </Modal>
     );
 };
@@ -72,21 +70,21 @@ const ModalComment = ({ title, isVisible, onClose, onSave, initialText = '' }: M
 const styles = StyleSheet.create({
     modalOverlay: {
         flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.5)',
+        backgroundColor: 'rgba(0,0,0,0.7)',
         justifyContent: 'center',
         alignItems: 'center',
     },
     modalContent: {
         width: '80%',
         backgroundColor: '#fff',
-        borderRadius: 10,
+        borderRadius: 28,
         padding: 20,
         alignItems: 'center',
         shadowColor: "#000",
-        shadowOffset: { width: 0, height: 5 },
-        shadowOpacity: 0.1,
-        shadowRadius: 5,
-        elevation: 5,
+        shadowOffset: { width: 0, height: 12 },
+        shadowOpacity: 0.3,
+        shadowRadius: 25,
+        elevation: 15,
     },
     modalTitle: {
         fontSize: 20,

@@ -85,10 +85,6 @@ const AddComment = ({
 };
 
 const styles = StyleSheet.create({
-	// General
-	addCommentContainer: {
-		paddingVertical: 20,
-	},
 	// Inputs
 	inputContainer: {
 		flexDirection: "row",
@@ -97,9 +93,8 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderRadius: 30,
 		paddingHorizontal: 12,
-		marginBottom: 10,
-		marginTop: 10,
 		backgroundColor: "white",
+		margin: 10,
 	},
 	inputWithIcon: {
 		flex: 1,

@@ -51,7 +51,7 @@ const ModalSuccess = ({ title, message, isVisible, onClose }: ModalSuccessProps)
 const styles = StyleSheet.create({
     overlay: {
         flex: 1,
-        backgroundColor: "rgba(0,0,0,0.45)",
+        backgroundColor: "rgba(0,0,0,0.7)",
         justifyContent: "center",
         alignItems: "center",
         paddingHorizontal: 20,
@@ -59,15 +59,15 @@ const styles = StyleSheet.create({
     card: {
         width: "90%",
         backgroundColor: "#fff",
-        borderRadius: 20,
+        borderRadius: 28,
         paddingVertical: 30,
         paddingHorizontal: 25,
         alignItems: "center",
         shadowColor: "#000",
-        shadowOffset: { width: 0, height: 6 },
-        shadowOpacity: 0.1,
-        shadowRadius: 10,
-        elevation: 7,
+        shadowOffset: { width: 0, height: 12 },
+        shadowOpacity: 0.3,
+        shadowRadius: 25,
+        elevation: 15,
     },
     iconContainer: {
         marginBottom: 15,

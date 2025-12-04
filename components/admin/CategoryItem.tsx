@@ -11,6 +11,7 @@ import {
 	View
 } from "react-native";
 import ItemButton from "./ItemButton";
+import StatusItem from "./StatusItem";
 const { width } = Dimensions.get("window");
 
 interface CategoryItemProps {
@@ -37,14 +38,7 @@ const CategoryItem = ({ experiencias, onDelete, onEdit, loadMore, hasMore, loadi
 							.toLowerCase()
 							.replace(/\b\w/g, (l) => l.toUpperCase())}
 					</Text>
-					<Text
-						style={[
-							styles.overlayStatus,
-							item.visible ? styles.active : styles.inactive,
-						]}
-					>
-						{item.visible ? "Activo" : "Inactivo"}
-					</Text>
+					<StatusItem isActive={item.activo} />
 				</View>
 			</View>
 
@@ -64,6 +58,7 @@ const CategoryItem = ({ experiencias, onDelete, onEdit, loadMore, hasMore, loadi
 				<View style={styles.coordsContainer}>
 					<Text style={styles.coordText}>Latitud: {item.ubicacionLat}</Text>
 					<Text style={styles.coordText}>Longitud: {item.ubicacionLng}</Text>
+					<Text style={styles.overlayPoints}>Puntos: {item.puntosOtorgados}</Text>
 				</View>
 			</View>
 
@@ -146,6 +141,16 @@ const styles = StyleSheet.create({
 		paddingVertical: 3,
 		borderRadius: 8,
 		overflow: "hidden",
+	},
+	overlayPoints: {
+		backgroundColor: "rgba(241, 202, 94, 0.3)",
+		color: "#333",
+		fontSize: 12,
+		fontWeight: "500",
+		paddingHorizontal: 8,
+		paddingVertical: 4,
+		borderRadius: 12,
+		marginRight: 6,
 	},
 	overlayStatus: {
 		paddingHorizontal: 10,
