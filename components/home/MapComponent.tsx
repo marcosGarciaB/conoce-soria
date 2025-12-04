@@ -8,7 +8,7 @@ import { useFilteredExperiences } from "@/hooks/useFilters";
 import { ExperienciaDetailResponse } from "@/services/experienceService";
 import LoadingScreen from "../common/Loading";
 
-const GOOGLE_MAPS_APIKEY = "AIzaSyC3exACcTOit0r-gAPGn_YX_2hwKh79RrY";
+const GOOGLE_MAPS_APIKEY = " ";
 
 const MapComponent = () => {
 	const { filteredMarkers } = useFilteredExperiences();
