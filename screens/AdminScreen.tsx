@@ -133,7 +133,7 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		paddingTop: "20%"
+		paddingTop: "27%",
 	},
 });
 

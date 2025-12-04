@@ -58,7 +58,7 @@ const ExperienceForm = ({
 				ubicacionLat: initialData.ubicacionLat,
 				ubicacionLng: initialData.ubicacionLng,
 				puntosOtorgados: initialData.puntosOtorgados || 0,
-				activo: initialData.activo ?? true, 
+				activo: initialData.activo ?? true,
 			});
 		}
 	}, [initialData]);
@@ -74,6 +74,7 @@ const ExperienceForm = ({
 			enableOnAndroid={true}
 			extraScrollHeight={50}
 			keyboardShouldPersistTaps="handled"
+			contentContainerStyle={{ padding: 10, paddingTop: 80 }}
 		>
 			<TitleInput control={control} errors={errors} />
 			<DescInput control={control} errors={errors} />
@@ -90,7 +91,9 @@ const ExperienceForm = ({
 				onPress={handleSubmit(submitHandler)}
 			>
 				<Text style={styles.submitText}>
-					{initialData ? "Actualizar Experiencia" : "Crear Experiencia"}
+					{initialData
+						? "Actualizar Experiencia"
+						: "Crear Experiencia"}
 				</Text>
 			</TouchableOpacity>
 

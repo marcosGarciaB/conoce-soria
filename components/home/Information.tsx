@@ -25,10 +25,8 @@ const styles = StyleSheet.create({
 	heroContainer: {
 		margin: 10,
 		paddingHorizontal: 22,
-		paddingVertical: 28,
+		paddingVertical: 20,
 		borderRadius: 24,
-		marginTop: 20,
-		marginBottom: 20,
 		backgroundColor: "transparent",
 		shadowColor: "#000",
 		shadowOpacity: 0.1,

@@ -82,7 +82,7 @@ const CategoryItem = ({ experiencias, onDelete, onEdit, loadMore, hasMore, loadi
 						? { justifyContent: "space-between" }
 						: undefined
 				}
-				contentContainerStyle={{ paddingBottom: 40 }}
+				contentContainerStyle={{ paddingBottom: 40, padding: 10 }}
 				onEndReachedThreshold={0.01}
 				onEndReached={() => {
 					if (!loading && hasMore) {
@@ -97,7 +97,6 @@ const CategoryItem = ({ experiencias, onDelete, onEdit, loadMore, hasMore, loadi
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#FAFAFA",
 	},
 	// Experiencias
 	expCard: {

@@ -1,11 +1,12 @@
 import {
 	experienciaService,
-	ExperienciasResponse,
+	ExperienciasResponse
 } from "@/services/experienceService";
 import { useEffect } from "react";
 import { usePaginatedFetch } from "./usePaginatedFetch";
 
-export const useExperiences = (pageSize: number = 5) => {
+export const useLoadExperiences = (pageSize: number = 5) => {
+
 	const {
 		data: experiencias,
 		loadData: loadExperiencias,

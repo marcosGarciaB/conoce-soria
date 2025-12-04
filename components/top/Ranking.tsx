@@ -110,6 +110,7 @@ const Ranking = ({ topUsuarios, navigation, isHome }: RankingProps) => {
 					renderItem={renderItem}
 					contentContainerStyle={styles.listContent}
 					showsVerticalScrollIndicator={false}
+					
 					ListHeaderComponent={
 						<>
 							<CurrentUser />
@@ -118,12 +119,11 @@ const Ranking = ({ topUsuarios, navigation, isHome }: RankingProps) => {
 							{renderPodium()}
 						</>
 					}
-					style={{ marginBottom: "10%" }}
 					ListFooterComponent={
 						<View style={styles.container}>
 							<View style={styles.buttonRow}>
 								<ButtonInformation
-									title="Normas del Juego"
+									title="Normas"
 									onPress={() =>
 										setModalVisible({
 											...modalVisible,
@@ -180,6 +180,8 @@ const styles = StyleSheet.create({
 	},
 	listContent: {
 		paddingHorizontal: 10,
+		paddingTop: 70,
+		paddingBottom: 60,
 	},
 	card: {
 		flexDirection: "row",
@@ -298,6 +300,8 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: "row",
 		justifyContent: "space-around",
+		alignContent: "center",
+		alignItems: "center"
 	},
 });
 

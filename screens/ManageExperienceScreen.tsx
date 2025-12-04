@@ -65,9 +65,7 @@ const ManageExperienceScreen = ({
 				onPress={() => navigation.goBack()}
 			/>
 
-			<View
-				style={styles.formContainer}
-			>
+			<View style={styles.formContainer}>
 				<ExperienceForm
 					initialData={editingExperience ?? undefined}
 					onSubmit={handleSubmitForm}

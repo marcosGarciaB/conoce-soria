@@ -37,6 +37,8 @@ const styles = StyleSheet.create({
 		borderWidth: 2,
 		borderColor: "#d6d6d6ff",
 		marginTop: 10,
+		marginRight: 10,
+		marginLeft: 10,
 	},
 	optionText: {
 		flex: 1,

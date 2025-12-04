@@ -4,33 +4,43 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const Header = ({ title, icon, isSecondIcon, icon2, onPress }: any) => {
 	return (
-		<View style={styles.wrapper}>
-			<BlurView
-				intensity={50}
-				tint="light"
-				style={styles.blurContainer}>
+			<View style={styles.wrapper}>
+				<BlurView
+					intensity={50}
+					tint="light"
+					style={styles.blurContainer}
+				>
+					<View style={styles.container}>
+						{isSecondIcon && (
+							<TouchableOpacity
+								activeOpacity={0.85}
+								onPress={onPress}
+							>
+								<Ionicons
+									name={icon2}
+									size={30}
+									color="rgba(0, 0, 0, 0.7)"
+								/>
+							</TouchableOpacity>
+						)}
 
-				<View style={styles.container}>
-					{isSecondIcon && (
-						<TouchableOpacity activeOpacity={0.85} onPress={onPress}>
-							<Ionicons name={icon2} size={30} color="rgba(0, 0, 0, 0.7)" />
-						</TouchableOpacity>
-					)}
+						<Text style={styles.title}>{title}</Text>
 
-					<Text style={styles.title}>{title}</Text>
-
-					<Ionicons name={icon} size={30} color="rgba(0, 0, 0, 0.7)" />
-				</View>
-			</BlurView>
-		</View>
-
+						<Ionicons
+							name={icon}
+							size={30}
+							color="rgba(0, 0, 0, 0.7)"
+						/>
+					</View>
+				</BlurView>
+			</View>
 	);
 };
 
 const styles = StyleSheet.create({
 	wrapper: {
 		position: "absolute",
-		top: 0,
+		top: 40,
 		right: 0,
 		left: 0,
 		zIndex: 999,

@@ -62,10 +62,12 @@ const UserForm = ({ initialData, onSubmit, navigation }: UserFormProps) => {
 				puntos: initialData.puntos,
 				fechaCreacion: initialData.fechaCreacion,
 				fotoPerfilUrl: data.fotoPerfilUrl || initialData.fotoPerfilUrl,
-				activo: data.activo !== undefined ? data.activo : initialData.activo,
+				activo:
+					data.activo !== undefined
+						? data.activo
+						: initialData.activo,
 			};
 			onSubmit(updatedData);
-
 		} else {
 			const newData: NewUser = {
 				nombre: data.nombre,
@@ -83,6 +85,8 @@ const UserForm = ({ initialData, onSubmit, navigation }: UserFormProps) => {
 		<KeyboardAwareScrollView
 			enableOnAndroid={true}
 			keyboardShouldPersistTaps="handled"
+			extraScrollHeight={50}
+			contentContainerStyle={{ padding: 10, paddingTop: 80 }}
 		>
 			<NameInput control={control} errors={errors} />
 			<EmailInput control={control} errors={errors} />
@@ -92,7 +96,11 @@ const UserForm = ({ initialData, onSubmit, navigation }: UserFormProps) => {
 				initialData={!!initialData}
 			/>
 			<RoleInput control={control} errors={errors} />
-			<ImageUrlInput control={control} errors={errors} isProfilePhoto={true} />
+			<ImageUrlInput
+				control={control}
+				errors={errors}
+				isProfilePhoto={true}
+			/>
 			<ActiveInput control={control} errors={errors} />
 
 			<TouchableOpacity

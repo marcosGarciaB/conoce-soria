@@ -28,7 +28,7 @@ const AnimatedDropdown: React.FC<AnimatedDropdownProps> = ({
                 Animated.timing(opacityAnim, {
                     toValue: 1,
                     duration,
-                    useNativeDriver: true,
+                    useNativeDriver: false,
                 }),
             ]).start();
         } else {
@@ -41,7 +41,7 @@ const AnimatedDropdown: React.FC<AnimatedDropdownProps> = ({
                 Animated.timing(opacityAnim, {
                     toValue: 0,
                     duration,
-                    useNativeDriver: true,
+                    useNativeDriver: false,
                 }),
             ]).start();
         }

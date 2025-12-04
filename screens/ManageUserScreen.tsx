@@ -10,7 +10,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 type UserRoute = RouteProp<RootStackParamList, "ManageUser">;
 
-const ManageUserScreen = ({ navigation, route, }: { navigation: any; route: UserRoute; }) => {
+const ManageUserScreen = ({
+	navigation,
+	route,
+}: {
+	navigation: any;
+	route: UserRoute;
+}) => {
 	const user = route.params?.user;
 	const { editingUser, loadEditingUser, handleSubmitForm } = useLoadUser();
 
@@ -32,12 +38,11 @@ const ManageUserScreen = ({ navigation, route, }: { navigation: any; route: User
 			/>
 
 			<View style={styles.formContainer}>
-
-			<UserForm
-				initialData={editingUser ?? undefined}
-				onSubmit={handleSubmitForm}
-				navigation={navigation}
-			/>
+				<UserForm
+					initialData={editingUser ?? undefined}
+					onSubmit={handleSubmitForm}
+					navigation={navigation}
+				/>
 			</View>
 		</SafeAreaView>
 	);
