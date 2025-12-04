@@ -5,6 +5,7 @@
 const API_URL = "http://localhost:8081";
 
 
+
 // Define la estructura de las cabeceras HTTP.
 interface Headers {
     [Key: string]: string;
