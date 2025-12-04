@@ -6,9 +6,14 @@ import { Camera, CameraView } from "expo-camera";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Toast from "react-native-toast-message"; // <-- IMPORTANTE
-
+import {
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import Toast from "react-native-toast-message";
 
 const QrScannerScreen = () => {
   const { token } = useAuth();
@@ -17,6 +22,10 @@ const QrScannerScreen = () => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState(false);
 
+  // ⭐ Modal de valoración
+  const [ratingModal, setRatingModal] = useState(false);
+  const [currentUid, setCurrentUid] = useState("");
+
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
@@ -24,46 +33,45 @@ const QrScannerScreen = () => {
     })();
   }, []);
 
-  const handleBarCodeScanned = async ({ data }: { data: string }) => {
+  const handleBarCodeScanned = ({ data }: { data: string }) => {
     if (scanned) return;
     setScanned(true);
 
+    console.log("📤 QR detectado:", data);
+    setCurrentUid(data);
+
+    // Abrimos el popup de estrellas
+    setRatingModal(true);
+  };
+
+  const enviarValoracion = async (estrellas: number) => {
     try {
-      let freshToken = token;
-
-      if (!freshToken) {
-        freshToken = await AsyncStorage.getItem("authToken");
-      }
-
+      let freshToken = token ?? (await AsyncStorage.getItem("authToken"));
       if (!freshToken) throw new Error("Token no disponible");
 
-      console.log("📤 Enviando QR:", data);
+      await passportService.registerFromQr(freshToken, currentUid, estrellas.toString());
 
-      await passportService.registerFromQr(freshToken, data);
-
-      // --- 1) Mostrar toast ---
       Toast.show({
         type: "success",
-        text1: "¡+10 puntos! 🎉",
-        text2: "Experiencia registrada",
+        text1: `¡+10 puntos! ⭐`,
+        text2: `Valoración: ${estrellas} estrellas`,
         position: "top",
       });
 
-      // --- 2) Navegar al pasaporte tras animación ---
-      setTimeout(() => {
-        navigation.navigate("PassportScreen");
-      }, 1200);
+      setRatingModal(false);
+
+      setTimeout(() => navigation.navigate("PassportScreen"), 600);
 
     } catch (err: any) {
       console.error("❌ Error registrando desde QR:", err);
-
       Toast.show({
         type: "error",
         text1: "Error",
-        text2: err?.message ?? "No se ha podido registrar.",
+        text2: err?.message ?? "No se pudo registrar.",
         position: "top",
       });
 
+      setRatingModal(false);
       setScanned(false);
     }
   };
@@ -98,42 +106,51 @@ const QrScannerScreen = () => {
         <View style={{ width: 28 }} />
       </View>
 
-      {/* SCANNER */}
+      {/* CÁMARA */}
       <View style={styles.scannerContainer}>
         <CameraView
           style={StyleSheet.absoluteFillObject}
           onBarcodeScanned={handleBarCodeScanned}
-          barcodeScannerSettings={{
-            barcodeTypes: ["qr"],
-          }}
+          barcodeScannerSettings={{ barcodeTypes: ["qr"] }}
         />
+
         <View style={styles.scanMarker} />
       </View>
 
       {/* FOOTER */}
       <View style={styles.footer}>
         <Text style={{ color: "#555" }}>
-          Apunta la cámara al código QR para registrar la experiencia.
+          Apunta la cámara al QR para registrar la experiencia.
         </Text>
-        {scanned && (
-          <TouchableOpacity
-            style={styles.retryBtn}
-            onPress={() => setScanned(false)}
-          >
-            <Text style={{ color: "white" }}>Volver a intentar</Text>
-          </TouchableOpacity>
-        )}
       </View>
+
+      {/* ⭐⭐ MODAL DE ESTRELLAS ⭐⭐ */}
+      <Modal visible={ratingModal} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalBox}>
+            <Text style={styles.modalTitle}>Valora tu experiencia</Text>
+            <Text style={styles.modalSubtitle}>Elige entre 1 y 5 estrellas</Text>
+
+            <View style={styles.starsRow}>
+              {[1, 2, 3, 4, 5].map((n) => (
+                <TouchableOpacity key={n} onPress={() => enviarValoracion(n)}>
+                  <Ionicons name="star" size={42} color="#FFB800" />
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
 
 export default QrScannerScreen;
 
-
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#FAFAFA" },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
+
   header: {
     height: 66,
     paddingHorizontal: 16,
@@ -143,6 +160,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   title: { fontSize: 18, fontWeight: "700", color: "#FF6B00" },
+
   scannerContainer: {
     flex: 1,
     margin: 16,
@@ -152,6 +170,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+
   scanMarker: {
     width: 250,
     height: 250,
@@ -159,15 +178,24 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255,255,255,0.9)",
     borderRadius: 8,
   },
-  footer: {
-    padding: 20,
+
+  footer: { padding: 20, alignItems: "center" },
+
+  // --- MODAL ---
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    justifyContent: "center",
     alignItems: "center",
   },
-  retryBtn: {
-    marginTop: 12,
-    backgroundColor: "#FF6B00",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 20,
+  modalBox: {
+    width: "80%",
+    backgroundColor: "#fff",
+    padding: 20,
+    borderRadius: 16,
+    alignItems: "center",
   },
+  modalTitle: { fontSize: 20, fontWeight: "700", marginBottom: 8 },
+  modalSubtitle: { fontSize: 14, color: "#444", marginBottom: 20 },
+  starsRow: { flexDirection: "row", gap: 12 },
 });

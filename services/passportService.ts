@@ -28,11 +28,30 @@ export const passportService = {
         return apiClient.getWithToken("/api/pasaporte", token);
     },
 
-    async registerFromQr(token: string, uid: string) {
-         return apiClient.postWithToken(
+   /* async registerFromQr(token: string, uid: string, opinion: string) {
+    return apiClient.postWithToken(
         "/api/pasaporte/registrar",
-        { uid_scaneado: uid, opinion: null },
+        { uidScaneado: uid, opinion: opinion },
         token
     );
-    }
+}*/
+
+//parche para saber el json qu estoy mandando 
+
+async registerFromQr(token: string, uid: string, opinion: string) {
+
+    console.log("🔎 JSON QUE VOY A ENVIAR:", {
+        uidScaneado: uid,
+        opinion: opinion
+    });
+
+    return apiClient.postWithToken(
+        "/api/pasaporte/registrar",
+        {
+            uidScaneado: uid,
+            opinion: opinion   // <-- NO puede ser null
+        },
+        token
+    );
+}
 };
