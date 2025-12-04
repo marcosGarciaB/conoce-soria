@@ -1,14 +1,15 @@
 import Header from "@/components/common/HeaderItem";
 import FlatListAnimated from "@/components/home/FlatListAnimated";
 import Information from "@/components/home/Information";
-import MapComponent from "@/components/home/MapComponent";
+// ❌ MAPA DESACTIVADO (IMPORT BLOQUEADO)
+// import MapComponent from "@/components/home/MapComponent";
 import MiniPassport from "@/components/home/MiniPassport";
 import Ranking from "@/components/top/Ranking";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLoadTop } from "@/hooks/useLoadTop";
 
 import React from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const InicioScreen = ({ navigation }: { navigation: any }) => {
@@ -18,6 +19,7 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
 
 	return (
 		<SafeAreaView style={styles.container}>
+
 			{isLogged ? (
 				<Header
 					title="Conoce Soria"
@@ -46,9 +48,17 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
 						isHome={true}
 					/>
 				)}
+
+				{/* 
+				═══════════════════════════════════════════
+				📍 MAPA DESACTIVADO TEMPORALMENTE
+				═══════════════════════════════════════════
+
 				<View style={styles.mapContainer}>
 					<MapComponent />
 				</View>
+				*/}
+				
 			</ScrollView>
 		</SafeAreaView>
 	);

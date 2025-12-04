@@ -5,17 +5,19 @@ import EmptyComments from "@/components/detail/EmptyComments";
 import ExperienceDetail from "@/components/detail/ExperienceInfo";
 import AddComment from "@/components/inputs/AddCommentInput";
 import { useAuth } from "@/contexts/AuthContext";
-import { useLoadComments } from "@/hooks/useLoadComments";
-import { useLoadExperience } from "@/hooks/useLoadExperience";
 import { RootStackParamList } from "@/navigation/AppNavigator";
 import {
 	ComentariosResponse,
 	comentariosService,
 } from "@/services/commentService";
+import {
+	ExperienciaDetailResponse,
+	experienciaService,
+} from "@/services/experienceService";
 
 import { Ionicons } from "@expo/vector-icons";
 import { RouteProp } from "@react-navigation/native";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
 	FlatList,
@@ -47,14 +49,42 @@ const DetailsScreen = ({
 	route: DetailsRoute;
 }) => {
 	const { experiencia } = route.params;
-	const { detalle } = useLoadExperience(experiencia.id);
-	const { comentarios, loading, reload } = useLoadComments(experiencia.id);
-
+	const [detalle, setDetalle] = useState<ExperienciaDetailResponse | null>(
+		null
+	);
+	const [comentarios, setComentarios] = useState<ComentariosResponse[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const { token } = useAuth();
 	const listRef = useRef<FlatList<ComentariosResponse>>(null);
 
 	const flatListRef = useRef<ScrollView>(null);
+
+	useEffect(() => {
+		const loadExperiencia = async () => {
+			try {
+				const data = await experienciaService.getExperiencia(
+					experiencia.id
+				);
+				setDetalle(data);
+			} catch (error) {
+				console.error("Error cargando experiencia:", error);
+			}
+		};
+
+		const loadComentarios = async () => {
+			try {
+				const data = await comentariosService.getComentarios(
+					experiencia.id.toString()
+				);
+				setComentarios(data);
+			} catch (error) {
+				console.error("Error cargando comentarios:", error);
+			}
+		};
+
+		loadExperiencia();
+		loadComentarios();
+	}, [experiencia.id]);
 
 	const {
 		control,
@@ -64,10 +94,9 @@ const DetailsScreen = ({
 	} = useForm<FormData>();
 
 	const onSubmit = async (data: FormData) => {
-		if (!token) return <LoadingScreen />;
+		if (!token) return console.error("Token no disponible");
 
 		setIsLoading(true);
-
 		try {
 			await comentariosService.setComentario(
 				experiencia.id.toString(),
@@ -75,7 +104,10 @@ const DetailsScreen = ({
 				token
 			);
 
-			await reload();
+			const updatedComentarios = await comentariosService.getComentarios(
+				experiencia.id.toString()
+			);
+			setComentarios(updatedComentarios);
 			reset({ comentario: "" });
 
 			setTimeout(() => {
@@ -89,7 +121,7 @@ const DetailsScreen = ({
 	};
 
 	const handleDelete = async (comentarioId: string) => {
-		if (!token) return <LoadingScreen />;
+		if (!token) return console.error("Token no disponible");
 		setIsLoading(true);
 
 		try {
@@ -98,8 +130,10 @@ const DetailsScreen = ({
 				comentarioId,
 				token
 			);
-
-			await reload();
+			const updated = await comentariosService.getComentarios(
+				experiencia.id.toString()
+			);
+			setComentarios(updated);
 		} catch (error) {
 			console.error("Error al enviar comentario:", error);
 		} finally {
@@ -108,7 +142,7 @@ const DetailsScreen = ({
 	};
 
 	const handleUpdate = async (comentarioId: string, newText: string) => {
-		if (!token) return <LoadingScreen />;
+		if (!token) return console.error("Token no disponible");
 		setIsLoading(true);
 
 		try {
@@ -118,8 +152,11 @@ const DetailsScreen = ({
 				{ texto: newText },
 				token
 			);
+			const updated = await comentariosService.getComentarios(
+				experiencia.id.toString()
+			);
 
-			await reload();
+			setComentarios(updated);
 		} catch (error) {
 			console.error("Error al enviar comentario:", error);
 		} finally {
@@ -139,7 +176,7 @@ const DetailsScreen = ({
 				onPress={() => navigation.goBack()}
 			/>
 
-			<ScrollView ref={flatListRef} showsVerticalScrollIndicator={false}>
+			<ScrollView ref={flatListRef} showsVerticalScrollIndicator={true}>
 				<ExperienceDetail detail={detalle} />
 
 				<View>
@@ -158,26 +195,26 @@ const DetailsScreen = ({
 						))
 					)}
 				</View>
-
-				<AddComment
-					control={control}
-					handleSubmit={handleSubmit}
-					onSubmit={onSubmit}
-					errors={errors}
-				/>
-				<TouchableOpacity
-					style={styles.inputButton}
-					onPress={() => console.log("Registrar experiencia")}
-				>
-					<Ionicons
-						name="qr-code"
-						size={30}
-						color="white"
-						style={{ marginRight: 10 }}
-					/>
-					<Text style={styles.buttonText}>Registrar experiencia</Text>
-				</TouchableOpacity>
 			</ScrollView>
+
+			<AddComment
+				control={control}
+				handleSubmit={handleSubmit}
+				onSubmit={onSubmit}
+				errors={errors}
+			/>
+			<TouchableOpacity
+				style={styles.inputButton}
+				onPress={() => navigation.navigate("QrScanner")}
+			>
+				<Ionicons
+					name="qr-code"
+					size={30}
+					color="white"
+					style={{ marginRight: 10 }}
+				/>
+				<Text style={styles.buttonText}>Registrar experiencia</Text>
+			</TouchableOpacity>
 		</SafeAreaView>
 	);
 };
@@ -185,6 +222,8 @@ const DetailsScreen = ({
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		backgroundColor: "#FAFAFA",
+		padding: 5,
 	},
 	inputButton: {
 		flexDirection: "row",
@@ -193,8 +232,6 @@ const styles = StyleSheet.create({
 		backgroundColor: "#FF6B00",
 		height: 50,
 		borderRadius: 30,
-		marginRight: 10,
-		marginLeft: 10,
 	},
 	buttonText: {
 		fontSize: 19,
