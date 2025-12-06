@@ -1,5 +1,5 @@
 import { useHorizontalFlatlistAnimation } from "@/components/animations/horizontalFlatlistAnimation";
-import { useExperiences } from "@/hooks/useLoadExperiences";
+import { useLoadExperiences } from "@/hooks/useLoadExperiences";
 import { ExperienciasResponse } from "@/services/experienceService";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import Animated, {
@@ -14,7 +14,7 @@ const imageHeight = imageWidth * 0.85;
 const spacing = 12;
 
 const FlatListAnimated = () => {
-	const { experiencias, loadExperiencias, loading, hasMore } = useExperiences();
+	const { experiencias, loadExperiencias, loading, hasMore } = useLoadExperiences();
 	const scrollX = useSharedValue(0);
 
 	const onScroll = useAnimatedScrollHandler({
@@ -71,7 +71,7 @@ const FlatListAnimated = () => {
 					gap: spacing,
 					paddingHorizontal: (width - imageWidth) / 2,
 					paddingTop: 15,
-					paddingBottom: 35,
+					paddingBottom: 20,
 				}}
 				onScroll={onScroll}
 				scrollEventThrottle={16}

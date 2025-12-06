@@ -121,43 +121,43 @@ const DetailFlatListAnimated: React.FC<DetailFlatListAnimatedProps> = ({
 		<Photo item={item} index={index} scrollY={scrollY} onPress={onPress} />
 	);
 
+	if (loading) return <LoadingScreen />;
+
 	return (
-		<>
-			<Filters
-				searchText={searchText}
-				setSearchText={setSearchText}
-				selectedCat={selectedCat}
-				setSelectedCat={setSelectedCat}
-				categories={categories}
-				onFilterByText={wordsFilter}
-				onFilterByCategory={buttonFilter}
-			/>
-
-			<View style={{ flex: 1 }}>
-				<Animated.FlatList
-					data={filteredExperiencias}
-					keyExtractor={(item) => item.id.toString()}
-					renderItem={renderItem}
-					showsVerticalScrollIndicator={false}
-					snapToInterval={itemFullSize}
-					removeClippedSubviews={true}
-					onEndReached={() => loadExperiencias()}
-					onEndReachedThreshold={0.5}
-					decelerationRate="fast"
-					scrollEventThrottle={16}
-					onScroll={onScroll}
-					ListFooterComponent={loading ? <LoadingScreen /> : null}
+		<Animated.FlatList
+			data={filteredExperiencias}
+			keyExtractor={(item) => item.id.toString()}
+			renderItem={renderItem}
+			showsVerticalScrollIndicator={false}
+			snapToInterval={itemFullSize}
+			removeClippedSubviews={true}
+			onEndReached={() => loadExperiencias()}
+			onEndReachedThreshold={0.5}
+			decelerationRate="fast"
+			scrollEventThrottle={16}
+			contentContainerStyle={{
+				paddingTop: 70,
+				padding: 10,
+			}}
+			onScroll={onScroll}
+			ListHeaderComponent={
+				<Filters
+					searchText={searchText}
+					setSearchText={setSearchText}
+					selectedCat={selectedCat}
+					setSelectedCat={setSelectedCat}
+					categories={categories}
+					onFilterByText={wordsFilter}
+					onFilterByCategory={buttonFilter}
 				/>
-			</View>
-		</>
-
+			}
+			ListFooterComponent={loading ? <LoadingScreen /> : null}
+		/>
 	);
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-	},
+	container: {},
 	imageContainer: {
 		height: itemSize,
 		borderRadius: 15,

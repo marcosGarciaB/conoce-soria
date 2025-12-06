@@ -4,12 +4,13 @@
 
 import { NavigationContainer } from "@react-navigation/native";
 import React, { useState } from "react";
-import { ActivityIndicator, StatusBar, StyleSheet, View } from "react-native";
+import { StatusBar, StyleSheet, View } from "react-native";
 import "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
 import Toast from "react-native-toast-message";
 
+import LoadingScreen from "@/components/common/Loading";
 import AnimatedSplash from "@/components/splash/AnimatedSplash";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { AppNavigator } from "@/navigation/AppNavigator";
@@ -21,9 +22,7 @@ const AppContent = () => {
 
 	if (status === "checking") {
 		return (
-			<View style={styles.loaderContainer}>
-				<ActivityIndicator size="large" />
-			</View>
+			<LoadingScreen />
 		);
 	}
 
@@ -39,12 +38,14 @@ export default function App() {
 
 	return (
 		<SafeAreaProvider>
-			<GestureHandlerRootView style={[{ flex: 1 }, styles.appContainer]}>
+			<GestureHandlerRootView>
+				<Toast />
 				<AuthProvider>
 					<StatusBar barStyle={("dark-content")} />
 					<NavigationContainer>
-						<AppContent />
-						<Toast />
+						<View style={styles.appContainer}>
+							<AppContent />
+						</View>
 					</NavigationContainer>
 				</AuthProvider>
 			</GestureHandlerRootView>
@@ -53,13 +54,8 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-	loaderContainer: {
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
-		margin: 5,
-	},
 	appContainer: {
-		backgroundColor: "#FAFAFA",
+		flex: 1,
+		backgroundColor: "#ffffffff",
 	}
 });

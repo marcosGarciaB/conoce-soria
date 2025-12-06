@@ -5,7 +5,6 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 
 import { NewExperience } from "@/services/adminService";
 import { ExperienciaDetailResponse } from "@/services/experienceService";
-import ModalSuccess from "../common/ModalSucces";
 import ActiveInput from "../inputs/ActiveInput";
 import CategoryInput from "../inputs/CategoryInput";
 import CoordsInput from "../inputs/CoordsInput";
@@ -14,6 +13,7 @@ import DirectionInput from "../inputs/DirectionInput";
 import ImageUrlInput from "../inputs/ImageUrlInput";
 import NumberInput from "../inputs/NumberInput";
 import TitleInput from "../inputs/TitleInput";
+import ModalSuccess from "../modals/ModalSucces";
 
 interface ExperienceFormProps {
 	initialData?: ExperienciaDetailResponse;
@@ -58,7 +58,7 @@ const ExperienceForm = ({
 				ubicacionLat: initialData.ubicacionLat,
 				ubicacionLng: initialData.ubicacionLng,
 				puntosOtorgados: initialData.puntosOtorgados || 0,
-				activo: initialData.activo ?? true, 
+				activo: initialData.activo ?? true,
 			});
 		}
 	}, [initialData]);
@@ -74,6 +74,7 @@ const ExperienceForm = ({
 			enableOnAndroid={true}
 			extraScrollHeight={50}
 			keyboardShouldPersistTaps="handled"
+			contentContainerStyle={{ padding: 10, paddingTop: 80 }}
 		>
 			<TitleInput control={control} errors={errors} />
 			<DescInput control={control} errors={errors} />
@@ -90,7 +91,9 @@ const ExperienceForm = ({
 				onPress={handleSubmit(submitHandler)}
 			>
 				<Text style={styles.submitText}>
-					{initialData ? "Actualizar Experiencia" : "Crear Experiencia"}
+					{initialData
+						? "Actualizar Experiencia"
+						: "Crear Experiencia"}
 				</Text>
 			</TouchableOpacity>
 

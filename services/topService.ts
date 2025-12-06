@@ -8,6 +8,7 @@ export interface UsuarioRankingDTO {
     nombre: string;
     puntos: number;
     rol: string;
+    fotoPerfilUrl: string;
 }
 
 const getRankingData = async (): Promise<any[]> => {

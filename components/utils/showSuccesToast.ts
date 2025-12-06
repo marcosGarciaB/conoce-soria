@@ -1,8 +1,8 @@
 import Toast from "react-native-toast-message";
 
-export const showErrorToast = (title: string, message: string) => {
+export const showSuccesToast = (title: string, message: string) => {
 	Toast.show({
-		type: "error",
+		type: "success",
 		position: "top",
 		text1: title,
 		text2: message,
@@ -12,4 +12,4 @@ export const showErrorToast = (title: string, message: string) => {
 	});
 };
 
-export default showErrorToast;
+export default showSuccesToast;

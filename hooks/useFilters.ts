@@ -1,16 +1,21 @@
-import { useExperiences } from "@/hooks/useLoadExperiences";
-import { ExperienciasResponse } from "@/services/experienceService";
+import { useLoadExperiences } from "@/hooks/useLoadExperiences";
+import { ExperienciaDetailResponse, ExperienciasResponse } from "@/services/experienceService";
 import debounce from "lodash.debounce";
 import { useCallback, useEffect, useState } from "react";
 import { LayoutAnimation } from "react-native";
+import { useLoadMarkers } from "./useLoadMarkers";
 
 export const useFilteredExperiences = () => {
 	const categories = ["RESTAURANTE", "MUSEO", "AIRE_LIBRE", "MONUMENTO"];
-	const { experiencias, loadExperiencias, loading, hasMore } = useExperiences();
-
 	const [searchText, setSearchText] = useState("");
 	const [selectedCat, setSelectedCat] = useState<string | null>(null);
+	
+	const { experiencias, loadExperiencias, loading, hasMore } = useLoadExperiences();
 	const [filteredExperiencias, setFilteredExperiencias] = useState<ExperienciasResponse[]>([]);
+	
+	const { detail, loading: loadingMarker } = useLoadMarkers();
+	const [filteredMarkers, setFilteredMarkers] = useState<ExperienciaDetailResponse[]>([]);
+
 
 	const applyFilters = useCallback((texto: string, categoria: string | null) => {
 		LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -21,8 +26,18 @@ export const useFilteredExperiences = () => {
 			return matchCat && matchText;
 		});
 
-		setFilteredExperiencias(filtered);
-	}, [experiencias]);
+		const filteredDetail = detail.filter(exp => {
+			const matchCat = categoria ? exp.categoria.toUpperCase() === categoria.toUpperCase() : true;
+			return matchCat;
+		});
+
+
+		const uniqueFiltered = Array.from(new Map(filtered.map(item => [item.id, item])).values());
+		const uniqueFilteredDetail = Array.from(new Map(filteredDetail.map(item => [item.id, item])).values());
+
+		setFilteredExperiencias(uniqueFiltered);
+		setFilteredMarkers(uniqueFilteredDetail);
+	}, [experiencias, detail]);
 
 	const debouncedApplyFilters = useCallback(
 		debounce((texto: string, categoria: string | null) => applyFilters(texto, categoria), 250),
@@ -34,7 +49,7 @@ export const useFilteredExperiences = () => {
 	}, [searchText, selectedCat, debouncedApplyFilters]);
 
 	const wordsFilter = (texto: string) => {
-		setSearchText(texto); 
+		setSearchText(texto);
 	};
 
 	const buttonFilter = (categoria: string) => {
@@ -54,5 +69,6 @@ export const useFilteredExperiences = () => {
 		loading,
 		hasMore,
 		categories,
+		filteredMarkers,
 	};
 };

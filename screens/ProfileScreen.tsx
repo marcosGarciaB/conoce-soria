@@ -23,8 +23,8 @@ const ProfileScreen = ({ navigation }: { navigation: any }) => {
             />
 
             <ScrollView
-                contentContainerStyle={styles.scrollContent}
                 showsVerticalScrollIndicator={false}
+                contentContainerStyle={{paddingTop: 70, padding: 10}}
             >
                 {isLogged ? (
                     <Logged token={token} user={user} onPress={logout} />
@@ -39,10 +39,6 @@ const ProfileScreen = ({ navigation }: { navigation: any }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FAFAFA',
-        padding: 10,
-    },
-    scrollContent: {
     },
 });
 

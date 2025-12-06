@@ -21,14 +21,15 @@ const MiniPassport = ({ navigation }: MiniPassportProps) => {
 		return <LoadingScreen />;
 	}
 	return (
-		<TouchableOpacity
-			style={styles.passportCard}
-			onPress={() => navigation.navigate("PassportScreen")}
-			activeOpacity={0.9}
-		>
-			<Text style={styles.passportTitle}>
-				Tu Pasaporte de Experiencias
-			</Text>
+		<View style={styles.passportCard}>
+			<TouchableOpacity
+				onPress={() => navigation.navigate("PassportScreen")}
+				activeOpacity={0.9}
+			>
+				<Text style={styles.passportTitle}>
+					Tu Pasaporte de Experiencias
+				</Text>
+			</TouchableOpacity>
 
 			<View style={styles.passportHeaderRow}>
 				<Text style={styles.passportPoints}>
@@ -41,47 +42,39 @@ const MiniPassport = ({ navigation }: MiniPassportProps) => {
 				)}
 			</View>
 
-			<ScrollView
-				horizontal
-				showsHorizontalScrollIndicator={false}
-				contentContainerStyle={styles.passportMiniRow}
-			>
-				{passportPreview && passportPreview.length > 0 ? (
-					<ScrollView
-						horizontal
-						showsHorizontalScrollIndicator={false}
-						contentContainerStyle={styles.passportMiniRow}
-					>
-						{passportPreview.map((item) => (
-							<View
-								key={item.experienciaId}
-								style={styles.miniItem}
-							>
-								<Image
-									source={{ uri: item.imgPortada }}
-									style={styles.miniImage}
-								/>
-								<Text style={styles.miniName} numberOfLines={4}>
-									{item.titulo}
-								</Text>
-							</View>
-						))}
-					</ScrollView>
-				) : (
-					<Text
-						style={{
-							textAlign: "center",
-							color: "#999",
-							marginVertical: 12,
-						}}
-					>
-						Aún no hay registros
-					</Text>
-				)}
-			</ScrollView>
+			{passportPreview && passportPreview.length > 0 ? (
+				<ScrollView
+					horizontal
+					showsHorizontalScrollIndicator={false}
+					contentContainerStyle={styles.passportMiniRow}
+					nestedScrollEnabled={true}
+				>
+					{passportPreview.map((item) => (
+						<View key={item.experienciaId} style={styles.miniItem}>
+							<Image
+								source={{ uri: item.imgPortada }}
+								style={styles.miniImage}
+							/>
+							<Text style={styles.miniName} numberOfLines={4}>
+								{item.titulo}
+							</Text>
+						</View>
+					))}
+				</ScrollView>
+			) : (
+				<Text
+					style={{
+						textAlign: "center",
+						color: "#999",
+						marginVertical: 12,
+					}}
+				>
+					Aún no hay registros
+				</Text>
+			)}
 
 			<Text style={styles.passportMore}>ver más…</Text>
-		</TouchableOpacity>
+		</View>
 	);
 };
 

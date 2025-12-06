@@ -64,7 +64,7 @@ const UserItem = ({ users, onDelete, onEdit, loadMore, hasMore, loading }: UserI
 						? { justifyContent: "space-between" }
 						: undefined
 				}
-				contentContainerStyle={{ paddingBottom: 40 }}
+				contentContainerStyle={{ paddingBottom: 40, padding: 10 }}
 				onEndReached={() => {
 					if (!loading && hasMore) {
 						loadMore();

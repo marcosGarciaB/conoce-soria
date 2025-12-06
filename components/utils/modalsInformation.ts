@@ -67,3 +67,52 @@ export const premioContenido = [
         ],
     },
 ];
+
+export const politica = [
+    {
+        title: "1. Información que recopilamos",
+        description: [
+            "Recopilamos información personal como tu nombre, correo electrónico, número de teléfono y preferencias de uso con el fin de ofrecerte una experiencia personalizada. También podemos recopilar datos de uso de la aplicación y estadísticas de interacción."
+        ]
+    },
+    {
+        title: "2. Uso de la información",
+        description: [
+            "Los datos recopilados se utilizan únicamente para: ",
+            "Mejorar la funcionalidad de la aplicación y la experiencia del usuario.",
+            "Personalizar contenidos y recomendaciones.",
+            "Contactarte para actualizaciones importantes o soporte técnico."
+        ]
+    },
+    
+    {
+        title: "3. Compartir información con terceros",
+        description: [
+            "No compartimos, vendemos ni alquilamos tus datos personales a terceros sin tu consentimiento, salvo cuando sea necesario para cumplir con obligaciones legales o proteger nuestros derechos."
+        ]
+    },
+    {
+        title: "4. Seguridad de los datos",
+        description: [
+            "Implementamos medidas de seguridad técnicas y organizativas para proteger tu información contra pérdida, acceso no autorizado, alteración o divulgación."
+        ]
+    },
+    {
+        title: "5. Tus derechos",
+        description: [
+            "Tienes derecho a acceder, corregir o eliminar tus datos personales en cualquier momento. Para ejercer estos derechos, puedes contactarnos directamente desde la aplicación o mediante los datos de contacto que proporcionamos."
+        ]
+    },
+    {
+        title: "6. Cambios en la política de privacidad",
+        description: [
+            "Podemos actualizar nuestra política de privacidad ocasionalmente. Los cambios se notificarán dentro de la aplicación y, si son significativos, solicitaremos tu consentimiento nuevamente."
+        ]
+    },
+    {
+        title: "Consentimiento",
+        description: [
+            "Al usar nuestra aplicación, aceptas los términos de esta política de privacidad y nos das tu consentimiento para el uso responsable de tus datos."
+        ]
+    }
+]

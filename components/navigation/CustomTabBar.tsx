@@ -50,28 +50,19 @@ const styles = StyleSheet.create({
 	wrapper: {
 		position: "absolute",
 		bottom: 0,
-		left: 0,
 		right: 0,
+		left: 0,
 	},
-
 	blurContainer: {
 		width: "100%", 
 		overflow: "hidden",
-		borderRadius: 10,
-		shadowColor: "#000",
-		shadowOpacity: 0.16,
-		shadowOffset: { width: 0, height: 6 },
-		shadowRadius: 12,
-		elevation: 12,
 	},
 	container: {
 		flexDirection: "row",
 		justifyContent: "space-around",
 		alignItems: "center",
 		height: 70,
-		paddingHorizontal: 10,
-
-		backgroundColor: "rgba(255,255,255,0.15)", // Ligera translucidez para ver el fondo
+		backgroundColor: "rgba(255,255,255,0.15)",
 	},
 });
 

@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
-import { useAdmin } from "@/hooks/useAdmin";
 import { UserCredentials, authService } from "@/services/authService";
 import { useForm } from "react-hook-form";
-import Toast from "react-native-toast-message";
 import UserChips from "../common/UserChips";
+import InfoModal from "../modals/ModalInformation";
+import ModalUpdate from "../modals/ModalUpdate";
+import { politica } from "../utils/modalsInformation";
+import showInfoToast from "../utils/showInfoToast";
+import showSuccesToast from "../utils/showSuccesToast";
 import Button from "./Button";
-import ModalUpdate from "./ModalUpdate";
-import PrivacyModal from "./PrivacyModal";
 
 interface UserLogguedProps {
 	user: UserCredentials;
@@ -18,12 +19,17 @@ interface UserLogguedProps {
 
 const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 	const [currentUser, setCurrentUser] = useState<UserCredentials>(user);
-	const [modalVisible, setModalVisible] = useState(false);
+	const [modalVisible, setModalVisible] = useState<{
+		politics: boolean;
+		update: boolean;
+	}>({
+		politics: false,
+		update: false,
+	});
+
 	const [modalField, setModalField] = useState<
 		"nombre" | "email" | "password" | "fotoPerfilUrl" | null
 	>(null);
-	const [privacyVisible, setPrivacyVisible] = useState(false);
-	const isAdminUser = useAdmin(token);
 
 	const {
 		control,
@@ -39,14 +45,28 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 		},
 	});
 
-	const openModal = (
+	const openModal = async (
 		field: "nombre" | "email" | "password" | "fotoPerfilUrl"
 	) => {
 		setModalField(field);
-		setModalVisible(true);
+		setModalVisible({
+			...modalVisible,
+			update: true
+		});
 
 		if (field === "nombre") setValue("nombre", currentUser.nombre);
-		if (field === "email") setValue("email", currentUser.email);
+		if (field === "email") {
+
+
+			showInfoToast(
+				"Inicio de sesión requerido",
+				"Al actualizar tu correo electrónico, deberás iniciar sesión nuevamente con tu usuario."
+			);
+
+			setTimeout(() => {
+				setValue("email", currentUser.email);
+			}, 4000);
+		}
 		if (field === "password") setValue("password", "");
 		if (field === "fotoPerfilUrl")
 			setValue("fotoPerfilUrl", currentUser.fotoPerfilUrl);
@@ -73,22 +93,18 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 				...currentUser,
 				[modalField]: updated[modalField],
 			});
-			setModalVisible(false);
+			setModalVisible({
+				...modalVisible,
+				update: false,
+			});
 			setModalField(null);
 
 			let campo = capitalizeFirstLetter(`${modalField}`.toString());
 
 			if (campo === "Password") campo = "Contraseña";
 
-			Toast.show({
-				type: "success",
-				text1: "Actualización exitosa",
-				text2: `${campo} actualizado correctamente`,
-				position: "bottom",
-				bottomOffset: 100,
-				visibilityTime: 3000,
-				autoHide: true,
-			});
+			showSuccesToast("Actualización exitosa", `${campo} actualizado correctamente`);
+
 		} catch (error) {
 			console.error(error);
 		}
@@ -127,12 +143,24 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 				/>
 				<Button
 					title="Política de privacidad"
-					onPress={() => setPrivacyVisible(true)}
+					onPress={() =>
+						setModalVisible({
+							...modalVisible,
+							politics: true,
+						})
+					}
 				/>
 
-				<PrivacyModal
-					isVisible={privacyVisible}
-					onClose={() => setPrivacyVisible(false)}
+				<InfoModal
+					visible={modalVisible.politics}
+					title="Política de Privacidad"
+					content={politica}
+					onClose={() =>
+						setModalVisible({
+							...modalVisible,
+							politics: false,
+						})
+					}
 				/>
 
 				<Button title="Cerrar sesión" onPress={onPress} />
@@ -143,14 +171,19 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 					modalField === "nombre"
 						? "Actualizar Nombre"
 						: modalField === "email"
-						? "Actualizar Email"
-						: modalField === "password"
-						? "Actualizar contraseña"
-						: "Actualizar foto de perfil"
+							? "Actualizar Email"
+							: modalField === "password"
+								? "Actualizar Contraseña"
+								: "Actualizar foto de perfil"
 				}
-				isVisible={modalVisible}
+				isVisible={modalVisible.update}
 				onSave={saveModal}
-				onClose={() => setModalVisible(false)}
+				onClose={() => setModalVisible(
+					{
+						...modalVisible,
+						update: false
+					}
+				)}
 				control={control}
 				errors={errors}
 			/>
@@ -159,11 +192,9 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 };
 
 const styles = StyleSheet.create({
-	// Contenedores generales
 	container: {
 		flex: 1,
 	},
-	// Botones
 	actionButtons: {
 		width: "100%",
 		gap: 10,
