@@ -1,10 +1,9 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { passportService } from "@/services/passportService";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { Camera, CameraView } from "expo-camera";
-
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
 import {
   Modal,
@@ -14,6 +13,7 @@ import {
   View,
 } from "react-native";
 import Toast from "react-native-toast-message";
+import RatingStars from "../components/common/RatingStars";
 
 const QrScannerScreen = () => {
   const { token } = useAuth();
@@ -49,7 +49,11 @@ const QrScannerScreen = () => {
       let freshToken = token ?? (await AsyncStorage.getItem("authToken"));
       if (!freshToken) throw new Error("Token no disponible");
 
-      await passportService.registerFromQr(freshToken, currentUid, estrellas.toString());
+      await passportService.registerFromQr(
+        freshToken,
+        currentUid,
+        "" 
+      );
 
       Toast.show({
         type: "success",
@@ -60,19 +64,31 @@ const QrScannerScreen = () => {
 
       setRatingModal(false);
 
-      setTimeout(() => navigation.navigate("PassportScreen"), 600);
+      setTimeout(() => navigation.replace("PassportScreen"), 600);
 
     } catch (err: any) {
       console.error("❌ Error registrando desde QR:", err);
+
+      let msg = err?.message ?? "No se pudo registrar.";
+
+      // Mensaje bonito si ya estaba registrada
+      if (
+        err?.response?.status === 409 ||
+        msg.includes("ya existe") ||
+        msg.includes("duplic")
+      ) {
+        msg = "Esa experiencia ya la tienes registrada 👀";
+      }
+
       Toast.show({
         type: "error",
-        text1: "Error",
-        text2: err?.message ?? "No se pudo registrar.",
+        text1: "Aviso",
+        text2: msg,
         position: "top",
       });
 
       setRatingModal(false);
-      setScanned(false);
+      setScanned(false); // Esto permite volver a escanear
     }
   };
 
@@ -124,20 +140,14 @@ const QrScannerScreen = () => {
         </Text>
       </View>
 
-      {/* ⭐⭐ MODAL DE ESTRELLAS ⭐⭐ */}
+      {/* ⭐ MODAL DE ESTRELLAS ⭐ */}
       <Modal visible={ratingModal} transparent animationType="fade">
         <View style={styles.modalOverlay}>
           <View style={styles.modalBox}>
             <Text style={styles.modalTitle}>Valora tu experiencia</Text>
             <Text style={styles.modalSubtitle}>Elige entre 1 y 5 estrellas</Text>
 
-            <View style={styles.starsRow}>
-              {[1, 2, 3, 4, 5].map((n) => (
-                <TouchableOpacity key={n} onPress={() => enviarValoracion(n)}>
-                  <Ionicons name="star" size={42} color="#FFB800" />
-                </TouchableOpacity>
-              ))}
-            </View>
+            <RatingStars size={42} onChange={(n) => enviarValoracion(n)} />
           </View>
         </View>
       </Modal>
@@ -181,7 +191,6 @@ const styles = StyleSheet.create({
 
   footer: { padding: 20, alignItems: "center" },
 
-  // --- MODAL ---
   modalOverlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.6)",
@@ -197,5 +206,4 @@ const styles = StyleSheet.create({
   },
   modalTitle: { fontSize: 20, fontWeight: "700", marginBottom: 8 },
   modalSubtitle: { fontSize: 14, color: "#444", marginBottom: 20 },
-  starsRow: { flexDirection: "row", gap: 12 },
 });

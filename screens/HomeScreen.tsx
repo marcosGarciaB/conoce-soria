@@ -1,93 +1,91 @@
 import Header from "@/components/common/HeaderItem";
+import LoadingScreen from "@/components/common/Loading";
+import TitleHeader from "@/components/common/TitleHeader";
 import FlatListAnimated from "@/components/home/FlatListAnimated";
 import Information from "@/components/home/Information";
-// ❌ MAPA DESACTIVADO (IMPORT BLOQUEADO)
-// import MapComponent from "@/components/home/MapComponent";
 import MiniPassport from "@/components/home/MiniPassport";
 import Ranking from "@/components/top/Ranking";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLoadTop } from "@/hooks/useLoadTop";
+import { passportService } from "@/services/passportService";
 
-import React from "react";
+import { useFocusEffect, useRoute } from "@react-navigation/native";
+import React, { useCallback, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const InicioScreen = ({ navigation }: { navigation: any }) => {
-	const { status, logout } = useAuth();
-	const isLogged = status === "authenticated";
-	const { topUsuarios } = useLoadTop();
 
-	return (
-		<SafeAreaView style={styles.container}>
+    const { status, logout, token } = useAuth();
+    const isLogged = status === "authenticated";
+    const { topUsuarios } = useLoadTop();
 
-			{isLogged ? (
-				<Header
-					title="Conoce Soria"
-					icon="home-outline"
-					isSecondIcon={true}
-					icon2="exit-outline"
-					onPress={logout}
-				/>
-			) : (
-				<Header title="Conoce Soria" icon="person-circle" />
-			)}
+    // 🔥 Estado propio para el pasaporte actualizado
+    const [passport, setPassport] = useState(null);
 
-			<ScrollView
-				contentContainerStyle={{ paddingBottom: 50 }}
-				showsVerticalScrollIndicator={false}
-			>
-				<Information />
-				<FlatListAnimated />
+    // 🔥 Recargar si la pantalla vuelve con refresh=true
+    const route = useRoute();
+    const shouldRefresh = (route.params as any)?.refresh === true;
 
-				{isLogged ? (
-					<MiniPassport navigation={navigation} />
-				) : (
-					<Ranking
-						topUsuarios={topUsuarios}
-						navigation={navigation}
-						isHome={true}
-					/>
-				)}
+    useFocusEffect(
+        useCallback(() => {
+            const loadPassport = async () => {
+                if (!isLogged || !token) return;
 
-				{/* 
-				═══════════════════════════════════════════
-				📍 MAPA DESACTIVADO TEMPORALMENTE
-				═══════════════════════════════════════════
+                try {
+                    const data = await passportService.getPasaporte(token);
+                    setPassport(data);
+                } catch (err) {
+                    console.log("Error cargando pasaporte:", err);
+                }
+            };
 
-				<View style={styles.mapContainer}>
-					<MapComponent />
-				</View>
-				*/}
-				
-			</ScrollView>
-		</SafeAreaView>
-	);
+            loadPassport();
+        }, [isLogged, token, shouldRefresh])
+    );
+
+    if (status === "checking") return <LoadingScreen />;
+
+    return (
+        <SafeAreaView style={styles.container}>
+
+            {isLogged ? (
+                <Header
+                    title="Conoce Soria"
+                    icon="home-outline"
+                    isSecondIcon={true}
+                    icon2="log-out-outline"
+                    onPress={logout}
+                />
+            ) : (
+                <Header title="Conoce Soria" icon="person-circle" />
+            )}
+
+            <ScrollView
+                contentContainerStyle={{ paddingBottom: 50, paddingTop: 70 }}
+                showsVerticalScrollIndicator={false}
+            >
+                <Information />
+                <FlatListAnimated />
+
+                {isLogged ? (
+                    <MiniPassport navigation={navigation} passport={passport} />
+                ) : (
+                    <Ranking
+                        topUsuarios={topUsuarios}
+                        navigation={navigation}
+                        isHome={true}
+                    />
+                )}
+
+                <TitleHeader title="Mapa" />
+            </ScrollView>
+        </SafeAreaView>
+    );
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		marginBottom: 30,
-		shadowColor: "#000",
-		shadowOpacity: 0.2,
-		shadowRadius: 20,
-	},
-	carouselContainer: {
-		width: "100%",
-		marginTop: 30,
-	},
-	scrollContent: {
-		paddingTop: 20,
-		alignItems: "center",
-	},
-	mapContainer: {
-		overflow: "hidden",
-		height: 300,
-		width: "100%",
-		marginVertical: 10,
-		borderRadius: 10,
-		marginBottom: 80,
-	},
+    container: { flex: 1 },
 });
 
 export default InicioScreen;

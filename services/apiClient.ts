@@ -6,7 +6,7 @@
 //const API_URL = "http://localhost:8080";
 //const API_URL = "https://soria-backend-production.up.railway.app";
 const API_URL="http://192.168.1.80:8080"; //IP Michelle
-
+//const API_URL="http://10.41.92.213:8080"
 // Define la estructura de las cabeceras HTTP.
 interface Headers {
 	[Key: string]: string;
