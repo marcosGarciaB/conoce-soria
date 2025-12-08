@@ -49,6 +49,10 @@ const NameInput: React.FC<NameInputProps> = ({ control, errors }) => {
 								placeholder="Nombre de usuario"
 								placeholderTextColor="#999"
 								onChangeText={onChange}
+								keyboardType="default"
+								autoCapitalize="sentences"
+								autoCorrect={true}
+								spellCheck={true}
 								value={value}
 								onBlur={() => {
 									onBlur();
@@ -74,7 +78,7 @@ const styles = StyleSheet.create({
 	formContainer: {
 		flex: 1,
 		marginBottom: 10,
-        padding: 1
+		padding: 1,
 	},
 	// Input
 	inputWrapper: {

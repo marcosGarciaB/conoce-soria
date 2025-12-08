@@ -46,6 +46,10 @@ const DescInput: React.FC<DescInputProps> = ({ control, errors }) => {
 							style={[styles.inputWithIcon]}
 							placeholder="Descripción"
 							placeholderTextColor="#999"
+							keyboardType="default"
+							autoCapitalize="sentences"
+							autoCorrect={true}
+							spellCheck={true}
 							onBlur={() => {
 								onBlur();
 								if (errors.descripcion) {

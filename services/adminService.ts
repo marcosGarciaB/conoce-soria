@@ -10,6 +10,9 @@ import {
 	ExperienciasResponse,
 } from "./experienceService";
 
+/**
+ * Nuevo usuario a crear
+ */
 export interface NewUser {
 	nombre: string;
 	email: string;
@@ -17,6 +20,10 @@ export interface NewUser {
 	role: string;
 	fotoPerfilUrl: string;
 }
+
+/**
+ * Nueva experiencia a crear o actualizar
+ */
 export interface NewExperience {
 	titulo: string;
 	descripcion: string;
@@ -31,6 +38,10 @@ export interface NewExperience {
 }
 
 // Sección UIDs
+
+/**
+ * DTO de UIDs generados por experiencia
+ */
 export interface ExperienciaUIDDTO {
 	id: string;
 	uid: string;
@@ -38,17 +49,29 @@ export interface ExperienciaUIDDTO {
 	fechaGeneracion: string;
 }
 
+/**
+ * Respuesta al generar UIDs
+ */
 export interface UIDResponse {
 	experienciaId: string;
 	cantidadGenerados: number;
 	uids: string[];
 }
 
+/**
+ * Respuesta al obtener QR code
+ */
 export interface QRCodeResponse {
 	qrCode: string;
 }
 
 // Sección usuarios
+
+/**
+ * Obtiene los datos del usuario autenticado
+ * @param token Token de autenticación
+ * @returns Información del usuario
+ */
 const getUserData = async (token: string): Promise<UserCredentials> => {
 	try {
 		const response = await apiClient.getWithToken<UserCredentials>(
@@ -61,6 +84,12 @@ const getUserData = async (token: string): Promise<UserCredentials> => {
 	}
 };
 
+/**
+ * Obtiene un usuario por email
+ * @param email Email del usuario
+ * @param token Token de autenticación
+ * @returns Información del usuario
+ */
 const getUserByEmail = async (
 	email: string,
 	token: string
@@ -75,6 +104,13 @@ const getUserByEmail = async (
 	}
 };
 
+/**
+ * Actualiza los datos de un usuario
+ * @param email Email del usuario
+ * @param data Datos a actualizar
+ * @param token Token de autenticación
+ * @returns Usuario actualizado
+ */
 const updateUser = async (
 	email: string,
 	data: UpdateCredentials,
@@ -91,6 +127,12 @@ const updateUser = async (
 	}
 };
 
+/**
+ * Crea un nuevo usuario
+ * @param data Datos del usuario
+ * @param token Token de autenticación
+ * @returns Usuario creado
+ */
 const createUser = async (
 	data: NewUser,
 	token: string
@@ -106,6 +148,11 @@ const createUser = async (
 	}
 };
 
+/**
+ * Elimina un usuario
+ * @param id ID del usuario
+ * @param token Token de autenticación
+ */
 const deleteUser = async (id: number, token: string): Promise<void> => {
 	try {
 		await apiClient.deleteWithToken(`/api/users/${id}`, token);
@@ -114,6 +161,11 @@ const deleteUser = async (id: number, token: string): Promise<void> => {
 	}
 };
 
+/**
+ * Comprueba si el usuario autenticado es administrador
+ * @param token Token de autenticación
+ * @returns true si es administrador, false en otro caso
+ */
 const isAdmin = async (token: string): Promise<boolean> => {
 	try {
 		const user = await getUserData(token);
@@ -124,6 +176,14 @@ const isAdmin = async (token: string): Promise<boolean> => {
 };
 
 // Sección experiencias
+
+/**
+ * Obtiene todas las experiencias con detalles para administración
+ * @param token Token de autenticación
+ * @param offset Número de elementos a omitir
+ * @param limit Cantidad máxima de elementos a traer
+ * @returns Lista de experiencias con detalle completo
+ */
 const getAllExperiencesAdmin = async (
 	token: string,
 	offset = 0,
@@ -143,6 +203,12 @@ const getAllExperiencesAdmin = async (
 	}
 };
 
+/**
+ * Crea una nueva experiencia
+ * @param data Datos de la experiencia
+ * @param token Token de autenticación
+ * @returns Experiencia creada con detalle completo
+ */
 const createExperiencia = async (
 	data: NewExperience,
 	token: string
@@ -160,6 +226,13 @@ const createExperiencia = async (
 	}
 };
 
+/**
+ * Actualiza una experiencia existente
+ * @param id ID de la experiencia
+ * @param data Datos de actualización
+ * @param token Token de autenticación
+ * @returns Experiencia actualizada
+ */
 const updateExperiencia = async (
 	id: number,
 	data: NewExperience,
@@ -178,6 +251,12 @@ const updateExperiencia = async (
 	}
 };
 
+/**
+ * Elimina una experiencia
+ * @param id ID de la experiencia
+ * @param token Token de autenticación
+ * @returns Experiencia eliminada
+ */
 const deleteExperiencia = async (
 	id: number,
 	token: string
@@ -195,6 +274,14 @@ const deleteExperiencia = async (
 };
 
 // Sección UIDs
+
+/**
+ * Genera UIDs para una experiencia
+ * @param experienciaId ID de la experiencia
+ * @param cantidad Cantidad de UIDs a generar
+ * @param token Token de autenticación
+ * @returns Respuesta con los UIDs generados
+ */
 const generarUIDs = async (
 	experienciaId: number,
 	cantidad: number,
@@ -219,6 +306,12 @@ const generarUIDs = async (
 	}
 };
 
+/**
+ * Obtiene los UIDs generados para una experiencia
+ * @param experienciaId ID de la experiencia
+ * @param token Token de autenticación
+ * @returns Lista de UIDs
+ */
 const getUIDs = async (
 	experienciaId: number,
 	token: string
@@ -240,6 +333,12 @@ const getUIDs = async (
 	}
 };
 
+/**
+ * Obtiene el QR code de un UID
+ * @param uidId ID del UID
+ * @param token Token de autenticación
+ * @returns QR code
+ */
 const getQRCode = async (
 	uidId: string,
 	token: string

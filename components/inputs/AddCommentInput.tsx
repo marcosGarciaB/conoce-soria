@@ -6,7 +6,7 @@ import {
 	Animated,
 	StyleSheet,
 	TextInput,
-	TouchableOpacity
+	TouchableOpacity,
 } from "react-native";
 import showErrorToast from "../utils/showErrorToast";
 
@@ -30,53 +30,57 @@ const AddComment = ({
 	const { shakeAnim, shake } = useShakeAnimation();
 
 	return (
-			<Controller
-				control={control}
-				name="comentario"
-				rules={{
-					validate: (value) => value.trim().length > 0,
-					pattern: {
-						value: /^[^<>]*$/,
-						message: "Comentario no válido",
-					},
-				}}
-				render={({ field: { onChange, onBlur, value } }) => (
-					<Animated.View
-						style={[
-							styles.inputContainer,
-							{ transform: [{ translateX: shakeAnim }] },
-							errors.comentario && styles.inputError,
-						]}
-					>
-						<Ionicons
-							name="chatbox"
-							size={20}
-							color="#ffbf8bff"
-							style={{ marginRight: 8 }}
-						/>
-						<TextInput
-							style={styles.inputWithIcon}
-							placeholder="Escribe tu comentario"
-							placeholderTextColor={"#999"}
-							onChangeText={onChange}
-							value={value}
-							onBlur={() => {
-								onBlur();
-								if (errors.comentario) {
-									shake();
-									showErrorToast(
-										"Comentario no válido",
-										errors.comentario.message!
-									);
-								}
-							}}
-						/>
-						<TouchableOpacity onPress={handleSubmit(onSubmit)}>
-							<Ionicons name="send" size={25} color="#FF6B00" />
-						</TouchableOpacity>
-					</Animated.View>
-				)}
-			/>
+		<Controller
+			control={control}
+			name="comentario"
+			rules={{
+				validate: (value) => value.trim().length > 0,
+				pattern: {
+					value: /^[^<>]*$/,
+					message: "Comentario no válido",
+				},
+			}}
+			render={({ field: { onChange, onBlur, value } }) => (
+				<Animated.View
+					style={[
+						styles.inputContainer,
+						{ transform: [{ translateX: shakeAnim }] },
+						errors.comentario && styles.inputError,
+					]}
+				>
+					<Ionicons
+						name="chatbox"
+						size={20}
+						color="#ffbf8bff"
+						style={{ marginRight: 8 }}
+					/>
+					<TextInput
+						style={styles.inputWithIcon}
+						placeholder="Escribe tu comentario"
+						placeholderTextColor={"#999"}
+						onChangeText={onChange}
+						keyboardType="default"
+						autoCapitalize="sentences"
+						autoCorrect={true}
+						spellCheck={true}
+						value={value}
+						onBlur={() => {
+							onBlur();
+							if (errors.comentario) {
+								shake();
+								showErrorToast(
+									"Comentario no válido",
+									errors.comentario.message!
+								);
+							}
+						}}
+					/>
+					<TouchableOpacity onPress={handleSubmit(onSubmit)}>
+						<Ionicons name="send" size={25} color="#FF6B00" />
+					</TouchableOpacity>
+				</Animated.View>
+			)}
+		/>
 	);
 };
 

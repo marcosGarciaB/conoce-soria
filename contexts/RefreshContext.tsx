@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, useContext, useState, useCallback } from 'react';
+import React, { createContext, ReactNode, useCallback, useContext, useState } from 'react';
 
 interface RefreshContextProps {
     refreshPassport: () => void;
@@ -9,8 +9,32 @@ interface RefreshContextProps {
     subscribeComments: (experienciaId: number, callback: () => void) => () => void;
 }
 
+
+/**
+ * Propiedades del contexto de refresco global.
+ * @typedef {Object} RefreshContextProps
+ * @property {() => void} refreshPassport - Notifica a todos los suscriptores del pasaporte que deben refrescar.
+ * @property {() => void} refreshTop - Notifica a todos los suscriptores del ranking/top que deben refrescar.
+ * @property {(experienciaId: number) => void} refreshComments - Notifica a los suscriptores de comentarios de una experiencia específica.
+ * @property {(callback: () => void) => () => void} subscribePassport - Suscribe un callback para actualizaciones de pasaporte y devuelve una función de limpieza.
+ * @property {(callback: () => void) => () => void} subscribeTop - Suscribe un callback para actualizaciones de ranking/top y devuelve una función de limpieza.
+ * @property {(experienciaId: number, callback: () => void) => () => void} subscribeComments - Suscribe un callback para comentarios de una experiencia específica y devuelve una función de limpieza.
+ */
+
+/**
+ * Contexto global para coordinar la actualización (refresh) de distintas secciones
+ * de la aplicación sin acoplar directamente los componentes entre sí.
+ *
+ * Implementa un patrón pub/sub ligero para pasaporte, top y comentarios.
+ */
+
 export const RefreshContext = createContext({} as RefreshContextProps);
 
+/**
+ * Proveedor de RefreshContext que envuelve la app.
+ * @param {Object} props
+ * @param {ReactNode} props.children - Componentes hijos que recibirán el contexto
+ */
 export const RefreshProvider = ({ children }: { children: ReactNode }) => {
     const [passportListeners, setPassportListeners] = useState<Set<() => void>>(new Set());
     const [topListeners, setTopListeners] = useState<Set<() => void>>(new Set());
@@ -94,5 +118,17 @@ export const RefreshProvider = ({ children }: { children: ReactNode }) => {
     );
 };
 
+/**
+ * Hook para acceder al contexto de refresco.
+ *
+ * @returns {RefreshContextProps} Funciones para refrescar pasaporte, top y comentarios, y suscribirse a cambios.
+ *
+ * @example
+ * const { refreshPassport, subscribeTop } = useRefresh();
+ * useEffect(() => {
+ *   const unsubscribe = subscribeTop(() => loadRanking());
+ *   return unsubscribe;
+ * }, []);
+ */
 export const useRefresh = () => useContext(RefreshContext);
 

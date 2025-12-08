@@ -9,6 +9,28 @@ export interface ExperienceWithDistance extends ExperienciaDetailResponse {
 	formattedDistance: string;
 }
 
+/**
+ * Hook para obtener experiencias cercanas al usuario, calculando la distancia desde su ubicación actual.
+ *
+ * Este hook:
+ * - Solicita permisos de ubicación al usuario.
+ * - Obtiene la ubicación actual del dispositivo.
+ * - Calcula la distancia entre el usuario y cada experiencia disponible (`detail`) usando `calculateDistance`.
+ * - Formatea la distancia para mostrarla de manera legible usando `formatDistance`.
+ * - Ordena las experiencias de más cercana a más lejana.
+ * - Actualiza la ubicación del usuario automáticamente cada 2 minutos.
+ *
+ * Comportamiento:
+ * - Si el usuario no otorga permisos de ubicación, se marca `permissionGranted` como `false` y no se calculan distancias.
+ * - Maneja el estado de carga mientras obtiene la ubicación y calcula las distancias.
+ *
+ * @returns {object} Contiene la experiencia más cercana, todas las experiencias cercanas y estados relacionados con la ubicación y carga.
+ * @property {ExperienceWithDistance | null} nearestExperience - La experiencia más cercana al usuario, o `null` si no hay datos.
+ * @property {ExperienceWithDistance[]} nearExperiences - Lista de experiencias ordenadas por proximidad.
+ * @property {boolean} loading - Indica si todavía se están cargando datos o calculando distancias.
+ * @property {boolean} permissionGranted - Indica si el usuario otorgó permisos de ubicación.
+ * @property {{ latitude: number; longitude: number } | null} userLocation - Ubicación actual del usuario, o `null` si no está disponible.
+ */
 export const useNearExperiences = () => {
 	const { detail, loading: loadingExperiences } = useLoadMarkers();
 	const [userLocation, setUserLocation] = useState<{

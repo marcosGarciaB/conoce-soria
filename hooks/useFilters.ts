@@ -5,6 +5,24 @@ import { useCallback, useEffect, useState } from "react";
 import { LayoutAnimation } from "react-native";
 import { useLoadMarkers } from "./useLoadMarkers";
 
+/**
+ * Hook para gestionar experiencias filtradas según texto de búsqueda y categoría seleccionada.
+ *
+ * Este hook:
+ * - Obtiene las experiencias paginadas desde `useLoadExperiences`.
+ * - Obtiene el detalle de marcadores desde `useLoadMarkers`.
+ * - Aplica filtros por texto y por categoría.
+ * - Evita repeticiones de elementos mediante `Map`.
+ * - Anima la transición visual usando `LayoutAnimation`.
+ * - Usa `debounce` para mejorar el rendimiento al filtrar texto.
+ *
+ * Funcionalidad del filtrado:
+ * - `wordsFilter` actualiza el texto de búsqueda.
+ * - `buttonFilter` alterna la categoría seleccionada.
+ * - `applyFilters` ejecuta el filtrado real.
+ *
+ * @returns {object} Objeto con las experiencias filtradas, estado de carga y filtros activos.
+ */
 export const useFilteredExperiences = () => {
 	const categories = ["RESTAURANTE", "MUSEO", "AIRE_LIBRE", "MONUMENTO"];
 	const [searchText, setSearchText] = useState("");

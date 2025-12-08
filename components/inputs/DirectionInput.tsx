@@ -16,7 +16,6 @@ interface DirectionInputProps {
 
 const DirectionInput: React.FC<DirectionInputProps> = ({ control, errors }) => {
 	const { shakeAnim, shake } = useShakeAnimation();
-	const [open, setOpen] = useState(false);
 	const [height, setHeight] = useState(50);
 
 	return (
@@ -46,6 +45,10 @@ const DirectionInput: React.FC<DirectionInputProps> = ({ control, errors }) => {
 							style={[styles.inputWithIcon]}
 							placeholder="Dirección"
 							placeholderTextColor="#999"
+							keyboardType="default"
+							autoCapitalize="sentences"
+							autoCorrect={true} 
+							spellCheck={true}
 							onBlur={() => {
 								onBlur();
 								if (errors.direccion) {
