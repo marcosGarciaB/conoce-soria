@@ -23,18 +23,35 @@ export interface PasaporteDTO {
 
 export const passportService = {
     async getPasaporte(token: string): Promise<PasaporteDTO> {
-        return apiClient.getWithToken("/api/pasaporte", token);
+        try {
+            return await apiClient.getWithToken("/api/pasaporte", token);
+        } catch (error) {
+            console.error('[passportService.getPasaporte] Error al obtener pasaporte', {
+                hasToken: !!token,
+                error: error instanceof Error ? error.message : String(error),
+            });
+            throw error;
+        }
     },
 
     async registrar(uid: string, opinion: string, token: string) {
-        return apiClient.postWithToken(
-            "/pasaporte/registrar",
-            {
-                uidScaneado: uid,
-                opinion
-            },
-            token
-        );
+        try {
+            return await apiClient.postWithToken(
+                "/api/pasaporte/registrar",
+                {
+                    uidScaneado: uid,
+                    opinion
+                },
+                token
+            );
+        } catch (error) {
+            console.error('[passportService.registrar] Error al registrar experiencia en pasaporte', {
+                uid,
+                hasToken: !!token,
+                error: error instanceof Error ? error.message : String(error),
+            });
+            throw error;
+        }
     }
 
     

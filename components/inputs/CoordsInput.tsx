@@ -3,11 +3,11 @@ import { Ionicons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
 import { Control, Controller, FieldErrors } from "react-hook-form";
 import {
-	Animated,
-	StyleSheet,
-	TextInput,
-	TouchableOpacity,
-	View
+    Animated,
+    StyleSheet,
+    TextInput,
+    TouchableOpacity,
+    View
 } from "react-native";
 import showErrorToast from "../utils/showErrorToast";
 
@@ -62,7 +62,6 @@ const CoordsInput: React.FC<CoordsInputProps> = ({
                                     style={[styles.inputWithIcon, { height: 80 }]}
                                     placeholder={isLat ? "Latitud" : "Longitud"}
                                     placeholderTextColor="#999"
-                                    keyboardType="decimal-pad"
                                     value={inputValue}
                                     onChangeText={(text) => setInputValue(text)}
                                     onBlur={() => {
@@ -90,7 +89,7 @@ const styles = StyleSheet.create({
 	// General
 	formContainer: {
 		flex: 1,
-		marginBottom: 20,
+		marginBottom: 10,
         padding: 1
 	},
 	// Input

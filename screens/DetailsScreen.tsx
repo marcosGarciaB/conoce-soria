@@ -1,4 +1,4 @@
-import Header from "@/components/common/HeaderItem";
+import HeaderGeneral from "@/components/common/HeaderItem";
 import LoadingScreen from "@/components/common/Loading";
 import ComentarioItem from "@/components/detail/CommentItem";
 import EmptyComments from "@/components/detail/EmptyComments";
@@ -19,6 +19,7 @@ import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
 	FlatList,
+	KeyboardAvoidingView,
 	Platform,
 	ScrollView,
 	StyleSheet,
@@ -27,7 +28,6 @@ import {
 	UIManager,
 	View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 if (Platform.OS === "android") {
 	UIManager.setLayoutAnimationEnabledExperimental?.(true);
@@ -49,7 +49,7 @@ const DetailsScreen = ({
 	const { experiencia } = route.params;
 	const { detalle } = useLoadExperience(experiencia.id);
 	const { comentarios, loading, reload } = useLoadComments(experiencia.id);
-
+	const [scrollEnabled, setScrollEnabled] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
 	const { token } = useAuth();
 	const listRef = useRef<FlatList<ComentariosResponse>>(null);
@@ -130,45 +130,62 @@ const DetailsScreen = ({
 	if (!detalle) return <LoadingScreen />;
 
 	return (
-		<SafeAreaView style={styles.container}>
-			<Header
+		<>
+			<HeaderGeneral
 				title={detalle.titulo}
-				icon="search-sharp"
 				isSecondIcon={true}
 				icon2="chevron-back"
 				onPress={() => navigation.goBack()}
 			/>
 
-			<ScrollView ref={flatListRef} showsVerticalScrollIndicator={false}
-			contentContainerStyle={{paddingTop: 70}}>
-				<ExperienceDetail detail={detalle} />
+			<KeyboardAvoidingView
+				behavior={Platform.OS === "ios" ? "padding" : "height"}
+				style={{ flex: 1 }}
+			>
+				<ScrollView
+					ref={flatListRef}
+					showsVerticalScrollIndicator={false}
+					contentContainerStyle={{ paddingBottom: 20 }}
+					keyboardShouldPersistTaps="handled"
+					scrollEnabled={scrollEnabled} 
+				>
+					<ExperienceDetail detail={detalle} />
 
-				<View>
-					{comentarios.length === 0 ? (
-						<EmptyComments />
-					) : (
-						comentarios.map((comentario) => (
-							<ComentarioItem
-								key={comentario.id}
-								comentario={comentario}
-								onDelete={(id) => handleDelete(id)}
-								onUpdate={(id, newText) =>
-									handleUpdate(id, newText)
-								}
-							/>
-						))
-					)}
-				</View>
+					<View>
+						{comentarios.length === 0 ? (
+							<EmptyComments />
+						) : (
+							comentarios.map((comentario) => (
+								<ComentarioItem
+									key={comentario.id}
+									comentario={comentario}
+									onDelete={handleDelete}
+									onUpdate={handleUpdate}
+									setScrollEnabled={setScrollEnabled}
+								/>
+							))
+						)}
+					</View>
 
-				<AddComment
-					control={control}
-					handleSubmit={handleSubmit}
-					onSubmit={onSubmit}
-					errors={errors}
-				/>
-				<TouchableOpacity
-					style={styles.inputButton}
-					onPress={() => console.log("Registrar experiencia")}
+					<AddComment
+						control={control}
+						handleSubmit={handleSubmit}
+						onSubmit={onSubmit}
+						errors={errors}
+					/>
+					<TouchableOpacity
+					style={[
+						styles.inputButton,
+						!token && styles.inputButtonDisabled
+					]}
+					onPress={() => {
+						if (!token) {
+							navigation.navigate("Login");
+						} else {
+							navigation.navigate("QrScanner", { experienciaId: experiencia.id });
+						}
+					}}
+					disabled={false}
 				>
 					<Ionicons
 						name="qr-code"
@@ -178,8 +195,9 @@ const DetailsScreen = ({
 					/>
 					<Text style={styles.buttonText}>Registrar experiencia</Text>
 				</TouchableOpacity>
-			</ScrollView>
-		</SafeAreaView>
+				</ScrollView>
+			</KeyboardAvoidingView>
+		</>
 	);
 };
 
@@ -201,6 +219,9 @@ const styles = StyleSheet.create({
 		fontSize: 19,
 		color: "white",
 		fontWeight: "bold",
+	},
+	inputButtonDisabled: {
+		opacity: 0.5,
 	},
 });
 

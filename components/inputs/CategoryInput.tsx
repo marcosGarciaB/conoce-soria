@@ -7,8 +7,9 @@ import {
 	StyleSheet,
 	Text,
 	TouchableOpacity,
-	View
+	View,
 } from "react-native";
+import AnimatedDropdown from "../animations/AnimateVerticalAccordion";
 
 interface FormData {
 	categoria: string;
@@ -20,7 +21,7 @@ interface CategoryInputProps {
 }
 
 const CategoryInput: React.FC<CategoryInputProps> = ({ control, errors }) => {
-    const {shakeAnim, shake} = useShakeAnimation();
+	const { shakeAnim, shake } = useShakeAnimation();
 	const [open, setOpen] = useState(false);
 
 	return (
@@ -63,9 +64,14 @@ const CategoryInput: React.FC<CategoryInputProps> = ({ control, errors }) => {
 							</Animated.View>
 						</TouchableOpacity>
 
-						{open && (
+						<AnimatedDropdown isOpen={open} maxHeight={180}>
 							<View style={styles.dropdown}>
-								{["AIRE_LIBRE", "RESTAURANTE", "MUSEO", "MONUMENTO"].map((r) => (
+								{[
+									"AIRE_LIBRE",
+									"RESTAURANTE",
+									"MUSEO",
+									"MONUMENTO",
+								].map((r) => (
 									<TouchableOpacity
 										key={r}
 										style={styles.option}
@@ -80,7 +86,7 @@ const CategoryInput: React.FC<CategoryInputProps> = ({ control, errors }) => {
 									</TouchableOpacity>
 								))}
 							</View>
-						)}
+						</AnimatedDropdown>
 					</View>
 				)}
 			/>
@@ -90,9 +96,8 @@ const CategoryInput: React.FC<CategoryInputProps> = ({ control, errors }) => {
 
 const styles = StyleSheet.create({
 	formContainer: {
-		flex:1,
-		marginBottom: 20,
-        padding: 1
+		flex: 1,
+		marginBottom: 10,
 	},
 	inputWrapper: {
 		flexDirection: "row",
@@ -103,7 +108,6 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		paddingHorizontal: 10,
 		backgroundColor: "white",
-		marginBottom: 5,
 	},
 	categoriaText: {
 		flex: 1,

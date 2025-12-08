@@ -1,8 +1,7 @@
 import AddButton from "@/components/admin/AddButton";
-import CategoryItem from "@/components/admin/CategoryItem";
+import CategoryItem from "@/components/admin/ExperienceItem";
 import Buttom from "@/components/admin/ManageButton";
 import UserItem from "@/components/admin/UserItem";
-import Header from "@/components/common/HeaderItem";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePaginatedFetch } from "@/hooks/usePaginatedFetch";
 import { adminService } from "@/services/adminService";
@@ -13,7 +12,6 @@ import {
 import { useIsFocused } from "@react-navigation/native";
 
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
 
 const AdminScreen = ({ navigation }: { navigation: any }) => {
 	const [showExperiencias, setShowExperiencias] = useState(false);
@@ -76,10 +74,12 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 		}
 	};
 
-	return (
-		<View style={styles.container}>
-			<Header title="Administración" icon="accessibility-outline" />
+	const handleManageUIDs = (experiencia: ExperienciaDetailResponse) => {
+		navigation.navigate("ManageUIDs", { experiencia });
+	};
 
+	return (
+		<>
 				<Buttom
 					title="Gestionar usuarios"
 					onPress={() => { handleToggleUsers(); handleLoadData("usuarios") }}
@@ -101,6 +101,7 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 						experiencias={experiencias}
 						onDelete={handleDeleteExperience}
 						onEdit={(experiencia) => navigation.navigate("ManageExperience", { experiencia })}
+						onManageUIDs={handleManageUIDs}
 						loadMore={() => loadExperiencias()}
 						hasMore={hasMoreEx}
 						loading={loadingEx}
@@ -126,15 +127,9 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 					/>
 				</>
 			)}
-		</View>
+		</>
 	);
 };
 
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		paddingTop: "27%",
-	},
-});
 
 export default AdminScreen;

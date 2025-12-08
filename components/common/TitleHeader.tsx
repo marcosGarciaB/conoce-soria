@@ -15,7 +15,7 @@ const TitleHeader = ({ title, onPress }: TitleHeaderProps) => {
 			activeOpacity={0.85}
 		>
 			<LinearGradient
-				colors={["#fcfcfcff", "#fafcfcff", "#fafcfcff", "#fcfcfcff"]}
+				colors={["#e6e6e6ff", "#ffffffff", "#fffffe", "#e6e6e6ff"]}
 				start={{ x: 0, y: 0 }}
 				end={{ x: 1, y: 1 }}
 				style={styles.heroContainer}
@@ -29,9 +29,14 @@ const TitleHeader = ({ title, onPress }: TitleHeaderProps) => {
 const styles = StyleSheet.create({
 	container: {
 		width: "100%",
+		shadowColor: "#000",
+		shadowOffset: { width: 0, height: 3 },
+		shadowOpacity: 0.15,
+		shadowRadius: 6,
+		elevation: 5,
 	},
 	heroContainer: {
-		margin: 20,
+		margin: 10,
 		paddingHorizontal: 20,
 		paddingVertical: 15,
 		borderRadius: 24,

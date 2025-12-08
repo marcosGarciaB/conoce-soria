@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     sectionTitleRow: {
         flexDirection: "row",
         alignItems: "center",
-        marginTop: 25,
+        marginTop: 10,
         margin: 10,
     },
     sectionTitle: {

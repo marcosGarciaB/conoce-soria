@@ -1,5 +1,5 @@
 import ExperienceForm from "@/components/admin/ExperienceForm";
-import Header from "@/components/common/HeaderItem";
+import HeaderGeneral from "@/components/common/HeaderItem";
 import { useAuth } from "@/contexts/AuthContext";
 import { RootStackParamList } from "@/navigation/AppNavigator";
 import { adminService, NewExperience } from "@/services/adminService";
@@ -8,7 +8,6 @@ import { ExperienciaDetailResponse } from "@/services/experienceService";
 import { RouteProp } from "@react-navigation/native";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 type ExperienceRoute = RouteProp<RootStackParamList, "ManageExperience">;
 
@@ -48,7 +47,6 @@ const ManageExperienceScreen = ({
 					token!
 				);
 				setExperiencias((prev) => [...prev, created]);
-				console.log(created);
 			}
 		} catch (error) {
 			console.error("Error guardando experiencia", error);
@@ -56,8 +54,8 @@ const ManageExperienceScreen = ({
 	};
 
 	return (
-		<SafeAreaView style={styles.container}>
-			<Header
+		<>
+			<HeaderGeneral
 				title="Gestión Experiencias"
 				icon="map-outline"
 				isSecondIcon={true}
@@ -65,32 +63,34 @@ const ManageExperienceScreen = ({
 				onPress={() => navigation.goBack()}
 			/>
 
-			<View style={styles.formContainer}>
-				<ExperienceForm
-					initialData={editingExperience ?? undefined}
-					onSubmit={handleSubmitForm}
-					navigation={navigation}
-				/>
+			<View style={styles.container}>
+				<View style={styles.formContainer}>
+					<ExperienceForm
+						initialData={editingExperience ?? undefined}
+						onSubmit={handleSubmitForm}
+						navigation={navigation}
+					/>
+				</View>
 			</View>
-		</SafeAreaView>
+		</>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		marginBottom: 20
 	},
 	formContainer: {
-		flexGrow: 1,
 		backgroundColor: "white",
 		borderRadius: 16,
 		padding: 10,
 		margin: 10,
 		shadowColor: "#000",
-		shadowOpacity: 0.5,
+		shadowOpacity: 0.05,
 		shadowRadius: 10,
-		shadowOffset: { width: 1, height: 4 },
-		elevation: 5,
+		shadowOffset: { width: 0, height: 4 },
+		elevation: 3,
 	},
 });
 

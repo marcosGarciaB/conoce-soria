@@ -1,45 +1,30 @@
-import React from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import React from "react";
+import { ScrollView } from "react-native";
 
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from "../contexts/AuthContext";
 
-import Header from '@/components/common/HeaderItem';
-import { useLoadUser } from '@/hooks/useLoadUser';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import Logged from '../components/profile/Logged';
-import UnLogged from '../components/profile/UnLogged';
+import { useLoadUser } from "@/hooks/useLoadUser";
+import Logged from "../components/profile/Logged";
+import UnLogged from "../components/profile/UnLogged";
 
 const ProfileScreen = ({ navigation }: { navigation: any }) => {
-    const { token, logout } = useAuth();
-    const { user } = useLoadUser();
+	const { token, logout } = useAuth();
+	const { user } = useLoadUser();
 
-    const isLogged = !!token && !!user;
+	const isLogged = !!token && !!user;
 
-    return (
-        <SafeAreaView style={styles.container}>
-            <Header 
-                title="Mi Cuenta" 
-                icon="person"
-            />
-
-            <ScrollView
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{paddingTop: 70, padding: 10}}
-            >
-                {isLogged ? (
-                    <Logged token={token} user={user} onPress={logout} />
-                ) : (
-                    <UnLogged navigation={navigation} />
-                )}
-            </ScrollView>
-        </SafeAreaView>
-    );
+	return (
+		<ScrollView
+			showsVerticalScrollIndicator={false}
+			contentContainerStyle={{padding: 10 }}
+		>
+			{isLogged ? (
+				<Logged token={token} user={user} onPress={logout} />
+			) : (
+				<UnLogged navigation={navigation} />
+			)}
+		</ScrollView>
+	);
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-});
 
 export default ProfileScreen;

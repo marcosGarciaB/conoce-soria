@@ -108,6 +108,19 @@ const changeProfilePhoto = async (token: string, fotoPerfilUrl: string): Promise
     }
 }
 
+const refreshToken = async (token: string): Promise<AuthResponse> => {
+    try {
+        const response = await apiClient.getWithToken<AuthResponse>('/api/auth/refresh', token);
+        return response;
+    } catch (error) {
+        console.error('[authService.refreshToken] Error al renovar el token', {
+            hasToken: !!token,
+            error: error instanceof Error ? error.message : String(error),
+        });
+        throw error;
+    }
+}
+
 export const authService = {
     login,
     register,
@@ -115,5 +128,6 @@ export const authService = {
     updateUserData,
     getAllUsers,
     emailExists,
-    changeProfilePhoto
+    changeProfilePhoto,
+    refreshToken
 };

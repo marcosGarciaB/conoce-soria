@@ -1,68 +1,61 @@
 import { Ionicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const Header = ({ title, icon, isSecondIcon, icon2, onPress }: any) => {
+const HEADER_HEIGHT = 56;
+
+const HeaderGeneral = ({ title, icon2, onPress }: any) => {
+	const { top } = useSafeAreaInsets();
+
 	return (
-			<View style={styles.wrapper}>
-				<BlurView
-					intensity={50}
-					tint="light"
-					style={styles.blurContainer}
-				>
-					<View style={styles.container}>
-						{isSecondIcon && (
-							<TouchableOpacity
-								activeOpacity={0.85}
-								onPress={onPress}
-							>
-								<Ionicons
-									name={icon2}
-									size={30}
-									color="rgba(0, 0, 0, 0.7)"
-								/>
-							</TouchableOpacity>
-						)}
+		<BlurView intensity={90} tint="light" style={{ paddingTop: top }}>
+			<View style={styles.container}>
+				<View style={styles.side}>
+					{icon2 && (
+						<TouchableOpacity activeOpacity={0.8} onPress={onPress}>
+							<Ionicons name={icon2} size={26} color="#333" />
+						</TouchableOpacity>
+					)}
+				</View>
 
-						<Text style={styles.title}>{title}</Text>
+				<Text style={styles.title} numberOfLines={2}>
+					{title}
+				</Text>
 
-						<Ionicons
-							name={icon}
-							size={30}
-							color="rgba(0, 0, 0, 0.7)"
-						/>
-					</View>
-				</BlurView>
+				<View style={styles.side} />
 			</View>
+		</BlurView>
 	);
 };
 
 const styles = StyleSheet.create({
-	wrapper: {
-		position: "absolute",
-		top: 40,
-		right: 0,
-		left: 0,
-		zIndex: 999,
-		elevation: 999,
-	},
-	blurContainer: {
-		width: "100%",
-		overflow: "hidden",
-	},
 	container: {
-		width: "100%",
+		height: HEADER_HEIGHT,
 		flexDirection: "row",
-		justifyContent: "space-around",
 		alignItems: "center",
-		height: 70,
-		backgroundColor: "rgba(94, 94, 94, 0.15)",
+		justifyContent: "space-between",
+		paddingHorizontal: 16,
+		backgroundColor: "rgba(255, 255, 255, 0.7)",
+		borderBottomColor: "rgba(0,0,0,0.05)",
+		borderBottomWidth: 1,
+		shadowColor: "#000",
+		shadowOpacity: 0.05,
+		shadowRadius: 6,
+		shadowOffset: { width: 0, height: 4 },
+		elevation: 3,
+	},
+	side: {
+		width: 32,
+		alignItems: "center",
 	},
 	title: {
-		fontSize: 22,
-		fontWeight: "bold",
-		color: "#5a5a5a",
+		fontSize: 20,
+		fontWeight: "700",
+		color: "#111",
+		textAlign: "center",
+		flex: 1,
 	},
 });
 
-export default Header;
+export default HeaderGeneral;

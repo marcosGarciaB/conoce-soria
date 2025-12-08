@@ -7,22 +7,25 @@ import {
 	TextInput,
 	TouchableOpacity,
 	UIManager,
-	View
+	View,
 } from "react-native";
-import AnimatedDropdown from "../animations/AnimatedDropdown";
+import AnimatedDropdown from "../animations/AnimateVerticalAccordion";
+import HorizontalAccordion from "../animations/AnimatedHorizontalAccordion";
+import RenderCatButtons from "./RenderButtons";
 
 if (Platform.OS === "android") {
 	UIManager.setLayoutAnimationEnabledExperimental?.(true);
 }
 
 interface FiltersProps {
-	searchText: string;
-	setSearchText: (text: string) => void;
+	searchText?: string;
+	setSearchText?: (text: string) => void;
 	selectedCat: string | null;
 	setSelectedCat: (cat: string | null) => void;
 	categories: string[];
-	onFilterByText: (text: string) => void;
+	onFilterByText?: (text: string) => void;
 	onFilterByCategory: (cat: string) => void;
+	onlyButtons?: boolean;
 }
 
 const Filters: React.FC<FiltersProps> = ({
@@ -33,6 +36,7 @@ const Filters: React.FC<FiltersProps> = ({
 	categories,
 	onFilterByText,
 	onFilterByCategory,
+	onlyButtons,
 }) => {
 	const [open, setOpen] = useState(false);
 
@@ -47,73 +51,96 @@ const Filters: React.FC<FiltersProps> = ({
 	};
 
 	return (
-		<View style={styles.container}>
-			<TouchableOpacity
-				style={styles.button}
-				onPress={() => toggleOpen()}
-			>
-				<Text style={styles.buttonText}>
-					{open ? "Cerrar Filtros" : "Abrir Filtros"}
-				</Text>
-				<Ionicons
-					name={open ? "chevron-up" : "chevron-down"}
-					size={20}
-					color="black"
-				/>
-			</TouchableOpacity>
+		<>
+			{onlyButtons ? (
+				<View style={styles.containerHome}>
+					<TouchableOpacity
+						onPress={toggleOpen}
+						style={styles.arrowContainer}
+					>
+						<Ionicons
+							name={open ? "chevron-back" : "chevron-forward"}
+							size={24}
+							color="black"
+						/>
+					</TouchableOpacity>
 
-			<AnimatedDropdown isOpen={open} maxHeight={150}>
-				<View style={styles.searchContainer}>
-					<Ionicons
-						name="search-outline"
-						size={20}
-						color="#c7a899"
-						style={{ marginHorizontal: 10 }}
-					/>
-					<TextInput
-						style={styles.input}
-						placeholder="Buscar experiencia"
-						placeholderTextColor="#c7a899"
-						value={searchText}
-						onChangeText={onFilterByText}
-					/>
+					<HorizontalAccordion isOpen={open} maxWidth={300}>
+						<RenderCatButtons
+							onPress={handleCategory}
+							categories={categories}
+							selectedCat={selectedCat ?? ""}
+						/>
+					</HorizontalAccordion>
 				</View>
+			) : (
+				<View style={styles.containerSeeker}>
+					<TouchableOpacity
+						style={styles.button}
+						onPress={() => toggleOpen()}
+					>
+						<Text style={styles.buttonText}>
+							{open ? "Cerrar Filtros" : "Abrir Filtros"}
+						</Text>
+						<Ionicons
+							name={open ? "chevron-up" : "chevron-down"}
+							size={20}
+							color="black"
+						/>
+					</TouchableOpacity>
 
-				<View style={styles.buttonsContainer}>
-					{categories.map((cat) => (
-						<TouchableOpacity
-							key={cat}
-							style={[
-								styles.button,
-								selectedCat === cat && styles.buttonCategorySelected,
-							]}
-							onPress={() => handleCategory(cat)}
-						>
-							<Text
-								style={[
-									styles.buttonText,
-									selectedCat === cat && styles.buttonTextCategorySelected,
-								]}
-							>
-								{cat
-									.replace("_", " ")
-									.toLowerCase()
-									.replace(/\b\w/g, (l) => l.toUpperCase())}
-							</Text>
-						</TouchableOpacity>
-					))}
+					<AnimatedDropdown isOpen={open} maxHeight={150}>
+						<View style={styles.searchContainer}>
+							<Ionicons
+								name="search-outline"
+								size={20}
+								color="#c7a899"
+								style={{ marginHorizontal: 10 }}
+							/>
+							<TextInput
+								style={styles.input}
+								placeholder="Buscar experiencia"
+								placeholderTextColor="#c7a899"
+								value={searchText}
+								onChangeText={onFilterByText}
+							/>
+						</View>
+
+						<RenderCatButtons
+							onPress={handleCategory}
+							categories={categories}
+							selectedCat={selectedCat ?? ""}
+						/>
+					</AnimatedDropdown>
 				</View>
-			</AnimatedDropdown>
-		</View>
+			)}
+		</>
 	);
 };
 
 const styles = StyleSheet.create({
-	container: {
+	arrowContainer: {
+		marginRight: 8,
+		backgroundColor: "white",
+		padding: 5,
+		borderRadius: 40,
+	},
+	containerSeeker: {
 		backgroundColor: "#fff",
 		borderRadius: 20,
 		paddingHorizontal: 15,
 		paddingVertical: 10,
+		shadowColor: "#000",
+		shadowOffset: { width: 0, height: 2 },
+		shadowOpacity: 0.2,
+		shadowRadius: 5,
+		elevation: 3,
+		marginVertical: 5,
+	},
+	containerHome: {
+		flexDirection: "row",
+		alignItems: "center",
+		borderRadius: 20,
 		shadowColor: "#000",
 		shadowOffset: { width: 0, height: 2 },
 		shadowOpacity: 0.2,
@@ -138,11 +165,6 @@ const styles = StyleSheet.create({
 		fontWeight: "600",
 		fontSize: 16,
 	},
-	// Contenedor de filtros desplegables
-	filtersInner: {
-		marginTop: 10,
-		paddingBottom: 5,
-	},
 	// Input
 	searchContainer: {
 		marginTop: 10,
@@ -160,33 +182,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		fontSize: 16,
 		color: "#333",
-	},
-
-	// Botones de categorías
-	buttonsContainer: {
-		flexDirection: "row",
-		flexWrap: "wrap",
-		gap: 5,
-	},
-	buttonCategory: {
-		paddingVertical: 6,
-		paddingHorizontal: 12,
-		borderRadius: 20,
-		borderWidth: 1,
-		borderColor: "#FF6B00",
-		backgroundColor: "#fff",
-		marginBottom: 5,
-	},
-	buttonCategorySelected: {
-		backgroundColor: "#FF6B00",
-		borderColor: "#FF6B00",
-	},
-	buttonTextCategory: {
-		color: "#FF6B00",
-		fontWeight: "500",
-	},
-	buttonTextCategorySelected: {
-		color: "#fff",
 	},
 });
 

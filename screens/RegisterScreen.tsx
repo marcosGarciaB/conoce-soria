@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 	},
 	button: {
-		backgroundColor: "#d35800ff",
+		backgroundColor: "#FF6B00",
 		paddingVertical: 14,
 		borderRadius: 50,
 		alignItems: "center",
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
 	},
 	buttonRegister: {
 		backgroundColor: "#ffeddfff",
-		borderColor: "#f79e5aff",
+		borderColor: "#FF6B00",
 		borderWidth: 1,
 		paddingVertical: 14,
 		borderRadius: 50,

@@ -10,6 +10,7 @@ import CategoryInput from "../inputs/CategoryInput";
 import CoordsInput from "../inputs/CoordsInput";
 import DescInput from "../inputs/DescInput";
 import DirectionInput from "../inputs/DirectionInput";
+import GalleryImagesInput from "../inputs/GalleryImagesInput";
 import ImageUrlInput from "../inputs/ImageUrlInput";
 import NumberInput from "../inputs/NumberInput";
 import TitleInput from "../inputs/TitleInput";
@@ -39,6 +40,7 @@ const ExperienceForm = ({
 			descripcion: "",
 			categoria: "AIRE_LIBRE",
 			imagenPortadaUrl: "",
+			galeriaImagenes: [],
 			direccion: "",
 			ubicacionLat: 0,
 			ubicacionLng: 0,
@@ -54,6 +56,7 @@ const ExperienceForm = ({
 				descripcion: initialData.descripcion,
 				categoria: initialData.categoria,
 				imagenPortadaUrl: initialData.imagenPortadaUrl,
+				galeriaImagenes: initialData.galeriaImagenes || [],
 				direccion: initialData.direccion,
 				ubicacionLat: initialData.ubicacionLat,
 				ubicacionLng: initialData.ubicacionLng,
@@ -64,7 +67,6 @@ const ExperienceForm = ({
 	}, [initialData]);
 
 	const submitHandler = (data: NewExperience) => {
-		console.log(data);
 		onSubmit(data);
 		setShowSuccess(true);
 	};
@@ -74,12 +76,14 @@ const ExperienceForm = ({
 			enableOnAndroid={true}
 			extraScrollHeight={50}
 			keyboardShouldPersistTaps="handled"
-			contentContainerStyle={{ padding: 10, paddingTop: 80 }}
+			showsVerticalScrollIndicator={false}
+			contentContainerStyle={{ padding: 10, paddingBottom: 20 }}
 		>
 			<TitleInput control={control} errors={errors} />
 			<DescInput control={control} errors={errors} />
 			<CategoryInput control={control} errors={errors} />
 			<ImageUrlInput control={control} errors={errors} />
+			<GalleryImagesInput control={control} errors={errors} />
 			<DirectionInput control={control} errors={errors} />
 			<CoordsInput control={control} errors={errors} isLat={true} />
 			<CoordsInput control={control} errors={errors} />
@@ -125,7 +129,6 @@ const styles = StyleSheet.create({
 		borderRadius: 12,
 		marginTop: 20,
 		alignItems: "center",
-		justifyContent: "center",
 		shadowColor: "#000",
 		shadowOpacity: 0.1,
 		shadowRadius: 6,

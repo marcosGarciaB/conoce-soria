@@ -47,7 +47,7 @@ const TitleInput: React.FC<TitleInputProps> = ({ control, errors }) => {
 							onChangeText={onChange}
 							value={value}
 							onBlur={() => {
-								onBlur;
+								onBlur();
 								if (errors.titulo) {
 									shake();
 									showErrorToast(
@@ -67,7 +67,7 @@ const TitleInput: React.FC<TitleInputProps> = ({ control, errors }) => {
 const styles = StyleSheet.create({
 	formContainer: { 
 		flex: 1, 
-		marginBottom: 20 ,
+		marginBottom: 10 ,
 		padding: 1,	
 	},
 	inputWrapper: {

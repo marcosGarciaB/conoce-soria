@@ -1,12 +1,8 @@
 import { UserCredentials } from "@/services/authService";
 import React from "react";
-import {
-	Dimensions,
-	FlatList,
-	StyleSheet,
-	Text,
-	View
-} from "react-native";
+import { Dimensions, StyleSheet, Text, View } from "react-native";
+import Animated from "react-native-reanimated";
+import { useStaggeredItemAnimation } from "../animations/staggeredItemAnimation";
 import ProfileAvatar from "../common/ProfilePhoto";
 import ItemButton from "./ItemButton";
 import StatusItem from "./StatusItem";
@@ -22,11 +18,25 @@ interface UserItemProps {
 	loading: boolean;
 }
 
-const UserItem = ({ users, onDelete, onEdit, loadMore, hasMore, loading }: UserItemProps) => {
+const UserItem = ({
+	users,
+	onDelete,
+	onEdit,
+	loadMore,
+	hasMore,
+	loading,
+}: UserItemProps) => {
+	const renderItem = ({
+		item,
+		index,
+	}: {
+		item: UserCredentials;
+		index: number;
+	}) => {
+		const { entering } = useStaggeredItemAnimation(index);
 
-	const renderItem = ({ item }: { item: UserCredentials }) => {
 		return (
-			<View style={styles.userCard}>
+			<Animated.View entering={entering} style={styles.userCard}>
 				<View style={styles.userRow}>
 					<ProfileAvatar foto={item.fotoPerfilUrl} size={90} />
 
@@ -44,42 +54,37 @@ const UserItem = ({ users, onDelete, onEdit, loadMore, hasMore, loading }: UserI
 
 				<View style={styles.userActions}>
 					<ItemButton title="Editar" onPress={() => onEdit(item)} />
-					<ItemButton title="Eliminar" onPress={() => onDelete(item.id)} />
+					<ItemButton
+						title="Eliminar"
+						onPress={() => onDelete(item.id)}
+					/>
 				</View>
-			</View>
+			</Animated.View>
 		);
 	};
 
 	return (
-		<View style={styles.container}>
-			<FlatList
-				data={users}
-				keyExtractor={(item) => item.email}
-				renderItem={renderItem}
-				scrollEnabled={true}
-				showsVerticalScrollIndicator={false}
-				numColumns={width > 600 ? 2 : 1}
-				columnWrapperStyle={
-					width > 600
-						? { justifyContent: "space-between" }
-						: undefined
+		<Animated.FlatList
+			data={users}
+			keyExtractor={(item) => item.email}
+			renderItem={renderItem}
+			scrollEnabled={true}
+			showsVerticalScrollIndicator={false}
+			numColumns={width > 600 ? 2 : 1}
+			columnWrapperStyle={
+				width > 600 ? { justifyContent: "space-between" } : undefined
+			}
+			contentContainerStyle={{ paddingBottom: 80, padding: 10 }}
+			onEndReached={() => {
+				if (!loading && hasMore) {
+					loadMore();
 				}
-				contentContainerStyle={{ paddingBottom: 40, padding: 10 }}
-				onEndReached={() => {
-					if (!loading && hasMore) {
-						loadMore();
-					}
-				}}
-			/>
-		</View>
+			}}
+		/>
 	);
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: "#FAFAFA",
-	},
 	userCard: {
 		backgroundColor: "white",
 		padding: 15,
@@ -102,7 +107,6 @@ const styles = StyleSheet.create({
 		height: 100,
 		borderRadius: 50,
 		marginRight: 15,
-		// backgroundColor: "white"
 	},
 	userInfo: {
 		flex: 1,

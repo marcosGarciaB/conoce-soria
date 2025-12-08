@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 const Information = () => {
 	return (
 		<LinearGradient
-			colors={["#cfcfcfff", "#ffffffff", "#fffffe", "#cfcfcfff"]}
+			colors={["#e6e6e6ff", "#ffffffff", "#fffffe", "#e6e6e6ff"]}
 			start={{ x: 0, y: 0 }}
 			end={{ x: 1, y: 1 }}
 			style={styles.heroContainer}
@@ -27,10 +27,10 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 22,
 		paddingVertical: 20,
 		borderRadius: 24,
-		backgroundColor: "transparent",
 		shadowColor: "#000",
-		shadowOpacity: 0.1,
-		shadowRadius: 20,
+		shadowOffset: { width: 0, height: 3 },
+		shadowOpacity: 0.15,
+		shadowRadius: 6,
 		elevation: 5,
 	},
 	heroContent: {

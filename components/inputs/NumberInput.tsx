@@ -47,7 +47,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
                         ]}
                     >
                         <Ionicons
-                            name="analytics-outline"
+                            name="trophy-outline"
                             size={22}
                             color="#ffbf8bff"
                             style={{ marginRight: 10 }}
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     // General
     formContainer: {
         flex: 1,
-        marginBottom: 20,
+        marginBottom: 10,
         padding: 1
     },
     // Input

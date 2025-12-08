@@ -13,6 +13,8 @@ import Toast from "react-native-toast-message";
 import LoadingScreen from "@/components/common/Loading";
 import AnimatedSplash from "@/components/splash/AnimatedSplash";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { ExperienciaProvider } from "@/contexts/ExperienceContext";
+import { RefreshProvider } from "@/contexts/RefreshContext";
 import { AppNavigator } from "@/navigation/AppNavigator";
 import { AuthNavigator } from "@/navigation/AuthNavigator";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -21,9 +23,7 @@ const AppContent = () => {
 	const { status } = useAuth();
 
 	if (status === "checking") {
-		return (
-			<LoadingScreen />
-		);
+		return <LoadingScreen />;
 	}
 
 	return status === "authenticated" ? <AuthNavigator /> : <AppNavigator />;
@@ -39,14 +39,18 @@ export default function App() {
 	return (
 		<SafeAreaProvider>
 			<GestureHandlerRootView>
-				<Toast />
 				<AuthProvider>
-					<StatusBar barStyle={("dark-content")} />
-					<NavigationContainer>
-						<View style={styles.appContainer}>
-							<AppContent />
-						</View>
-					</NavigationContainer>
+					<RefreshProvider>
+						<ExperienciaProvider>
+							<StatusBar barStyle={"dark-content"} />
+							<NavigationContainer>
+								<View style={styles.appContainer}>
+									<AppContent />
+									<Toast />
+								</View>
+							</NavigationContainer>
+						</ExperienciaProvider>
+					</RefreshProvider>
 				</AuthProvider>
 			</GestureHandlerRootView>
 		</SafeAreaProvider>
@@ -57,5 +61,5 @@ const styles = StyleSheet.create({
 	appContainer: {
 		flex: 1,
 		backgroundColor: "#ffffffff",
-	}
+	},
 });

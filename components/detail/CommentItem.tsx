@@ -18,6 +18,7 @@ interface ComentarioItemProps {
 	comentario: ComentariosResponse;
 	onDelete?: (id: string) => void;
 	onUpdate?: (id: string, newText: string) => void;
+	setScrollEnabled: (value: boolean) => void;
 }
 
 const MAX = 50;
@@ -27,6 +28,7 @@ const ComentarioItem: React.FC<ComentarioItemProps> = ({
 	comentario,
 	onDelete,
 	onUpdate,
+	setScrollEnabled,
 }) => {
 	const translate = useSharedValue(0);
 	const [modalVisible, setModalVisible] = useState(false);
@@ -50,10 +52,14 @@ const ComentarioItem: React.FC<ComentarioItemProps> = ({
 
 	const panGesture = Gesture.Pan()
 		.enabled(isOwnComment)
+		.onBegin(() => {
+			runOnJS(setScrollEnabled)(false);
+		})
 		.onUpdate((e) => {
 			translate.value = Math.max(-MAX, Math.min(e.translationX, MAX));
 		})
 		.onEnd(() => {
+			runOnJS(setScrollEnabled)(true);
 			const value = translate.value;
 
 			if (value >= THRESHOLD) {
@@ -77,7 +83,7 @@ const ComentarioItem: React.FC<ComentarioItemProps> = ({
 	const handleConfirm = (newText?: string) => {
 		if (actionType === "delete" && onDelete) onDelete(comentario.id);
 		if (actionType === "update" && onUpdate && newText)
-		onUpdate(comentario.id, newText);
+			onUpdate(comentario.id, newText);
 		setModalVisible(false);
 		setActionType(null);
 	};
@@ -90,10 +96,8 @@ const ComentarioItem: React.FC<ComentarioItemProps> = ({
 	return (
 		<View style={{ marginVertical: 5, margin: 10 }}>
 			<GestureDetector gesture={panGesture}>
-
 				<Animated.View style={[styles.commentItem, animatedStyle]}>
 					<View style={styles.row}>
-
 						<View style={styles.commentImageContainer}>
 							<Image
 								source={{ uri: comentario.autorFotoPerfil }}
@@ -103,15 +107,20 @@ const ComentarioItem: React.FC<ComentarioItemProps> = ({
 						</View>
 
 						<View style={styles.commentContent}>
-							<Text style={styles.commentUser}>{comentario.autorNombre}</Text>
-							<Text style={styles.commentText}>{comentario.texto}</Text>
+							<Text style={styles.commentUser}>
+								{comentario.autorNombre}
+							</Text>
+							<Text style={styles.commentText}>
+								{comentario.texto}
+							</Text>
 							<View style={styles.commentDateRow}>
 								<Text style={styles.commentDate}>
-									{new Date(comentario.fecha).toLocaleDateString()}
+									{new Date(
+										comentario.fecha
+									).toLocaleDateString()}
 								</Text>
 							</View>
 						</View>
-
 					</View>
 				</Animated.View>
 			</GestureDetector>
@@ -169,12 +178,12 @@ const styles = StyleSheet.create({
 	commentUser: {
 		fontWeight: "600",
 		fontSize: 15,
-		color: "#181818"
+		color: "#181818",
 	},
 	commentText: {
 		fontSize: 13,
 		color: "#444",
-		marginTop: 2
+		marginTop: 2,
 	},
 	commentDateRow: {
 		width: "100%",
@@ -184,7 +193,6 @@ const styles = StyleSheet.create({
 		fontSize: 11,
 		color: "#999",
 	},
-
 });
 
 export default ComentarioItem;

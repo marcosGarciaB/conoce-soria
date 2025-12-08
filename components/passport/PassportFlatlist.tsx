@@ -1,14 +1,19 @@
 import TitleHeader from "@/components/common/TitleHeader";
 import HeaderCard from "@/components/passport/HeaderCard";
 import { useLoadPassport } from "@/hooks/useLoadPassport";
-import { FlatList, Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
+import Animated from "react-native-reanimated";
+import { useStaggeredItemAnimation } from "../animations/staggeredItemAnimation";
 import LoadingScreen from "../common/Loading";
 
 const PassportFlatlist = () => {
 	const { registros, loadingPassport } = useLoadPassport();
+	
+	const renderItem = ({ item, index }: { item: any, index: number }) => {
+		const { entering } = useStaggeredItemAnimation(index);
 
-	const renderItem = ({ item }: { item: any }) => (
-		<View style={styles.card}>
+		return (
+		<Animated.View  entering={entering} style={styles.card}>
 			<Image source={{ uri: item.imgPortada }} style={styles.cardImage} />
 
 			<View style={{ flex: 1 }}>
@@ -21,12 +26,13 @@ const PassportFlatlist = () => {
 			<View style={styles.pointsBadgeItem}>
 				<Text style={styles.pointsAmount}>+{item.puntosOtorgados}</Text>
 			</View>
-		</View>
-	);
+		</Animated.View >
+		);
+	};
 
 	return (
 		<>
-			<FlatList
+			<Animated.FlatList
 				data={registros}
 				keyExtractor={(item, index) =>
 					item.id ? item.id.toString() : index.toString()
@@ -35,7 +41,7 @@ const PassportFlatlist = () => {
 				showsVerticalScrollIndicator={false}
 				onEndReachedThreshold={0.5}
 				scrollEventThrottle={16}
-				contentContainerStyle={{ paddingTop: 70, paddingBottom: 20, padding: 10 }}
+				contentContainerStyle={{paddingBottom: 20, padding: 10 }}
 				ListHeaderComponent={
 					<>
 						<HeaderCard />

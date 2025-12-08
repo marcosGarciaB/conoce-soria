@@ -3,13 +3,13 @@ import { UsuarioRankingDTO } from "@/services/topService";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
 import {
-	Animated,
 	Dimensions,
-	FlatList,
 	StyleSheet,
 	Text,
-	View,
+	View
 } from "react-native";
+import Animated from "react-native-reanimated";
+import { useStaggeredItemAnimation } from "../animations/staggeredItemAnimation";
 import ProfileAvatar from "../common/ProfilePhoto";
 import TitleHeader from "../common/TitleHeader";
 import InfoModal from "../modals/ModalInformation";
@@ -47,20 +47,24 @@ const Ranking = ({ topUsuarios, navigation, isHome }: RankingProps) => {
 	}: {
 		item: UsuarioRankingDTO;
 		index: number;
-	}) => (
-		<View style={styles.card}>
-			<View style={styles.rankCircle}>
-				<Text style={styles.rankText}>{index + 4}</Text>
-			</View>
-			
-			<ProfileAvatar foto={item.fotoPerfilUrl} size={50} />
+	}) => {
+		const { entering } = useStaggeredItemAnimation(index);
 
-			<View style={styles.userInfo}>
-				<Text style={styles.userName}>{item.nombre}</Text>
-				<Text style={styles.userPoints}>{item.puntos} pts</Text>
-			</View>
-		</View>
-	);
+		return (
+			<Animated.View entering={entering} style={styles.card}>
+				<View style={styles.rankCircle}>
+					<Text style={styles.rankText}>{index + 4}</Text>
+				</View>
+
+				<ProfileAvatar foto={item.fotoPerfilUrl} size={50} />
+
+				<View style={styles.userInfo}>
+					<Text style={styles.userName}>{item.nombre}</Text>
+					<Text style={styles.userPoints}>{item.puntos} pts</Text>
+				</View>
+			</Animated.View>
+		);
+	};
 
 	const renderPodium = () => (
 		<View style={styles.podiumContainer}>
@@ -104,18 +108,17 @@ const Ranking = ({ topUsuarios, navigation, isHome }: RankingProps) => {
 					{renderPodium()}
 				</>
 			) : (
-				<FlatList
+				<Animated.FlatList
 					data={topUsuarios.slice(3)}
 					keyExtractor={(item) => item.nombre}
 					renderItem={renderItem}
 					contentContainerStyle={styles.listContent}
 					showsVerticalScrollIndicator={false}
-					
 					ListHeaderComponent={
 						<>
 							<CurrentUser />
 
-							<TitleHeader title="Mejores Clasificados" />
+							<TitleHeader title="Mejores Puntuaciones" />
 							{renderPodium()}
 						</>
 					}
@@ -180,8 +183,7 @@ const styles = StyleSheet.create({
 	},
 	listContent: {
 		paddingHorizontal: 10,
-		paddingTop: 70,
-		paddingBottom: 60,
+		paddingBottom: 70,
 	},
 	card: {
 		flexDirection: "row",
@@ -301,7 +303,7 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "space-around",
 		alignContent: "center",
-		alignItems: "center"
+		alignItems: "center",
 	},
 });
 

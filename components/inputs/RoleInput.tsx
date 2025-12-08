@@ -9,6 +9,7 @@ import {
 	TouchableOpacity,
 	View
 } from "react-native";
+import AnimatedDropdown from "../animations/AnimateVerticalAccordion";
 
 interface FormData {
 	role: string;
@@ -24,7 +25,7 @@ const RoleInput: React.FC<RoleInputProps> = ({ control, errors }) => {
 	const [open, setOpen] = useState(false);
 
 	return (
-		<View style={styles.formContainer}>
+		<>
 			<Controller
 				control={control}
 				name="role"
@@ -63,7 +64,7 @@ const RoleInput: React.FC<RoleInputProps> = ({ control, errors }) => {
 							</Animated.View>
 						</TouchableOpacity>
 
-						{open && (
+						<AnimatedDropdown isOpen={open} maxHeight={100}>
 							<View style={styles.dropdown}>
 								{["USER", "ADMIN"].map((r) => (
 									<TouchableOpacity
@@ -80,11 +81,11 @@ const RoleInput: React.FC<RoleInputProps> = ({ control, errors }) => {
 									</TouchableOpacity>
 								))}
 							</View>
-						)}
+						</AnimatedDropdown>
 					</View>
 				)}
 			/>
-		</View>
+		</>
 	);
 };
 
@@ -102,7 +103,7 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		paddingHorizontal: 10,
 		backgroundColor: "white",
-		marginBottom: 5,
+		marginBottom: 10,
 	},
 	roleText: {
 		flex: 1,

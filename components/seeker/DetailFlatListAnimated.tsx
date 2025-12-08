@@ -9,12 +9,11 @@ import {
 	View,
 } from "react-native";
 import Animated, {
-	interpolate,
 	SharedValue,
 	useAnimatedScrollHandler,
-	useAnimatedStyle,
-	useSharedValue,
+	useSharedValue
 } from "react-native-reanimated";
+import { useSeekerFlatlistAnimation } from "../animations/seekerFlatlistAnimation";
 import LoadingScreen from "../common/Loading";
 import Filters from "./FilterDropdown";
 
@@ -48,7 +47,7 @@ const DetailFlatListAnimated: React.FC<DetailFlatListAnimatedProps> = ({
 	const onScroll = useAnimatedScrollHandler((e) => {
 		scrollY.value = e.contentOffset.y / itemFullSize;
 	});
-
+	
 	const Photo = ({
 		item,
 		index,
@@ -60,25 +59,7 @@ const DetailFlatListAnimated: React.FC<DetailFlatListAnimatedProps> = ({
 		scrollY: SharedValue<number>;
 		onPress: (experiencia: ExperienciasResponse) => void;
 	}) => {
-		const animation = useAnimatedStyle(() => {
-			return {
-				opacity: interpolate(
-					scrollY.value,
-					[index - 1, index, index + 1],
-					[0.5, 1, 0.5]
-				),
-
-				transform: [
-					{
-						scale: interpolate(
-							scrollY.value,
-							[index - 1, index, index + 1],
-							[0.92, 1, 0.92]
-						),
-					},
-				],
-			};
-		});
+		const animation = useSeekerFlatlistAnimation(index, scrollY);
 
 		return (
 			<TouchableOpacity
@@ -136,8 +117,8 @@ const DetailFlatListAnimated: React.FC<DetailFlatListAnimatedProps> = ({
 			decelerationRate="fast"
 			scrollEventThrottle={16}
 			contentContainerStyle={{
-				paddingTop: 70,
 				padding: 10,
+				paddingBottom: 20
 			}}
 			onScroll={onScroll}
 			ListHeaderComponent={

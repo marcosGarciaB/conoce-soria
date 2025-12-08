@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingVertical: 6,
         paddingHorizontal: 12,
-        borderRadius: 8,
+        borderRadius: 30,
         marginRight: 10,
     },
     deleteButton: {
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#F44336",
         paddingVertical: 6,
         paddingHorizontal: 12,
-        borderRadius: 8,
+        borderRadius: 30,
     },
     buttonText: {
         color: "white",

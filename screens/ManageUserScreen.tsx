@@ -1,12 +1,11 @@
 import UserForm from "@/components/admin/UserForm";
-import Header from "@/components/common/HeaderItem";
+import HeaderGeneral from "@/components/common/HeaderItem";
 import { useLoadUser } from "@/hooks/useLoadUser";
 import { RootStackParamList } from "@/navigation/AppNavigator";
 
 import { RouteProp } from "@react-navigation/native";
 import React, { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 type UserRoute = RouteProp<RootStackParamList, "ManageUser">;
 
@@ -23,20 +22,18 @@ const ManageUserScreen = ({
 	useEffect(() => {
 		if (user?.email) {
 			loadEditingUser(user.email);
-			console.log(user.email);
 		}
 	}, [user]);
 
 	return (
-		<SafeAreaView style={styles.container}>
-			<Header
-				title="Creación de usuarios"
-				icon="person-add-outline"
+		<>
+			<HeaderGeneral
+				title="Gestión Experiencias"
+				icon="map-outline"
 				isSecondIcon={true}
 				icon2="chevron-back"
 				onPress={() => navigation.goBack()}
 			/>
-
 			<View style={styles.formContainer}>
 				<UserForm
 					initialData={editingUser ?? undefined}
@@ -44,7 +41,7 @@ const ManageUserScreen = ({
 					navigation={navigation}
 				/>
 			</View>
-		</SafeAreaView>
+		</>
 	);
 };
 

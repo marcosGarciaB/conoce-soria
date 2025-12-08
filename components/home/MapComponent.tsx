@@ -1,17 +1,24 @@
 import * as Location from "expo-location";
 import React, { useEffect, useRef, useState } from "react";
-import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+	Image,
+	Platform,
+	StyleSheet,
+	Text,
+	View
+} from "react-native";
 import MapView, { Callout, Marker, Region } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 
 import { useFilteredExperiences } from "@/hooks/useFilters";
 import { ExperienciaDetailResponse } from "@/services/experienceService";
 import LoadingScreen from "../common/Loading";
+import ButtonLocation from "../map/ButtonLocation";
+import Filters from "../seeker/FilterDropdown";
 
 const GOOGLE_MAPS_APIKEY = " ";
 
 const MapComponent = () => {
-	const { filteredMarkers } = useFilteredExperiences();
 	const [permissionGranted, setPermissionGranted] = useState(false);
 	const [userLocation, setUserLocation] = useState<{
 		latitude: number;
@@ -21,12 +28,20 @@ const MapComponent = () => {
 		null
 	);
 	const mapRef = useRef<MapView>(null);
+	const {
+		filteredMarkers,
+		selectedCat,
+		setSelectedCat,
+		buttonFilter,
+		wordsFilter,
+		categories,
+	} = useFilteredExperiences();
 
 	const initialRegion: Region = {
 		latitude: 41.65,
 		longitude: -2.47,
-		latitudeDelta: 0.6,
-		longitudeDelta: 0.6,
+		latitudeDelta: 0.9,
+		longitudeDelta: 0.9,
 	};
 
 	useEffect(() => {
@@ -84,66 +99,68 @@ const MapComponent = () => {
 	};
 
 	return (
-		<MapView
-			ref={mapRef}
-			style={styles.map}
-			initialRegion={initialRegion}
-			provider={Platform.OS === "android" ? "google" : undefined}
-			showsUserLocation
-			showsMyLocationButton
-		>
-			{(filteredMarkers ?? []).map((item) => (
-				<Marker
-					key={item.id}
-					coordinate={{
-						latitude: item.ubicacionLat,
-						longitude: item.ubicacionLng,
-					}}
-					onPress={() => onMarkerPress(item)}
-					tracksViewChanges={false}
-				>
-					<Callout tooltip>
-						<View style={styles.callout}>
-							<Image
-								source={{ uri: item.imagenPortadaUrl }}
-								style={styles.markerImage}
-							/>
-							<Text style={styles.markerTitle}>
-								{item.titulo}
-							</Text>
-						</View>
-					</Callout>
-				</Marker>
-			))}
+		<>
+			<MapView
+				ref={mapRef}
+				style={styles.map}
+				initialRegion={initialRegion}
+				provider={Platform.OS === "android" ? "google" : undefined}
+				showsUserLocation
+				showsMyLocationButton
+			>
+				{filteredMarkers.map((item) => (
+					<Marker
+						key={item.id.toString()}
+						coordinate={{
+							latitude: item.ubicacionLat,
+							longitude: item.ubicacionLng,
+						}}
+						onPress={() => onMarkerPress(item)}
+						tracksViewChanges={true}
+					>
+						<Callout tooltip>
+							<View style={styles.callout}>
+								<Image
+									source={{ uri: item.imagenPortadaUrl }}
+									style={styles.markerImage}
+								/>
+								<Text style={styles.markerTitle}>
+									{item.titulo}
+								</Text>
+							</View>
+						</Callout>
+					</Marker>
+				))}
 
-			{selectedMarker && userLocation && (
-				<MapViewDirections
-					origin={userLocation}
-					destination={{
-						latitude: selectedMarker.ubicacionLat,
-						longitude: selectedMarker.ubicacionLng,
-					}}
-					apikey={GOOGLE_MAPS_APIKEY}
-					strokeWidth={5}
-					strokeColor="#008cffff"
-					optimizeWaypoints
+				{selectedMarker && userLocation && (
+					<MapViewDirections
+						origin={userLocation}
+						destination={{
+							latitude: selectedMarker.ubicacionLat,
+							longitude: selectedMarker.ubicacionLng,
+						}}
+						apikey={GOOGLE_MAPS_APIKEY}
+						strokeWidth={5}
+						strokeColor="#008cffff"
+						optimizeWaypoints
+					/>
+				)}
+			</MapView>
+
+			<ButtonLocation isGlobal={true} onPress={goToSoriaGlobal} />
+			<ButtonLocation onPress={goToUserLocation} />
+
+			<View style={styles.filtersContainer}>
+				<Filters
+					selectedCat={selectedCat}
+					setSelectedCat={setSelectedCat}
+					categories={categories}
+					onFilterByText={wordsFilter}
+					onFilterByCategory={buttonFilter}
+					onlyButtons={true}
 				/>
-			)}
-			<View style={styles.buttonsContainer}>
-				<TouchableOpacity
-					style={styles.button}
-					onPress={goToSoriaGlobal}
-				>
-					<Text style={styles.buttonText}>Soria Global</Text>
-				</TouchableOpacity>
-				<TouchableOpacity
-					style={styles.button}
-					onPress={goToUserLocation}
-				>
-					<Text style={styles.buttonText}>Mi Ubicación</Text>
-				</TouchableOpacity>
 			</View>
-		</MapView>
+		</>
 	);
 };
 
@@ -179,25 +196,14 @@ const styles = StyleSheet.create({
 		textAlign: "center",
 		fontSize: 14,
 	},
-	buttonsContainer: {
+	
+	filtersContainer: {
 		position: "absolute",
-		bottom: 20,
-		right: 20,
-		flexDirection: "column",
+		top: 10,
+		width: "100%",
+		paddingHorizontal: 10,
+		zIndex: 10,
 	},
-	button: {
-		backgroundColor: "#eeeeeeff",
-		paddingVertical: 10,
-		paddingHorizontal: 14,
-		borderRadius: 25,
-		marginBottom: 10,
-		elevation: 4,
-		shadowColor: "#000",
-		shadowOffset: { width: 0, height: 2 },
-		shadowOpacity: 0.25,
-		shadowRadius: 4,
-	},
-	buttonText: { color: "#868686ff", fontWeight: "bold", fontSize: 14 },
 });
 
 export default MapComponent;

@@ -36,7 +36,7 @@ const DescInput: React.FC<DescInputProps> = ({ control, errors }) => {
 						]}
 					>
 						<Ionicons
-							name="document-lock-sharp"
+							name="document-text"
 							size={22}
 							color="#ffbf8bff"
 							style={{ marginRight: 10 }}
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
 	// General
 	formContainer: {
 		flex: 1,
-		marginBottom: 20,
+		marginBottom: 10,
 		padding: 1,
 	},
 	// Input

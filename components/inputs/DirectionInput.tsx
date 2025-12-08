@@ -47,7 +47,7 @@ const DirectionInput: React.FC<DirectionInputProps> = ({ control, errors }) => {
 							placeholder="Dirección"
 							placeholderTextColor="#999"
 							onBlur={() => {
-								onBlur;
+								onBlur();
 								if (errors.direccion) {
 									shake();
 									showErrorToast(
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
 	// General
 	formContainer: {
 		flex: 1,
-		marginBottom: 20,
+		marginBottom: 10,
 		padding: 1,
 	},
 	// Input

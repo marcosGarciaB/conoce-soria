@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import { Animated } from "react-native";
 
 export const useModalAnimation = (visible: boolean) => {
-    // Animaciones de escala y opacidad
     const scale = useRef(new Animated.Value(0.8)).current;
     const opacity = useRef(new Animated.Value(0)).current;
 

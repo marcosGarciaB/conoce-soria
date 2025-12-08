@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
+import { useAuth } from "@/contexts/AuthContext";
 import { UserCredentials, authService } from "@/services/authService";
 import { useForm } from "react-hook-form";
 import UserChips from "../common/UserChips";
 import InfoModal from "../modals/ModalInformation";
 import ModalUpdate from "../modals/ModalUpdate";
+import ModalWarning from "../modals/ModalWarning";
 import { politica } from "../utils/modalsInformation";
-import showInfoToast from "../utils/showInfoToast";
 import showSuccesToast from "../utils/showSuccesToast";
 import Button from "./Button";
 
@@ -18,13 +19,16 @@ interface UserLogguedProps {
 }
 
 const Logged = ({ token, user, onPress }: UserLogguedProps) => {
+	const { logout } = useAuth();
 	const [currentUser, setCurrentUser] = useState<UserCredentials>(user);
 	const [modalVisible, setModalVisible] = useState<{
 		politics: boolean;
 		update: boolean;
+		warning: boolean;
 	}>({
 		politics: false,
 		update: false,
+		warning: false,
 	});
 
 	const [modalField, setModalField] = useState<
@@ -49,27 +53,35 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 		field: "nombre" | "email" | "password" | "fotoPerfilUrl"
 	) => {
 		setModalField(field);
-		setModalVisible({
-			...modalVisible,
-			update: true
-		});
 
-		if (field === "nombre") setValue("nombre", currentUser.nombre);
-		if (field === "email") {
-
-
-			showInfoToast(
-				"Inicio de sesión requerido",
-				"Al actualizar tu correo electrónico, deberás iniciar sesión nuevamente con tu usuario."
-			);
-
-			setTimeout(() => {
-				setValue("email", currentUser.email);
-			}, 4000);
+		if (field === "nombre") {
+			setModalVisible({
+				...modalVisible,
+				update: true,
+			});
+			setValue("nombre", currentUser.nombre);
 		}
-		if (field === "password") setValue("password", "");
-		if (field === "fotoPerfilUrl")
+		if (field === "email") {
+			setModalVisible({
+				...modalVisible,
+				warning: true,
+			});
+			setValue("email", currentUser.email);
+		}
+		if (field === "password") {
+			setModalVisible({
+				...modalVisible,
+				update: true,
+			});
+			setValue("password", "");
+		}
+		if (field === "fotoPerfilUrl") {
 			setValue("fotoPerfilUrl", currentUser.fotoPerfilUrl);
+			setModalVisible({
+				...modalVisible,
+				update: true,
+			});
+		}
 	};
 
 	const saveModal = handleSubmit(async (data) => {
@@ -93,6 +105,7 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 				...currentUser,
 				[modalField]: updated[modalField],
 			});
+
 			setModalVisible({
 				...modalVisible,
 				update: false,
@@ -103,8 +116,13 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 
 			if (campo === "Password") campo = "Contraseña";
 
-			showSuccesToast("Actualización exitosa", `${campo} actualizado correctamente`);
+			showSuccesToast(
+				"Actualización exitosa",
+				`${campo} actualizado correctamente`
+			);
 
+			if (modalField === "email") logout();
+			
 		} catch (error) {
 			console.error(error);
 		}
@@ -171,21 +189,34 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 					modalField === "nombre"
 						? "Actualizar Nombre"
 						: modalField === "email"
-							? "Actualizar Email"
-							: modalField === "password"
-								? "Actualizar Contraseña"
-								: "Actualizar foto de perfil"
+						? "Actualizar Email"
+						: modalField === "password"
+						? "Actualizar Contraseña"
+						: "Actualizar foto de perfil"
 				}
 				isVisible={modalVisible.update}
 				onSave={saveModal}
-				onClose={() => setModalVisible(
-					{
+				onClose={() =>
+					setModalVisible({
 						...modalVisible,
-						update: false
-					}
-				)}
+						update: false,
+					})
+				}
 				control={control}
 				errors={errors}
+			/>
+
+			<ModalWarning
+				isVisible={modalVisible.warning}
+				title="Cambio Correo Electrónico"
+				message="Al modificar la dirección de correo electrónico, será necesario iniciar sesión de nuevo"
+				onClose={ () => 
+					setModalVisible({
+							...modalVisible,
+							warning: false,
+							update: true,
+						})
+				}
 			/>
 		</>
 	);

@@ -4,8 +4,6 @@ import React from "react";
 import { Control, Controller, FieldErrors } from "react-hook-form";
 import {
 	Animated,
-	KeyboardAvoidingView,
-	Platform,
 	StyleSheet,
 	TextInput,
 	TouchableOpacity
@@ -29,28 +27,26 @@ const AddComment = ({
 	onSubmit,
 	errors,
 }: AddCommentProps) => {
-
 	const { shakeAnim, shake } = useShakeAnimation();
 
 	return (
-		<KeyboardAvoidingView
-			behavior={Platform.OS === "ios" ? "padding" : "height"}
-			style={{ width: "100%" }}
-		>
 			<Controller
 				control={control}
 				name="comentario"
 				rules={{
+					validate: (value) => value.trim().length > 0,
 					pattern: {
-						value: /^[a-zA-Z0-9\s.,!¡?¿]*$/i,
+						value: /^[^<>]*$/,
 						message: "Comentario no válido",
 					},
 				}}
 				render={({ field: { onChange, onBlur, value } }) => (
-					<Animated.View style={[styles.inputContainer,
+					<Animated.View
+						style={[
+							styles.inputContainer,
 							{ transform: [{ translateX: shakeAnim }] },
 							errors.comentario && styles.inputError,
-					]}
+						]}
 					>
 						<Ionicons
 							name="chatbox"
@@ -61,10 +57,11 @@ const AddComment = ({
 						<TextInput
 							style={styles.inputWithIcon}
 							placeholder="Escribe tu comentario"
+							placeholderTextColor={"#999"}
 							onChangeText={onChange}
 							value={value}
 							onBlur={() => {
-								onBlur;
+								onBlur();
 								if (errors.comentario) {
 									shake();
 									showErrorToast(
@@ -80,7 +77,6 @@ const AddComment = ({
 					</Animated.View>
 				)}
 			/>
-		</KeyboardAvoidingView>
 	);
 };
 
@@ -103,7 +99,7 @@ const styles = StyleSheet.create({
 		color: "#333",
 	},
 	// Error
-		inputError: {
+	inputError: {
 		borderColor: "red",
 		backgroundColor: "#ffe6e6",
 	},

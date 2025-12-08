@@ -1,5 +1,6 @@
 import { useLoadPassport } from "@/hooks/useLoadPassport";
 import {
+	Animated,
 	Image,
 	ScrollView,
 	StyleSheet,
@@ -50,7 +51,7 @@ const MiniPassport = ({ navigation }: MiniPassportProps) => {
 					nestedScrollEnabled={true}
 				>
 					{passportPreview.map((item) => (
-						<View key={item.experienciaId} style={styles.miniItem}>
+						<Animated.View key={item.experienciaId} style={styles.miniItem}>
 							<Image
 								source={{ uri: item.imgPortada }}
 								style={styles.miniImage}
@@ -58,7 +59,7 @@ const MiniPassport = ({ navigation }: MiniPassportProps) => {
 							<Text style={styles.miniName} numberOfLines={4}>
 								{item.titulo}
 							</Text>
-						</View>
+						</Animated.View>
 					))}
 				</ScrollView>
 			) : (
