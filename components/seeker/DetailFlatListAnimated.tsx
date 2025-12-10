@@ -47,7 +47,7 @@ const DetailFlatListAnimated: React.FC<DetailFlatListAnimatedProps> = ({
 	const onScroll = useAnimatedScrollHandler((e) => {
 		scrollY.value = e.contentOffset.y / itemFullSize;
 	});
-	
+
 	const Photo = ({
 		item,
 		index,
@@ -107,12 +107,16 @@ const DetailFlatListAnimated: React.FC<DetailFlatListAnimatedProps> = ({
 	return (
 		<Animated.FlatList
 			data={filteredExperiencias}
-			keyExtractor={(item) => item.id.toString()}
+			keyExtractor={(item, i) => (item.id.toString() + i)}
 			renderItem={renderItem}
 			showsVerticalScrollIndicator={false}
 			snapToInterval={itemFullSize}
 			removeClippedSubviews={true}
-			onEndReached={() => loadExperiencias()}
+			onEndReached={() => {
+				if (!loading && hasMore) {
+					loadExperiencias();
+				}
+			}}
 			onEndReachedThreshold={0.5}
 			decelerationRate="fast"
 			scrollEventThrottle={16}

@@ -1,6 +1,7 @@
 import ExperienceForm from "@/components/admin/ExperienceForm";
 import HeaderGeneral from "@/components/common/HeaderItem";
 import { useAuth } from "@/contexts/AuthContext";
+import { useExperiencias } from "@/contexts/ExperienceContext";
 import { RootStackParamList } from "@/navigation/AppNavigator";
 import { adminService, NewExperience } from "@/services/adminService";
 import { ExperienciaDetailResponse } from "@/services/experienceService";
@@ -22,9 +23,7 @@ const ManageExperienceScreen = ({
 	const experiencia = route?.params?.experiencia ?? null;
 	const [editingExperience, setEditingExperience] =
 		useState<ExperienciaDetailResponse | null>(experiencia ?? null);
-	const [experiencias, setExperiencias] = useState<
-		ExperienciaDetailResponse[]
-	>([]);
+	const { addExperiencia, updateExperiencia } = useExperiencias();
 
 	const handleSubmitForm = async (
 		data: NewExperience | ExperienciaDetailResponse
@@ -37,16 +36,14 @@ const ManageExperienceScreen = ({
 					token!
 				);
 				setEditingExperience(updated);
+				updateExperiencia(updated);
 
-				setExperiencias((prev) =>
-					prev.map((u) => (u.id === updated.id ? updated : u))
-				);
 			} else {
 				const created = await adminService.createExperiencia(
 					data as NewExperience,
 					token!
 				);
-				setExperiencias((prev) => [...prev, created]);
+				addExperiencia(created);
 			}
 		} catch (error) {
 			console.error("Error guardando experiencia", error);

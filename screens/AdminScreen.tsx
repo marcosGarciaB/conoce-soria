@@ -3,6 +3,7 @@ import CategoryItem from "@/components/admin/ExperienceItem";
 import Buttom from "@/components/admin/ManageButton";
 import UserItem from "@/components/admin/UserItem";
 import { useAuth } from "@/contexts/AuthContext";
+import { useExperiencias } from "@/contexts/ExperienceContext";
 import { usePaginatedFetch } from "@/hooks/usePaginatedFetch";
 import { adminService } from "@/services/adminService";
 import { authService, UserCredentials } from "@/services/authService";
@@ -11,7 +12,7 @@ import {
 } from "@/services/experienceService";
 import { useIsFocused } from "@react-navigation/native";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 const AdminScreen = ({ navigation }: { navigation: any }) => {
 	const [showExperiencias, setShowExperiencias] = useState(false);
@@ -19,6 +20,7 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 	const [buttonPressed, setButtonPressed] = useState<string>();
 	const { token } = useAuth();
 	const isFocused = useIsFocused();
+	const { loadExperienciasDetalladas, hasMore: hasMoreEx, loading: loadingEx, experienciasDetalladas, updateExperiencia } = useExperiencias();
 
 	if (!token) return;
 	const { data: users, loadData: loadUsers, loading, hasMore } = usePaginatedFetch<UserCredentials>({
@@ -26,21 +28,15 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 		pageSize: 5,
 	});
 
-	const { data: experiencias, loadData: loadExperiencias, loading: loadingEx, hasMore: hasMoreEx } = usePaginatedFetch<ExperienciaDetailResponse>({
-		fetchFunction: (offset, limit) => adminService.getAllExperiencesAdmin(token, offset, limit),
-		pageSize: 5,
-	});
+	// useEffect(() => {
+	// 	if (!token) return;
+	// 	if (isFocused) {
+	// 		loadUsers(true);
+	// 		loadExperienciasDetalladas(true);
+	// 	}
+	// }, [isFocused, token]);
 
-	useEffect(() => {
-		const handleLoadChange = async () => {
-			if (isFocused) {
-				loadUsers(true);
-				loadExperiencias(true);
-			}
-		}
-		handleLoadChange();
-	}, [isFocused]);
-
+	console.log(experienciasDetalladas)
 
 	const handleLoadData = (tipo: "usuarios" | "experiencias") => {
 		setButtonPressed(tipo);
@@ -50,7 +46,7 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 		setShowExperiencias(!showExperiencias);
 		setShowUsers(false);
 	}
-	
+
 	const handleToggleUsers = () => {
 		setShowUsers(!showUsers);
 		setShowExperiencias(false);
@@ -59,7 +55,10 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 	const handleDeleteExperience = async (id: number) => {
 		try {
 			await adminService.deleteExperiencia(id, token!);
-			loadExperiencias(true)
+			const experiencia = experienciasDetalladas.find(e => e.id === id);
+			if (experiencia) {
+				updateExperiencia({ ...experiencia, activo: false });
+			}
 		} catch (error) {
 			console.error("Error eliminando experiencia", error);
 		}
@@ -80,16 +79,16 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 
 	return (
 		<>
-				<Buttom
-					title="Gestionar usuarios"
-					onPress={() => { handleToggleUsers(); handleLoadData("usuarios") }}
-					isActive={showUsers}
-				/>
-				<Buttom
-					title="Gestionar experiencias"
-					onPress={() => { handleToggleExperiencias(); handleLoadData("experiencias") }}
-					isActive={showExperiencias}
-				/>
+			<Buttom
+				title="Gestionar usuarios"
+				onPress={() => { handleToggleUsers(); handleLoadData("usuarios") }}
+				isActive={showUsers}
+			/>
+			<Buttom
+				title="Gestionar experiencias"
+				onPress={() => { handleToggleExperiencias(); handleLoadData("experiencias") }}
+				isActive={showExperiencias}
+			/>
 
 			{showExperiencias && (
 				<>
@@ -98,11 +97,11 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 						onPress={() => navigation.navigate("ManageExperience")}
 					/>
 					<CategoryItem
-						experiencias={experiencias}
+						experiencias={experienciasDetalladas}
 						onDelete={handleDeleteExperience}
 						onEdit={(experiencia) => navigation.navigate("ManageExperience", { experiencia })}
 						onManageUIDs={handleManageUIDs}
-						loadMore={() => loadExperiencias()}
+						loadMore={() => loadExperienciasDetalladas()}
 						hasMore={hasMoreEx}
 						loading={loadingEx}
 					/>

@@ -1,4 +1,4 @@
-import { useLoadExperiences } from "@/hooks/useLoadExperiences";
+import { useExperiencias } from "@/contexts/ExperienceContext";
 import { ExperienciaDetailResponse, ExperienciasResponse } from "@/services/experienceService";
 import debounce from "lodash.debounce";
 import { useCallback, useEffect, useState } from "react";
@@ -28,7 +28,7 @@ export const useFilteredExperiences = () => {
 	const [searchText, setSearchText] = useState("");
 	const [selectedCat, setSelectedCat] = useState<string | null>(null);
 	
-	const { experiencias, loadExperiencias, loading, hasMore } = useLoadExperiences();
+	const { experiencias, loadExperiencias, loading, hasMore } = useExperiencias();
 	const [filteredExperiencias, setFilteredExperiencias] = useState<ExperienciasResponse[]>([]);
 	
 	const { detail, loading: loadingMarker } = useLoadMarkers();
@@ -49,12 +49,12 @@ export const useFilteredExperiences = () => {
 			return matchCat;
 		});
 
-
 		const uniqueFiltered = Array.from(new Map(filtered.map(item => [item.id, item])).values());
 		const uniqueFilteredDetail = Array.from(new Map(filteredDetail.map(item => [item.id, item])).values());
 
 		setFilteredExperiencias(uniqueFiltered);
 		setFilteredMarkers(uniqueFilteredDetail);
+
 	}, [experiencias, detail]);
 
 	const debouncedApplyFilters = useCallback(
