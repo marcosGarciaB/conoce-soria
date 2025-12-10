@@ -11,7 +11,7 @@ import {
 import Animated, {
 	SharedValue,
 	useAnimatedScrollHandler,
-	useSharedValue
+	useSharedValue,
 } from "react-native-reanimated";
 import { useSeekerFlatlistAnimation } from "../animations/seekerFlatlistAnimation";
 import LoadingScreen from "../common/Loading";
@@ -47,6 +47,12 @@ const DetailFlatListAnimated: React.FC<DetailFlatListAnimatedProps> = ({
 	const onScroll = useAnimatedScrollHandler((e) => {
 		scrollY.value = e.contentOffset.y / itemFullSize;
 	});
+
+	const handleLoadMore = () => {
+		if (!loading && hasMore) {
+			loadExperiencias();
+		}
+	};
 
 	const Photo = ({
 		item,
@@ -107,22 +113,18 @@ const DetailFlatListAnimated: React.FC<DetailFlatListAnimatedProps> = ({
 	return (
 		<Animated.FlatList
 			data={filteredExperiencias}
-			keyExtractor={(item, i) => (item.id.toString() + i)}
+			keyExtractor={(item, i) => item.id.toString() + i}
 			renderItem={renderItem}
 			showsVerticalScrollIndicator={false}
 			snapToInterval={itemFullSize}
 			removeClippedSubviews={true}
-			onEndReached={() => {
-				if (!loading && hasMore) {
-					loadExperiencias();
-				}
-			}}
-			onEndReachedThreshold={0.5}
+			onEndReached={handleLoadMore}
+			onEndReachedThreshold={0.1}
 			decelerationRate="fast"
 			scrollEventThrottle={16}
 			contentContainerStyle={{
 				padding: 10,
-				paddingBottom: 20
+				paddingBottom: 20,
 			}}
 			onScroll={onScroll}
 			ListHeaderComponent={

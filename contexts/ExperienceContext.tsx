@@ -1,16 +1,28 @@
 import { adminService } from "@/services/adminService";
-import React, { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react";
+import React, {
+	createContext,
+	ReactNode,
+	useContext,
+	useEffect,
+	useMemo,
+	useState,
+} from "react";
 import { usePaginatedFetch } from "../hooks/usePaginatedFetch";
-import { ExperienciaDetailResponse, experienciaService, ExperienciasResponse } from "../services/experienceService";
+import {
+	ExperienciaDetailResponse,
+	experienciaService,
+	ExperienciasResponse,
+} from "../services/experienceService";
 import { useAuth } from "./AuthContext";
+import { useRefresh } from "./RefreshContext";
 
 interface ExperienciaContextProps {
-	experiencias: ExperienciasResponse[]; // lista básica
-	experienciasDetalladas: ExperienciaDetailResponse[]; // lista detallada
+	experiencias: ExperienciasResponse[];
+	experienciasDetalladas: ExperienciaDetailResponse[];
 	loadExperiencias: (reset?: boolean) => Promise<void>;
 	loadExperienciasDetalladas: (reset?: boolean) => Promise<void>;
-	addExperiencia: (experiencia: ExperienciaDetailResponse) => void;
-	updateExperiencia: (experiencia: ExperienciaDetailResponse) => void;
+	addExperiencia: (exp: ExperienciaDetailResponse) => void;
+	updateExperiencia: (exp: ExperienciaDetailResponse) => void;
 	deleteExperiencia: (id: number) => void;
 	loading: boolean;
 	loadingDetalladas: boolean;
@@ -22,122 +34,158 @@ export const ExperienciaContext = createContext({} as ExperienciaContextProps);
 
 export const ExperienciaProvider = ({ children }: { children: ReactNode }) => {
 	const { token } = useAuth();
+	const { subscribeExperiencias } = useRefresh();
 
-	// Lista básica
-	const { data: experienciasBase, loadData: loadExperiencias, loading, hasMore } =
-		usePaginatedFetch<ExperienciasResponse>({
-			fetchFunction: experienciaService.getExperiencias,
-			pageSize: 5,
-		});
+	// Base
+	const {
+		data: experienciasBaseData,
+		loadData: loadExperiencias,
+		loading,
+		hasMore,
+	} = usePaginatedFetch<ExperienciasResponse>({
+		fetchFunction: experienciaService.getExperiencias,
+		pageSize: 5,
+	});
 
-	// Lista detallada
-	const [experienciasDetalladas, setExperienciasDetalladas] = useState<ExperienciaDetailResponse[]>([]);
+	const [experiencias, setExperiencias] = useState<ExperienciasResponse[]>(
+		[]
+	);
 
-	const { data: experienciasDetalladasData, loadData: loadExperienciasDetalladas, loading: loadingDetalladas, hasMore: hasMoreDetalladas } =
-		usePaginatedFetch<ExperienciaDetailResponse>({
-			fetchFunction: (offset, limit) => adminService.getAllExperiencesAdmin(token!, offset, limit),
-			pageSize: 5,
-		});
+	// Detalles
+	const [experienciasDetalladas, setExperienciasDetalladas] = useState<
+		ExperienciaDetailResponse[]
+	>([]);
 
-	// Sincroniza datos de paginación
-	React.useEffect(() => {
-		if (experienciasDetalladasData) setExperienciasDetalladas(experienciasDetalladasData);
+	const {
+		data: experienciasDetalladasData,
+		loadData: loadExperienciasDetalladas,
+		loading: loadingDetalladas,
+		hasMore: hasMoreDetalladas,
+	} = usePaginatedFetch<ExperienciaDetailResponse>({
+		fetchFunction: (offset, limit) =>
+			adminService.getAllExperiencesAdmin(token!, offset, limit),
+		pageSize: 5,
+	});
+
+	// Sincroniza lista base
+	useEffect(() => {
+		if (experienciasBaseData) {
+			setExperiencias(experienciasBaseData);
+		}
+	}, [experienciasBaseData]);
+
+	// Sincroniza lista detallada
+	useEffect(() => {
+		if (experienciasDetalladasData) {
+			setExperienciasDetalladas(experienciasDetalladasData);
+		}
 	}, [experienciasDetalladasData]);
 
+	// Funciones
 	const addExperiencia = (exp: ExperienciaDetailResponse) => {
-		// Añadir a detalladas
-		setExperienciasDetalladas(prev => {
-			if (!prev.find(e => e.id === exp.id)) return [...prev, exp];
-			return prev;
+		setExperienciasDetalladas((prev) => {
+			if (prev.some((e) => e.id === exp.id)) return prev;
+			return [...prev, exp];
 		});
-		// Añadir a básicas
-		if (exp.activo && !experienciasBase.find(e => e.id === exp.id)) {
-			experienciasBase.push({
-				id: exp.id,
-				categoria: exp.categoria,
-				imagenPortadaUrl: exp.imagenPortadaUrl,
-				titulo: exp.titulo,
+
+		if (exp.activo) {
+			setExperiencias((prev) => {
+				if (prev.some((e) => e.id === exp.id)) return prev;
+				return [
+					...prev,
+					{
+						id: exp.id,
+						titulo: exp.titulo,
+						categoria: exp.categoria,
+						imagenPortadaUrl: exp.imagenPortadaUrl,
+					},
+				];
 			});
 		}
 	};
 
-	// Actualizamos updateExperiencia y deleteExperiencia
 	const updateExperiencia = (exp: ExperienciaDetailResponse) => {
-		// Actualiza detalladas (admin)
-		setExperienciasDetalladas(prev => {
-			const index = prev.findIndex(e => e.id === exp.id);
-			if (index >= 0) {
-				const updated = [...prev];
-				updated[index] = exp;
-				return updated;
-			}
-			return [...prev, exp];
-		});
+		setExperienciasDetalladas((prev) =>
+			prev.map((e) => (e.id === exp.id ? exp : e))
+		);
 
-		// Actualiza básicas (solo activas)
-		const indexBase = experienciasBase.findIndex(e => e.id === exp.id);
 		if (exp.activo) {
-			if (indexBase >= 0) {
-				experienciasBase[indexBase] = {
-					id: exp.id,
-					categoria: exp.categoria,
-					imagenPortadaUrl: exp.imagenPortadaUrl,
-					titulo: exp.titulo,
-				};
-			} else {
-				experienciasBase.push({
-					id: exp.id,
-					categoria: exp.categoria,
-					imagenPortadaUrl: exp.imagenPortadaUrl,
-					titulo: exp.titulo,
-				});
-			}
+			setExperiencias((prev) => {
+				const exists = prev.some((e) => e.id === exp.id);
+
+				if (exists) {
+					return prev.map((e) =>
+						e.id === exp.id
+							? {
+									id: exp.id,
+									titulo: exp.titulo,
+									categoria: exp.categoria,
+									imagenPortadaUrl: exp.imagenPortadaUrl,
+							  }
+							: e
+					);
+				} else {
+					return [
+						...prev,
+						{
+							id: exp.id,
+							titulo: exp.titulo,
+							categoria: exp.categoria,
+							imagenPortadaUrl: exp.imagenPortadaUrl,
+						},
+					];
+				}
+			});
 		} else {
-			if (indexBase >= 0) experienciasBase.splice(indexBase, 1);
+			setExperiencias((prev) => prev.filter((e) => e.id !== exp.id));
 		}
 	};
 
-const deleteExperiencia = (id: number) => {
-	// Para admin: eliminamos de detalladas
-	setExperienciasDetalladas(prev => prev.filter(e => e.id !== id));
-	// Para lista básica: eliminar si existía
-	const indexBase = experienciasBase.findIndex(e => e.id === id);
-	if (indexBase >= 0) experienciasBase.splice(indexBase, 1);
-};
+	const deleteExperiencia = (id: number) => {
+		setExperienciasDetalladas((prev) => prev.filter((e) => e.id !== id));
+		setExperiencias((prev) => prev.filter((e) => e.id !== id));
+	};
 
-const value = useMemo(() => ({
-	experiencias: experienciasBase,
-	experienciasDetalladas,
-	loadExperiencias,
-	loadExperienciasDetalladas,
-	addExperiencia,
-	updateExperiencia,
-	deleteExperiencia,
-	loading,
-	loadingDetalladas,
-	hasMore,
-	hasMoreDetalladas,
-}), [
-	experienciasBase,
-	experienciasDetalladas,
-	loadExperiencias,
-	loadExperienciasDetalladas,
-	loading,
-	loadingDetalladas,
-	hasMore,
-	hasMoreDetalladas,
-]);
+	useEffect(() => {
+		const unsubscribe = subscribeExperiencias(() => {
+			loadExperiencias(true);
+			loadExperienciasDetalladas(true);
+		});
 
-useEffect(() => {
-	loadExperiencias(true);
-	loadExperienciasDetalladas(true);
-}, []);
+		return unsubscribe;
+	}, [subscribeExperiencias, loadExperiencias, loadExperienciasDetalladas]);
 
-return (
-	<ExperienciaContext.Provider value={value}>
-		{children}
-	</ExperienciaContext.Provider>
-);
+	const value = useMemo(
+		() => ({
+			experiencias,
+			experienciasDetalladas,
+			loadExperiencias,
+			loadExperienciasDetalladas,
+			addExperiencia,
+			updateExperiencia,
+			deleteExperiencia,
+			loading,
+			loadingDetalladas,
+			hasMore,
+			hasMoreDetalladas,
+		}),
+		[
+			experiencias,
+			experienciasDetalladas,
+			loadExperiencias,
+			loadExperienciasDetalladas,
+			loading,
+			loadingDetalladas,
+			hasMore,
+			hasMoreDetalladas,
+		]
+	);
+
+	return (
+		<ExperienciaContext.Provider value={value}>
+			{children}
+		</ExperienciaContext.Provider>
+	);
 };
 
 export const useExperiencias = () => useContext(ExperienciaContext);

@@ -4,15 +4,14 @@ import Buttom from "@/components/admin/ManageButton";
 import UserItem from "@/components/admin/UserItem";
 import { useAuth } from "@/contexts/AuthContext";
 import { useExperiencias } from "@/contexts/ExperienceContext";
+import { useRefresh } from "@/contexts/RefreshContext";
 import { usePaginatedFetch } from "@/hooks/usePaginatedFetch";
 import { adminService } from "@/services/adminService";
 import { authService, UserCredentials } from "@/services/authService";
-import {
-	ExperienciaDetailResponse
-} from "@/services/experienceService";
+import { ExperienciaDetailResponse } from "@/services/experienceService";
 import { useIsFocused } from "@react-navigation/native";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const AdminScreen = ({ navigation }: { navigation: any }) => {
 	const [showExperiencias, setShowExperiencias] = useState(false);
@@ -20,32 +19,43 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 	const [buttonPressed, setButtonPressed] = useState<string>();
 	const { token } = useAuth();
 	const isFocused = useIsFocused();
-	const { loadExperienciasDetalladas, hasMore: hasMoreEx, loading: loadingEx, experienciasDetalladas, updateExperiencia } = useExperiencias();
+	const {
+		loadExperienciasDetalladas,
+		hasMore: hasMoreEx,
+		loading: loadingEx,
+		experienciasDetalladas,
+		updateExperiencia,
+	} = useExperiencias();
+	const { refreshExperiencias } = useRefresh();
 
 	if (!token) return;
-	const { data: users, loadData: loadUsers, loading, hasMore } = usePaginatedFetch<UserCredentials>({
-		fetchFunction: (offset, limit) => authService.getAllUsers(token, offset, limit),
+	const {
+		data: users,
+		loadData: loadUsers,
+		loading,
+		hasMore,
+	} = usePaginatedFetch<UserCredentials>({
+		fetchFunction: (offset, limit) =>
+			authService.getAllUsers(token, offset, limit),
 		pageSize: 5,
 	});
 
-	// useEffect(() => {
-	// 	if (!token) return;
-	// 	if (isFocused) {
-	// 		loadUsers(true);
-	// 		loadExperienciasDetalladas(true);
-	// 	}
-	// }, [isFocused, token]);
-
-	console.log(experienciasDetalladas)
+	useEffect(() => {
+		if (!token) return;
+		if (isFocused) {
+			loadUsers(true);
+			loadExperienciasDetalladas(true);
+		}
+	}, [isFocused, token]);
 
 	const handleLoadData = (tipo: "usuarios" | "experiencias") => {
 		setButtonPressed(tipo);
-	}
+	};
 
 	const handleToggleExperiencias = () => {
 		setShowExperiencias(!showExperiencias);
 		setShowUsers(false);
-	}
+	};
 
 	const handleToggleUsers = () => {
 		setShowUsers(!showUsers);
@@ -55,10 +65,11 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 	const handleDeleteExperience = async (id: number) => {
 		try {
 			await adminService.deleteExperiencia(id, token!);
-			const experiencia = experienciasDetalladas.find(e => e.id === id);
+			const experiencia = experienciasDetalladas.find((e) => e.id === id);
 			if (experiencia) {
 				updateExperiencia({ ...experiencia, activo: false });
 			}
+			refreshExperiencias();
 		} catch (error) {
 			console.error("Error eliminando experiencia", error);
 		}
@@ -81,12 +92,18 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 		<>
 			<Buttom
 				title="Gestionar usuarios"
-				onPress={() => { handleToggleUsers(); handleLoadData("usuarios") }}
+				onPress={() => {
+					handleToggleUsers();
+					handleLoadData("usuarios");
+				}}
 				isActive={showUsers}
 			/>
 			<Buttom
 				title="Gestionar experiencias"
-				onPress={() => { handleToggleExperiencias(); handleLoadData("experiencias") }}
+				onPress={() => {
+					handleToggleExperiencias();
+					handleLoadData("experiencias");
+				}}
 				isActive={showExperiencias}
 			/>
 
@@ -99,7 +116,11 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 					<CategoryItem
 						experiencias={experienciasDetalladas}
 						onDelete={handleDeleteExperience}
-						onEdit={(experiencia) => navigation.navigate("ManageExperience", { experiencia })}
+						onEdit={(experiencia) =>
+							navigation.navigate("ManageExperience", {
+								experiencia,
+							})
+						}
 						onManageUIDs={handleManageUIDs}
 						loadMore={() => loadExperienciasDetalladas()}
 						hasMore={hasMoreEx}
@@ -129,6 +150,5 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 		</>
 	);
 };
-
 
 export default AdminScreen;

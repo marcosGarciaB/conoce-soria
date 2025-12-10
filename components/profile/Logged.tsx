@@ -115,6 +115,7 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 			let campo = capitalizeFirstLetter(`${modalField}`.toString());
 
 			if (campo === "Password") campo = "Contraseña";
+			if (campo === "FotoPerfilUrl") campo = "Foto de Perfil";
 
 			showSuccesToast(
 				"Actualización exitosa",

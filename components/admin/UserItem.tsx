@@ -69,6 +69,7 @@ const UserItem = ({
 			keyExtractor={(item) => item.email}
 			renderItem={renderItem}
 			scrollEnabled={true}
+			onEndReachedThreshold={0.1}
 			showsVerticalScrollIndicator={false}
 			numColumns={width > 600 ? 2 : 1}
 			columnWrapperStyle={

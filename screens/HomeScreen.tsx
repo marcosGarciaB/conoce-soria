@@ -9,7 +9,6 @@ import Ranking from "@/components/top/Ranking";
 import { useAuth } from "@/contexts/AuthContext";
 import { useExperiencias } from "@/contexts/ExperienceContext";
 import { useLoadTop } from "@/hooks/useLoadTop";
-import { useFocusEffect } from "@react-navigation/native";
 
 import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
@@ -19,14 +18,6 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
 	const isLogged = status === "authenticated";
 	const { topUsuarios } = useLoadTop();
 	const { experiencias, loadExperiencias, loading, hasMore } = useExperiencias();
-
-	useFocusEffect(React.useCallback(() => {
-		loadExperiencias(true);
-		return () => {
-
-		};
-	}, [])
-	);
 
 	if (status === "checking") return <LoadingScreen />;
 

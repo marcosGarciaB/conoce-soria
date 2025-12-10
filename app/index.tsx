@@ -1,6 +1,18 @@
 /*
  * Este es el archivo raíz de la aplicación.
  */
+// Permitir reasignar fetch (solo a nivel de TypeScript)
+declare var fetch: typeof globalThis.fetch;
+
+const originalFetch = globalThis.fetch;
+
+globalThis.fetch = async (...args) => {
+    console.log("FETCH →", args);
+    const response = await originalFetch(...args);
+    console.log("RESPUESTA →", response);
+    return response;
+};
+
 
 import { NavigationContainer } from "@react-navigation/native";
 import React, { useState } from "react";

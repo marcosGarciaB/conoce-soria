@@ -3,10 +3,9 @@ import { ExperienciasResponse } from "@/services/experienceService";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import Animated, {
 	useAnimatedScrollHandler,
-	useSharedValue
+	useSharedValue,
 } from "react-native-reanimated";
 import LoadingScreen from "../common/Loading";
-
 
 const { width } = Dimensions.get("screen");
 const imageWidth = width * 0.95;
@@ -24,7 +23,7 @@ const FlatListAnimated = ({
 	experiencias,
 	loadExperiencias,
 	loading,
-	hasMore
+	hasMore,
 }: FlatListAnimatedProps) => {
 	const scrollX = useSharedValue(0);
 
@@ -33,6 +32,12 @@ const FlatListAnimated = ({
 			scrollX.value = e.contentOffset.x / (imageWidth + spacing);
 		},
 	});
+
+	const handleLoadMore = () => {
+		if (!loading && hasMore) {
+			loadExperiencias();
+		}
+	};
 
 	const Photo = ({
 		item,
@@ -68,7 +73,7 @@ const FlatListAnimated = ({
 		<View style={styles.container}>
 			<Animated.FlatList
 				data={experiencias}
-				keyExtractor={(item, i) => (item.id.toString() + i)}
+				keyExtractor={(item, i) => item.id.toString() + i}
 				horizontal
 				renderItem={renderItem}
 				snapToInterval={imageWidth + spacing}
@@ -85,9 +90,7 @@ const FlatListAnimated = ({
 				}}
 				onScroll={onScroll}
 				scrollEventThrottle={16}
-				onEndReached={() => {
-					if (hasMore && !loading) loadExperiencias();
-				}}
+				onEndReached={handleLoadMore}
 				ListFooterComponent={loading ? <LoadingScreen /> : null}
 			/>
 		</View>
@@ -96,9 +99,9 @@ const FlatListAnimated = ({
 
 const styles = StyleSheet.create({
 	container: {
-		display: 'flex',
-		alignContent: 'center',
-		justifyContent: 'center',
+		display: "flex",
+		alignContent: "center",
+		justifyContent: "center",
 	},
 	shadowContainer: {
 		width: imageWidth,
@@ -112,7 +115,6 @@ const styles = StyleSheet.create({
 		backgroundColor: "transparent",
 		marginTop: 10,
 		marginBottom: 10,
-
 	},
 	imageContainer: {
 		width: imageWidth,
