@@ -1,7 +1,7 @@
 import { useRefresh } from "@/contexts/RefreshContext";
-import { UserCredentials } from "@/services/authService";
 import { topService, UsuarioRankingDTO } from "@/services/topService";
 import { useEffect, useState } from "react";
+import { useLoadUser } from "./useLoadUser";
 
 /**
  * Hook para cargar el ranking global de usuarios y la posición del usuario actual.
@@ -24,7 +24,7 @@ import { useEffect, useState } from "react";
  */
 
 export const useLoadTop = () => {
-	const [user, setUser] = useState<UserCredentials>();
+	const { user } = useLoadUser();
 	const [loading, setLoading] = useState(true);
 	const [userRank, setUserRank] = useState<number | null>(null);
 	const [topUsuarios, setTopUsuarios] = useState<UsuarioRankingDTO[]>([]);

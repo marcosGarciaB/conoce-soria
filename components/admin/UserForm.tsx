@@ -86,7 +86,7 @@ const UserForm = ({ initialData, onSubmit, navigation }: UserFormProps) => {
 			enableOnAndroid={true}
 			keyboardShouldPersistTaps="handled"
 			extraScrollHeight={50}
-			contentContainerStyle={{ padding: 10}}
+			contentContainerStyle={{ padding: 10 }}
 		>
 			<NameInput control={control} errors={errors} />
 			<EmailInput control={control} errors={errors} />

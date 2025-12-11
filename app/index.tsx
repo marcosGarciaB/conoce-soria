@@ -2,16 +2,16 @@
  * Este es el archivo raíz de la aplicación.
  */
 // Permitir reasignar fetch (solo a nivel de TypeScript)
-declare var fetch: typeof globalThis.fetch;
+// declare var fetch: typeof globalThis.fetch;
 
-const originalFetch = globalThis.fetch;
+// const originalFetch = globalThis.fetch;
 
-globalThis.fetch = async (...args) => {
-    console.log("FETCH →", args);
-    const response = await originalFetch(...args);
-    console.log("RESPUESTA →", response);
-    return response;
-};
+// globalThis.fetch = async (...args) => {
+//     console.log("FETCH →", args);
+//     const response = await originalFetch(...args);
+//     console.log("RESPUESTA →", response);
+//     return response;
+// };
 
 
 import { NavigationContainer } from "@react-navigation/native";
@@ -27,6 +27,8 @@ import AnimatedSplash from "@/components/splash/AnimatedSplash";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ExperienciaProvider } from "@/contexts/ExperienceContext";
 import { RefreshProvider } from "@/contexts/RefreshContext";
+import { UsersProvider } from "@/contexts/UserContext";
+import { UserDataProvider } from "@/contexts/UserDataContext";
 import { AppNavigator } from "@/navigation/AppNavigator";
 import { AuthNavigator } from "@/navigation/AuthNavigator";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -53,15 +55,19 @@ export default function App() {
 			<GestureHandlerRootView>
 				<AuthProvider>
 					<RefreshProvider>
-						<ExperienciaProvider>
-							<StatusBar barStyle={"dark-content"} />
-							<NavigationContainer>
-								<View style={styles.appContainer}>
-									<AppContent />
-									<Toast />
-								</View>
-							</NavigationContainer>
-						</ExperienciaProvider>
+						<UserDataProvider>
+							<UsersProvider>
+								<ExperienciaProvider>
+									<StatusBar barStyle={"dark-content"} />
+									<NavigationContainer>
+										<View style={styles.appContainer}>
+											<AppContent />
+											<Toast />
+										</View>
+									</NavigationContainer>
+								</ExperienciaProvider>
+							</UsersProvider>
+						</UserDataProvider>
 					</RefreshProvider>
 				</AuthProvider>
 			</GestureHandlerRootView>

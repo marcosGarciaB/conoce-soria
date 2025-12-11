@@ -1,6 +1,6 @@
 import { useFilteredExperiences } from "@/hooks/useFilters";
 import { ExperienciasResponse } from "@/services/experienceService";
-import React from "react";
+import React, { useRef } from "react";
 import {
 	Dimensions,
 	StyleSheet,
@@ -48,11 +48,19 @@ const DetailFlatListAnimated: React.FC<DetailFlatListAnimatedProps> = ({
 		scrollY.value = e.contentOffset.y / itemFullSize;
 	});
 
+	const loadingMoreRef = useRef(false);
+
 	const handleLoadMore = () => {
-		if (!loading && hasMore) {
-			loadExperiencias();
-		}
+		if (!hasMore || loadingMoreRef.current) return;
+
+		loadingMoreRef.current = true;
+		loadExperiencias().finally(() => {
+			setTimeout(() => {
+				loadingMoreRef.current = false;
+			}, 300);
+		});
 	};
+
 
 	const Photo = ({
 		item,
@@ -119,7 +127,11 @@ const DetailFlatListAnimated: React.FC<DetailFlatListAnimatedProps> = ({
 			snapToInterval={itemFullSize}
 			removeClippedSubviews={true}
 			onEndReached={handleLoadMore}
-			onEndReachedThreshold={0.1}
+			onEndReachedThreshold={0.5}
+			windowSize={5}
+			maxToRenderPerBatch={3}
+			initialNumToRender={3}
+
 			decelerationRate="fast"
 			scrollEventThrottle={16}
 			contentContainerStyle={{
@@ -128,15 +140,19 @@ const DetailFlatListAnimated: React.FC<DetailFlatListAnimatedProps> = ({
 			}}
 			onScroll={onScroll}
 			ListHeaderComponent={
-				<Filters
-					searchText={searchText}
-					setSearchText={setSearchText}
-					selectedCat={selectedCat}
-					setSelectedCat={setSelectedCat}
-					categories={categories}
-					onFilterByText={wordsFilter}
-					onFilterByCategory={buttonFilter}
-				/>
+
+				<View style={{ minHeight: 50, paddingBottom: 10 }}>
+
+					<Filters
+						searchText={searchText}
+						setSearchText={setSearchText}
+						selectedCat={selectedCat}
+						setSelectedCat={setSelectedCat}
+						categories={categories}
+						onFilterByText={wordsFilter}
+						onFilterByCategory={buttonFilter}
+					/>
+				</View>
 			}
 			ListFooterComponent={loading ? <LoadingScreen /> : null}
 		/>

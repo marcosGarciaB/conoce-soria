@@ -31,7 +31,7 @@ export const useLoadMarkers = () => {
 
 	const loadExperience = async() => {
 		try {
-			console.log("Experiencias MARKERS ", experiencias);
+			//console.log("Experiencias MARKERS ", experiencias);
 			const detailed = await Promise.all(experiencias.map(exp => experienciaService.getExperiencia(exp.id)));
             setDetail(detailed);
 

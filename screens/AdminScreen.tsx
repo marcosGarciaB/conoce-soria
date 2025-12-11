@@ -5,9 +5,9 @@ import UserItem from "@/components/admin/UserItem";
 import { useAuth } from "@/contexts/AuthContext";
 import { useExperiencias } from "@/contexts/ExperienceContext";
 import { useRefresh } from "@/contexts/RefreshContext";
-import { usePaginatedFetch } from "@/hooks/usePaginatedFetch";
+import { useUsers } from "@/contexts/UserContext";
+import { useUserData } from "@/contexts/UserDataContext";
 import { adminService } from "@/services/adminService";
-import { authService, UserCredentials } from "@/services/authService";
 import { ExperienciaDetailResponse } from "@/services/experienceService";
 import { useIsFocused } from "@react-navigation/native";
 
@@ -27,19 +27,23 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 		experienciasDetalladas,
 		updateExperiencia,
 	} = useExperiencias();
-	const { refreshExperiencias } = useRefresh();
+	const { refreshExperiencias, refreshUsers, refreshTop } = useRefresh();
+
+	const { users, loading, reloadUsers } = useUsers();
+	const { user, loadUser } = useUserData();
+
 
 	if (!token) return;
-	const {
-		data: users,
-		loadData: loadUsers,
-		loading,
-		hasMore,
-	} = usePaginatedFetch<UserCredentials>({
-		fetchFunction: (offset, limit) =>
-			authService.getAllUsers(token, offset, limit),
-		pageSize: 5,
-	});
+	// const {
+	// 	data: users,
+	// 	loadData: loadUsers,
+	// 	loading,
+	// 	hasMore,
+	// } = usePaginatedFetch<UserCredentials>({
+	// 	fetchFunction: (offset, limit) =>
+	// 		authService.getAllUsers(token, offset, limit),
+	// 	pageSize: 5,
+	// });
 
 	// useEffect(() => {
 	// 	if (!token) return;
@@ -79,7 +83,8 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 	const handleDeleteUser = async (id: number) => {
 		try {
 			await adminService.deleteUser(id, token!);
-			loadUsers(true);
+			refreshUsers();
+			refreshTop();
 		} catch (error) {
 			console.error("Error eliminando usuario", error);
 		}
@@ -142,9 +147,9 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 						onEdit={(user) =>
 							navigation.navigate("ManageUser", { user })
 						}
-						loadMore={() => loadUsers()}
-						hasMore={hasMoreEx}
-						loading={loadingEx}
+						loadMore={() => reloadUsers()}
+						hasMore={false}
+						loading={loading}
 					/>
 				</>
 			)}

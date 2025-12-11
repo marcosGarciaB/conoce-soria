@@ -121,7 +121,7 @@ export const ExperienciaProvider = ({ children }: { children: ReactNode }) => {
 									titulo: exp.titulo,
 									categoria: exp.categoria,
 									imagenPortadaUrl: exp.imagenPortadaUrl,
-							  }
+							}
 							: e
 					);
 				} else {

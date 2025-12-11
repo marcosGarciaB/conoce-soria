@@ -1,9 +1,9 @@
+import { useUserData } from "@/contexts/UserDataContext";
 import { useLoadTop } from "@/hooks/useLoadTop";
-import { useLoadUser } from "@/hooks/useLoadUser";
 import UserChips from "../common/UserChips";
 
 const CurrentUser = () => {
-    const { user } = useLoadUser();
+    const { user } = useUserData();
     const { userRank } = useLoadTop();
 
     if (!user) return null;
