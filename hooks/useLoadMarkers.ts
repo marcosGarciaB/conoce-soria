@@ -1,7 +1,7 @@
+import { useExperiencias } from "@/contexts/ExperienceContext";
 import {
 	ExperienciaDetailResponse,
-	experienciaService,
-	ExperienciasResponse,
+	experienciaService
 } from "@/services/experienceService";
 import { useEffect, useState } from "react";
 
@@ -24,15 +24,14 @@ import { useEffect, useState } from "react";
  * @property {boolean} loading - Indica si la carga de experiencias y detalles está en curso.
  */
 export const useLoadMarkers = () => {
-	const [experienciasMarkers, setExperienciasMarkers] = useState<ExperienciasResponse[]>([]);
+	//const [experienciasMarkers, setExperienciasMarkers] = useState<ExperienciasResponse[]>([]);
+	const { experiencias } = useExperiencias();
 	const [detail, setDetail] = useState<ExperienciaDetailResponse[]>([]);
     const [loading, setLoading] = useState(true);
 
 	const loadExperience = async() => {
 		try {
-			const experiencias = await experienciaService.getExperiencias(0, 30);
-			setExperienciasMarkers(experiencias);
-
+			console.log("Experiencias MARKERS ", experiencias);
 			const detailed = await Promise.all(experiencias.map(exp => experienciaService.getExperiencia(exp.id)));
             setDetail(detailed);
 
@@ -48,7 +47,7 @@ export const useLoadMarkers = () => {
 	}, []);
 
 	return {
-        experienciasMarkers,
+        //experienciasMarkers,
         detail,
         loading,
     };

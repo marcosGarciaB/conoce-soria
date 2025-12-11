@@ -11,7 +11,7 @@ import { authService, UserCredentials } from "@/services/authService";
 import { ExperienciaDetailResponse } from "@/services/experienceService";
 import { useIsFocused } from "@react-navigation/native";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 const AdminScreen = ({ navigation }: { navigation: any }) => {
 	const [showExperiencias, setShowExperiencias] = useState(false);
@@ -19,6 +19,7 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 	const [buttonPressed, setButtonPressed] = useState<string>();
 	const { token } = useAuth();
 	const isFocused = useIsFocused();
+	
 	const {
 		loadExperienciasDetalladas,
 		hasMore: hasMoreEx,
@@ -40,13 +41,13 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 		pageSize: 5,
 	});
 
-	useEffect(() => {
-		if (!token) return;
-		if (isFocused) {
-			loadUsers(true);
-			loadExperienciasDetalladas(true);
-		}
-	}, [isFocused, token]);
+	// useEffect(() => {
+	// 	if (!token) return;
+	// 	if (isFocused) {
+	// 		loadUsers(true);
+	// 		loadExperienciasDetalladas(true);
+	// 	}
+	// }, [isFocused, token]);
 
 	const handleLoadData = (tipo: "usuarios" | "experiencias") => {
 		setButtonPressed(tipo);

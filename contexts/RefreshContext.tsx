@@ -1,9 +1,9 @@
 import React, {
-    createContext,
-    ReactNode,
-    useCallback,
-    useContext,
-    useState,
+	createContext,
+	ReactNode,
+	useCallback,
+	useContext,
+	useState,
 } from "react";
 
 interface RefreshContextProps {
@@ -16,9 +16,12 @@ interface RefreshContextProps {
 		experienciaId: number,
 		callback: () => void
 	) => () => void;
-	
-    refreshExperiencias: () => void;
+
+	refreshExperiencias: () => void;
 	subscribeExperiencias: (callback: () => void) => () => void;
+
+	refreshUsers: () => void;
+	subscribeUsers: (callback: () => void) => () => void;
 }
 
 /**
@@ -59,24 +62,12 @@ export const RefreshProvider = ({ children }: { children: ReactNode }) => {
 	const [experienciasListeners, setExperienciasListeners] = useState<
 		Set<() => void>
 	>(new Set());
+	const [userListeners, setUserListeners] = useState<Set<() => void>>(new Set());
 
+	// Pasaporte
 	const refreshPassport = useCallback(() => {
 		passportListeners.forEach((callback) => callback());
 	}, [passportListeners]);
-
-	const refreshTop = useCallback(() => {
-		topListeners.forEach((callback) => callback());
-	}, [topListeners]);
-
-	const refreshComments = useCallback(
-		(experienciaId: number) => {
-			const listeners = commentsListeners.get(experienciaId);
-			if (listeners) {
-				listeners.forEach((callback) => callback());
-			}
-		},
-		[commentsListeners]
-	);
 
 	const subscribePassport = useCallback((callback: () => void) => {
 		setPassportListeners((prev) => new Set([...prev, callback]));
@@ -89,16 +80,16 @@ export const RefreshProvider = ({ children }: { children: ReactNode }) => {
 		};
 	}, []);
 
-	const subscribeTop = useCallback((callback: () => void) => {
-		setTopListeners((prev) => new Set([...prev, callback]));
-		return () => {
-			setTopListeners((prev) => {
-				const next = new Set(prev);
-				next.delete(callback);
-				return next;
-			});
-		};
-	}, []);
+	// Comentarios
+	const refreshComments = useCallback(
+		(experienciaId: number) => {
+			const listeners = commentsListeners.get(experienciaId);
+			if (listeners) {
+				listeners.forEach((callback) => callback());
+			}
+		},
+		[commentsListeners]
+	);
 
 	const subscribeComments = useCallback(
 		(experienciaId: number, callback: () => void) => {
@@ -128,6 +119,23 @@ export const RefreshProvider = ({ children }: { children: ReactNode }) => {
 		[]
 	);
 
+	// Top
+	const refreshTop = useCallback(() => {
+		topListeners.forEach((callback) => callback());
+	}, [topListeners]);
+
+	const subscribeTop = useCallback((callback: () => void) => {
+		setTopListeners((prev) => new Set([...prev, callback]));
+		return () => {
+			setTopListeners((prev) => {
+				const next = new Set(prev);
+				next.delete(callback);
+				return next;
+			});
+		};
+	}, []);
+
+	// Experiencias
 	const refreshExperiencias = useCallback(() => {
 		experienciasListeners.forEach((cb) => cb());
 	}, [experienciasListeners]);
@@ -143,6 +151,25 @@ export const RefreshProvider = ({ children }: { children: ReactNode }) => {
 		};
 	}, []);
 
+	// Usuarios
+	const refreshUsers = useCallback(() => {
+		userListeners.forEach(cb => cb());
+	}, [userListeners]);
+
+
+	const subscribeUsers = useCallback((callback: () => void) => {
+		setUserListeners(prev => new Set([...prev, callback]));
+
+		return () => {
+			setUserListeners(prev => {
+				const next = new Set(prev);
+				next.delete(callback);
+				return next;
+			});
+		};
+	}, []);
+
+
 	const value = {
 		refreshPassport,
 		refreshTop,
@@ -150,8 +177,10 @@ export const RefreshProvider = ({ children }: { children: ReactNode }) => {
 		subscribePassport,
 		subscribeTop,
 		subscribeComments,
-        refreshExperiencias,
-        subscribeExperiencias
+		refreshExperiencias,
+		subscribeExperiencias,
+		refreshUsers,
+		subscribeUsers
 	};
 
 	return (

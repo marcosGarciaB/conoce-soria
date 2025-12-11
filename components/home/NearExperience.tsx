@@ -1,3 +1,4 @@
+import { useAuth } from "@/contexts/AuthContext";
 import { useNearExperiences } from "@/hooks/useNearExperiences";
 import { ExperienciasResponse } from "@/services/experienceService";
 import { Ionicons } from "@expo/vector-icons";
@@ -24,6 +25,8 @@ interface NearExperienceProps {
 const NearExperience = ({ navigation }: NearExperienceProps) => {
 	const { nearestExperience, loading, permissionGranted } =
 		useNearExperiences();
+	const { status } = useAuth();
+	const isLogged = status === "authenticated";
 
 	if (loading) return <LoadingScreen />;
 	if (!permissionGranted) return null;
@@ -36,7 +39,12 @@ const NearExperience = ({ navigation }: NearExperienceProps) => {
 			imagenPortadaUrl: nearestExperience.imagenPortadaUrl,
 			titulo: nearestExperience.titulo,
 		};
-		navigation.navigate("Details", { experiencia });
+
+		if (isLogged) {
+			navigation.navigate("Details", { experiencia });
+		}
+
+		console.log("Estado usuario", isLogged)
 	};
 
 	const handleSeeAllPress = () => {

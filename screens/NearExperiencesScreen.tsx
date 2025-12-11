@@ -2,6 +2,7 @@ import HeaderGeneral from "@/components/common/HeaderItem";
 import Empty from "@/components/nearExperiences/Empty";
 import NearExperienceItem from "@/components/nearExperiences/NearExperiencesList";
 import PermissionGranted from "@/components/nearExperiences/PermissionGranted";
+import { useAuth } from "@/contexts/AuthContext";
 import {
 	ExperienceWithDistance,
 	useNearExperiences,
@@ -13,7 +14,9 @@ import Animated from "react-native-reanimated";
 const NearExperiencesListScreen = ({ navigation }: { navigation: any }) => {
 	const { nearExperiences, loading, permissionGranted } =
 		useNearExperiences();
-
+	const { status } = useAuth();
+	const isLogged = status === "authenticated";
+	
 	if (loading || nearExperiences.length === 0)
 		return <Empty loading={loading} onPress={() => navigation.goBack()} />;
 	if (!permissionGranted)
@@ -26,7 +29,9 @@ const NearExperiencesListScreen = ({ navigation }: { navigation: any }) => {
 			imagenPortadaUrl: experience.imagenPortadaUrl,
 			titulo: experience.titulo,
 		};
-		navigation.navigate("Details", { experiencia });
+		if (isLogged) {
+			navigation.navigate("Details", { experiencia });
+		}
 	};
 
 	return (

@@ -5,7 +5,7 @@ import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, Touchable
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import showErrorToast from "@/components/utils/showErrorToast";
-import showSuccesToast from "@/components/utils/showSuccesToast";
+import showInfoToast from "@/components/utils/showInfoToast";
 import { authService } from "@/services/authService";
 import EmailInput from "../components/inputs/EmailInput";
 import PasswordInput from "../components/inputs/PasswordInput";
@@ -40,7 +40,7 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
 					await login({ email: data.email, password: data.password });
 					let message = "Bienvenido " + data.email; 
 
-					showSuccesToast("Succes", message);
+					showInfoToast("¡Hola!", message);
 
 					setTimeout(() => {
 						navigation.navigate("MainTabs");
