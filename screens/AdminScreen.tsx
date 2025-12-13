@@ -11,7 +11,7 @@ import { adminService } from "@/services/adminService";
 import { ExperienciaDetailResponse } from "@/services/experienceService";
 import { useIsFocused } from "@react-navigation/native";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const AdminScreen = ({ navigation }: { navigation: any }) => {
 	const [showExperiencias, setShowExperiencias] = useState(false);
@@ -19,7 +19,7 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 	const [buttonPressed, setButtonPressed] = useState<string>();
 	const { token } = useAuth();
 	const isFocused = useIsFocused();
-	
+
 	const {
 		loadExperienciasDetalladas,
 		hasMore: hasMoreEx,
@@ -32,26 +32,7 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 	const { users, loading, reloadUsers } = useUsers();
 	const { user, loadUser } = useUserData();
 
-
 	if (!token) return;
-	// const {
-	// 	data: users,
-	// 	loadData: loadUsers,
-	// 	loading,
-	// 	hasMore,
-	// } = usePaginatedFetch<UserCredentials>({
-	// 	fetchFunction: (offset, limit) =>
-	// 		authService.getAllUsers(token, offset, limit),
-	// 	pageSize: 5,
-	// });
-
-	// useEffect(() => {
-	// 	if (!token) return;
-	// 	if (isFocused) {
-	// 		loadUsers(true);
-	// 		loadExperienciasDetalladas(true);
-	// 	}
-	// }, [isFocused, token]);
 
 	const handleLoadData = (tipo: "usuarios" | "experiencias") => {
 		setButtonPressed(tipo);
@@ -67,6 +48,11 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 		setShowExperiencias(false);
 	};
 
+	useEffect(() => {
+		if (showExperiencias && experienciasDetalladas.length === 0) {
+			loadExperienciasDetalladas(true);
+		}
+	}, [showExperiencias]);
 	const handleDeleteExperience = async (id: number) => {
 		try {
 			await adminService.deleteExperiencia(id, token!);

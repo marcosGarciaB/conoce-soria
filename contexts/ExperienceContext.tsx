@@ -44,7 +44,7 @@ export const ExperienciaProvider = ({ children }: { children: ReactNode }) => {
 		hasMore,
 	} = usePaginatedFetch<ExperienciasResponse>({
 		fetchFunction: experienciaService.getExperiencias,
-		pageSize: 5,
+		pageSize: 30,
 	});
 
 	const [experiencias, setExperiencias] = useState<ExperienciasResponse[]>(
@@ -64,7 +64,7 @@ export const ExperienciaProvider = ({ children }: { children: ReactNode }) => {
 	} = usePaginatedFetch<ExperienciaDetailResponse>({
 		fetchFunction: (offset, limit) =>
 			adminService.getAllExperiencesAdmin(token!, offset, limit),
-		pageSize: 5,
+		pageSize: 30,
 	});
 
 	// Sincroniza lista base

@@ -36,8 +36,6 @@ const Logged = ({ token, onPress }: { token: string; onPress: () => void }) => {
 		warning: false,
 	});
 
-	console.log("USUARIO LOGGUED", user?.nombre);
-
 	const [modalField, setModalField] = useState<
 		"nombre" | "email" | "password" | "fotoPerfilUrl" | null
 	>(null);
@@ -116,10 +114,8 @@ const Logged = ({ token, onPress }: { token: string; onPress: () => void }) => {
 
 			await loadUser();
 
-			refreshUsers();   // 🔥 Recarga lista de usuarios (admin, perfiles)
-			refreshTop();     // 🔥 Actualiza el ranking/top
-
-
+			refreshUsers(); 
+			refreshTop();     
 
 			setModalVisible({
 				...modalVisible,
@@ -239,9 +235,6 @@ const Logged = ({ token, onPress }: { token: string; onPress: () => void }) => {
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-	},
 	actionButtons: {
 		width: "100%",
 		gap: 10,

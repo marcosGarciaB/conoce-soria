@@ -14,7 +14,7 @@ const ProfileScreen = ({ navigation }: { navigation: any }) => {
 	return (
 		<ScrollView
 			showsVerticalScrollIndicator={false}
-			contentContainerStyle={{ padding: 10 }}
+			contentContainerStyle={{ paddingLeft: 10, paddingRight: 10 }}
 		>
 			{isLogged ? (
 				<Logged token={token} onPress={logout}  />

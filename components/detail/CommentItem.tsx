@@ -10,7 +10,7 @@ import Animated, {
 	withSpring,
 } from "react-native-reanimated";
 
-import { useLoadUser } from "@/hooks/useLoadUser";
+import { useUserData } from "@/contexts/UserDataContext";
 import { ComentariosResponse } from "@/services/commentService";
 import ModalComment from "../modals/ModalComment";
 
@@ -36,7 +36,7 @@ const ComentarioItem: React.FC<ComentarioItemProps> = ({
 		null
 	);
 
-	const { user } = useLoadUser();
+	const { user } = useUserData();
 	const isOwnComment = comentario.autorId === user?.id.toString();
 
 	const resetPosition = () => {

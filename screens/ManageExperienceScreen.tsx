@@ -39,14 +39,14 @@ const { refreshExperiencias } = useRefresh();
 				);
 				setEditingExperience(updated);
 				updateExperiencia(updated);
-				refreshExperiencias();
+				//refreshExperiencias();
 			} else {
 				const created = await adminService.createExperiencia(
 					data as NewExperience,
 					token!
 				);
 				addExperiencia(created);
-				refreshExperiencias();
+				//refreshExperiencias();
 			}
 		} catch (error) {
 			console.error("Error guardando experiencia", error);

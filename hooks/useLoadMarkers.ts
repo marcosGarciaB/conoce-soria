@@ -31,7 +31,6 @@ export const useLoadMarkers = () => {
 
 	const loadExperience = async() => {
 		try {
-			//console.log("Experiencias MARKERS ", experiencias);
 			const detailed = await Promise.all(experiencias.map(exp => experienciaService.getExperiencia(exp.id)));
             setDetail(detailed);
 
@@ -44,7 +43,7 @@ export const useLoadMarkers = () => {
 
 	useEffect(() => {
 		loadExperience();
-	}, []);
+	}, [experiencias]);
 
 	return {
         //experienciasMarkers,

@@ -42,6 +42,7 @@ const DetailFlatListAnimated: React.FC<DetailFlatListAnimatedProps> = ({
 		hasMore,
 		categories,
 	} = useFilteredExperiences();
+	const [scrollEnabled, setScrollEnabled] = React.useState(true);
 
 	const scrollY = useSharedValue(0);
 	const onScroll = useAnimatedScrollHandler((e) => {
@@ -54,13 +55,12 @@ const DetailFlatListAnimated: React.FC<DetailFlatListAnimatedProps> = ({
 		if (!hasMore || loadingMoreRef.current) return;
 
 		loadingMoreRef.current = true;
+		setScrollEnabled(false);
 		loadExperiencias().finally(() => {
-			setTimeout(() => {
-				loadingMoreRef.current = false;
-			}, 300);
+			loadingMoreRef.current = false;
+			setScrollEnabled(true);
 		});
 	};
-
 
 	const Photo = ({
 		item,
@@ -126,12 +126,11 @@ const DetailFlatListAnimated: React.FC<DetailFlatListAnimatedProps> = ({
 			showsVerticalScrollIndicator={false}
 			snapToInterval={itemFullSize}
 			removeClippedSubviews={true}
+			scrollEnabled={scrollEnabled}
 			onEndReached={handleLoadMore}
-			onEndReachedThreshold={0.5}
 			windowSize={5}
 			maxToRenderPerBatch={3}
 			initialNumToRender={3}
-
 			decelerationRate="fast"
 			scrollEventThrottle={16}
 			contentContainerStyle={{
@@ -140,9 +139,7 @@ const DetailFlatListAnimated: React.FC<DetailFlatListAnimatedProps> = ({
 			}}
 			onScroll={onScroll}
 			ListHeaderComponent={
-
 				<View style={{ minHeight: 50, paddingBottom: 10 }}>
-
 					<Filters
 						searchText={searchText}
 						setSearchText={setSearchText}

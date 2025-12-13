@@ -4,6 +4,7 @@ import FlatListAnimated from "@/components/home/FlatListAnimated";
 import Information from "@/components/home/Information";
 import MapComponent from "@/components/home/MapComponent";
 import MiniPassport from "@/components/home/MiniPassport";
+import NearExperience from "@/components/home/NearExperience";
 import Ranking from "@/components/top/Ranking";
 import { useAuth } from "@/contexts/AuthContext";
 import { useExperiencias } from "@/contexts/ExperienceContext";
@@ -50,7 +51,7 @@ const InicioScreen = ({ navigation }: { navigation: any }) => {
 			</View>
 
 			<TitleHeader title="Experiencias más cercanas" />
-			{/* <NearExperience navigation={navigation} /> */}
+			<NearExperience navigation={navigation} />
 		</ScrollView>
 	);
 };
