@@ -1,8 +1,8 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface PaginatedFetchProps<T> {
-    fetchFunction: (page: number, pageSize: number) => Promise<T[]>;
-    pageSize?: number;
+	fetchFunction: (page: number, pageSize: number) => Promise<T[]>;
+	pageSize?: number;
 }
 
 /**
@@ -27,35 +27,48 @@ interface PaginatedFetchProps<T> {
  * @property {boolean} loading Indica si actualmente se están cargando datos.
  * @property {boolean} hasMore Indica si hay más datos por cargar según la última llamada.
  */
-export const usePaginatedFetch = <T>({ fetchFunction, pageSize = 10 }: PaginatedFetchProps<T>) => {
-    const [data, setData] = useState<T[]>([]);
-    const [page, setPage] = useState(0);
-    const [loading, setLoading] = useState(false);
-    const [hasMore, setHasMore] = useState(true);
 
-    const loadData = useCallback(async (reset = false) => {
-        if (loading) return;
-        if (!hasMore && !reset) return;
+export const usePaginatedFetch = <T>({
+	fetchFunction,
+	pageSize = 10,
+}: PaginatedFetchProps<T>) => {
+	const [data, setData] = useState<T[]>([]);
+	const [page, setPage] = useState(0);
+	const [loading, setLoading] = useState(false);
+	const [hasMore, setHasMore] = useState(true);
 
-        setLoading(true);
-        try {
-            const currentPage = reset ? 0 : page ;
-            const newData = await fetchFunction(currentPage, pageSize);
+	const loadingRef = useRef(false);
 
-            if (reset) {
-                setData(newData);
-                setPage(1);
-            } else {
-                setData(prev => [...prev, ...newData]);
-                setPage(prev => prev + 1);
-            }
+	useEffect(() => {
+		loadingRef.current = loading;
+	}, [loading]);
 
-            setHasMore(newData.length === pageSize);
-        } catch (error) {
-            console.error("Error cargando datos paginados:", error);
-        }
-        setLoading(false);
-    }, [fetchFunction, page, pageSize, hasMore, loading]);
+	const loadData = useCallback(
+		async (reset = false) => {
+			if (loadingRef.current) return;
+			if (!hasMore && !reset) return;
 
-    return { data, loadData, loading, hasMore };
+			setLoading(true);
+			try {
+				const currentPage = reset ? 0 : page;
+				const newData = await fetchFunction(currentPage, pageSize);
+
+				if (reset) {
+					setData(newData);
+					setPage(1);
+				} else {
+					setData((prev) => [...prev, ...newData]);
+					setPage((prev) => prev + 1);
+				}
+
+				setHasMore(newData.length === pageSize);
+			} catch (error) {
+				console.error("Error cargando datos paginados:", error);
+			}
+			setLoading(false);
+		},
+		[fetchFunction, page, pageSize, hasMore]
+	);
+
+	return { data, loadData, loading, hasMore };
 };

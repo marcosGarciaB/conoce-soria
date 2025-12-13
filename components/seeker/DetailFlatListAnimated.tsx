@@ -84,11 +84,14 @@ const DetailFlatListAnimated: React.FC<DetailFlatListAnimatedProps> = ({
 				<Animated.View style={animation}>
 					<Animated.Image
 						source={{ uri: item.imagenPortadaUrl }}
+						resizeMode="cover" 
+                        resizeMethod="scale" 
 						style={[
 							{
 								width: "100%",
-								height: itemSize - 50,
+								height: itemSize - 50, 
 								borderRadius: 12,
+                                backgroundColor: '#f0f0f0',
 							},
 						]}
 					/>

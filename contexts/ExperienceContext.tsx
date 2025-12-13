@@ -2,6 +2,7 @@ import { adminService } from "@/services/adminService";
 import React, {
 	createContext,
 	ReactNode,
+	useCallback,
 	useContext,
 	useEffect,
 	useMemo,
@@ -28,6 +29,8 @@ interface ExperienciaContextProps {
 	loadingDetalladas: boolean;
 	hasMore: boolean;
 	hasMoreDetalladas: boolean;
+	baseLoaded: boolean;
+	detalladasLoaded: boolean;
 }
 
 export const ExperienciaContext = createContext({} as ExperienciaContextProps);
@@ -36,7 +39,22 @@ export const ExperienciaProvider = ({ children }: { children: ReactNode }) => {
 	const { token } = useAuth();
 	const { subscribeExperiencias } = useRefresh();
 
-	// Base
+	// Estados locales para manipulación rápida (CRUD) y visualización
+	const [experiencias, setExperiencias] = useState<ExperienciasResponse[]>(
+		[]
+	);
+	const [experienciasDetalladas, setExperienciasDetalladas] = useState<
+		ExperienciaDetailResponse[]
+	>([]);
+
+	// Control de carga inicial
+	const [baseLoaded, setBaseLoaded] = useState(false);
+	const [detalladasLoaded, setDetalladasLoaded] = useState(false);
+
+	// -----------------------------------------------------------------------
+	// 1. CARGA DE EXPERIENCIAS BASE (HOME/LISTAS PÚBLICAS)
+	// -----------------------------------------------------------------------
+	// experienciaService.getExperiencias es estática, no necesita useCallback
 	const {
 		data: experienciasBaseData,
 		loadData: loadExperiencias,
@@ -47,14 +65,17 @@ export const ExperienciaProvider = ({ children }: { children: ReactNode }) => {
 		pageSize: 30,
 	});
 
-	const [experiencias, setExperiencias] = useState<ExperienciasResponse[]>(
-		[]
+	// -----------------------------------------------------------------------
+	// 2. CARGA DE EXPERIENCIAS DETALLADAS (ADMIN)
+	// -----------------------------------------------------------------------
+	// SOLUCIÓN DEL ERROR: Memorizamos esta función dependiente del token
+	const fetchAdminExperiences = useCallback(
+		(page: number, pageSize: number) => {
+			if (!token) return Promise.resolve([]); // Protección
+			return adminService.getAllExperiencesAdmin(token, page, pageSize);
+		},
+		[token] // Solo se recrea si cambia el token
 	);
-
-	// Detalles
-	const [experienciasDetalladas, setExperienciasDetalladas] = useState<
-		ExperienciaDetailResponse[]
-	>([]);
 
 	const {
 		data: experienciasDetalladasData,
@@ -62,43 +83,71 @@ export const ExperienciaProvider = ({ children }: { children: ReactNode }) => {
 		loading: loadingDetalladas,
 		hasMore: hasMoreDetalladas,
 	} = usePaginatedFetch<ExperienciaDetailResponse>({
-		fetchFunction: (offset, limit) =>
-			adminService.getAllExperiencesAdmin(token!, offset, limit),
+		fetchFunction: fetchAdminExperiences,
 		pageSize: 30,
 	});
 
-	// Sincroniza lista base
+	// -----------------------------------------------------------------------
+	// 3. SINCRONIZACIÓN (Hook -> Context State)
+	// -----------------------------------------------------------------------
+
+	// Sincroniza la lista base cuando el hook trae nuevos datos
 	useEffect(() => {
 		if (experienciasBaseData) {
 			setExperiencias(experienciasBaseData);
+			if (experienciasBaseData.length > 0) setBaseLoaded(true);
 		}
 	}, [experienciasBaseData]);
 
-	// Sincroniza lista detallada
+	// Sincroniza la lista detallada cuando el hook trae nuevos datos
 	useEffect(() => {
 		if (experienciasDetalladasData) {
 			setExperienciasDetalladas(experienciasDetalladasData);
+			if (experienciasDetalladasData.length > 0)
+				setDetalladasLoaded(true);
 		}
 	}, [experienciasDetalladasData]);
 
-	// Funciones
+	// -----------------------------------------------------------------------
+	// 4. SUSCRIPCIÓN A EVENTOS DE REFRESH GLOBAL
+	// -----------------------------------------------------------------------
+	useEffect(() => {
+		const unsubscribe = subscribeExperiencias(() => {
+			console.log("Refreshing experiences...");
+			// Recargamos ambas listas desde cero
+			loadExperiencias(true);
+			if (token) loadExperienciasDetalladas(true);
+		});
+
+		return unsubscribe;
+	}, [
+		subscribeExperiencias,
+		loadExperiencias,
+		loadExperienciasDetalladas,
+		token,
+	]);
+
+	// -----------------------------------------------------------------------
+	// 5. MÉTODOS DE ACTUALIZACIÓN OPTIMISTA (CRUD Local)
+	// -----------------------------------------------------------------------
+
 	const addExperiencia = (exp: ExperienciaDetailResponse) => {
 		setExperienciasDetalladas((prev) => {
 			if (prev.some((e) => e.id === exp.id)) return prev;
-			return [...prev, exp];
+			return [exp, ...prev];
 		});
 
 		if (exp.activo) {
 			setExperiencias((prev) => {
 				if (prev.some((e) => e.id === exp.id)) return prev;
 				return [
-					...prev,
 					{
 						id: exp.id,
 						titulo: exp.titulo,
 						categoria: exp.categoria,
 						imagenPortadaUrl: exp.imagenPortadaUrl,
 					},
+					...prev,
 				];
 			});
 		}
@@ -109,51 +158,42 @@ export const ExperienciaProvider = ({ children }: { children: ReactNode }) => {
 			prev.map((e) => (e.id === exp.id ? exp : e))
 		);
 
-		if (exp.activo) {
-			setExperiencias((prev) => {
-				const exists = prev.some((e) => e.id === exp.id);
+		setExperiencias((prev) => {
+			const exists = prev.some((e) => e.id === exp.id);
 
-				if (exists) {
-					return prev.map((e) =>
-						e.id === exp.id
-							? {
-									id: exp.id,
-									titulo: exp.titulo,
-									categoria: exp.categoria,
-									imagenPortadaUrl: exp.imagenPortadaUrl,
-							}
-							: e
-					);
-				} else {
-					return [
-						...prev,
-						{
-							id: exp.id,
-							titulo: exp.titulo,
-							categoria: exp.categoria,
-							imagenPortadaUrl: exp.imagenPortadaUrl,
-						},
-					];
-				}
-			});
-		} else {
-			setExperiencias((prev) => prev.filter((e) => e.id !== exp.id));
-		}
+			if (!exp.activo) {
+				return prev.filter((e) => e.id !== exp.id);
+			}
+
+			if (exists) {
+				return prev.map((e) =>
+					e.id === exp.id
+						? {
+								id: exp.id,
+								titulo: exp.titulo,
+								categoria: exp.categoria,
+								imagenPortadaUrl: exp.imagenPortadaUrl,
+						  }
+						: e
+				);
+			} else {
+				return [
+					{
+						id: exp.id,
+						titulo: exp.titulo,
+						categoria: exp.categoria,
+						imagenPortadaUrl: exp.imagenPortadaUrl,
+					},
+					...prev,
+				];
+			}
+		});
 	};
 
 	const deleteExperiencia = (id: number) => {
 		setExperienciasDetalladas((prev) => prev.filter((e) => e.id !== id));
 		setExperiencias((prev) => prev.filter((e) => e.id !== id));
 	};
-
-	useEffect(() => {
-		const unsubscribe = subscribeExperiencias(() => {
-			loadExperiencias(true);
-			loadExperienciasDetalladas(true);
-		});
-
-		return unsubscribe;
-	}, [subscribeExperiencias, loadExperiencias, loadExperienciasDetalladas]);
 
 	const value = useMemo(
 		() => ({
@@ -168,16 +208,20 @@ export const ExperienciaProvider = ({ children }: { children: ReactNode }) => {
 			loadingDetalladas,
 			hasMore,
 			hasMoreDetalladas,
+			baseLoaded,
+			detalladasLoaded,
 		}),
 		[
 			experiencias,
 			experienciasDetalladas,
-			loadExperiencias,
-			loadExperienciasDetalladas,
 			loading,
 			loadingDetalladas,
 			hasMore,
 			hasMoreDetalladas,
+			baseLoaded,
+			detalladasLoaded,
+			loadExperiencias,
+			loadExperienciasDetalladas,
 		]
 	);
 
