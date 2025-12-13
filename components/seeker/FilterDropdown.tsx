@@ -48,6 +48,7 @@ const Filters: React.FC<FiltersProps> = ({
 		const newSelected = selectedCat === cat ? null : cat;
 		setSelectedCat(newSelected);
 		onFilterByCategory(cat);
+		setOpen(!open);
 	};
 
 	return (

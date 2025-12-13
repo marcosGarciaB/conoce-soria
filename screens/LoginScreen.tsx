@@ -4,8 +4,9 @@ import { useForm } from "react-hook-form";
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import showErrorToast from "@/components/utils/showErrorToast";
+import showInfoToast from "@/components/utils/showInfoToast";
 import { authService } from "@/services/authService";
-import Toast from "react-native-toast-message";
 import EmailInput from "../components/inputs/EmailInput";
 import PasswordInput from "../components/inputs/PasswordInput";
 import { useAuth } from "../contexts/AuthContext";
@@ -32,34 +33,20 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
 			const exists = await authService.emailExists(data.email);
 
 			if (!exists) {
-				Toast.show({
-					type: "error",
-					position: "top",
-					text1: "No existe ninguna cuenta con ese correo.",
-					visibilityTime: 2000,
-					autoHide: true,
-					topOffset: 60,
-				});
+				showErrorToast("Error", "No existe ninguna cuenta con ese correo.");
 
 			} else {
 				try {
 					await login({ email: data.email, password: data.password });
 					let message = "Bienvenido " + data.email; 
 
-					Toast.show({
-						type: "success",
-						position: "top",
-						text1: message,
-						visibilityTime: 3000,
-						autoHide: true,
-						topOffset: 60,
-					});
+					showInfoToast("¡Hola!", message);
 
 					setTimeout(() => {
 						navigation.navigate("MainTabs");
 					}, 5000);
 				} catch (error) {
-					console.error("Error en login:", error);
+					showErrorToast("Error", "Contraseña incorrecta.");
 				}
 			}
 

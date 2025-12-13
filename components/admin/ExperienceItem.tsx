@@ -36,6 +36,13 @@ const CategoryItem = ({
 	hasMore,
 	loading,
 }: CategoryItemProps) => {
+
+	const handleLoadMore = () => {
+		if (!loading && hasMore) {
+			loadMore();
+		};
+	};
+
 	const renderItem = ({
 		item,
 		index,
@@ -116,7 +123,7 @@ const CategoryItem = ({
 	return (
 		<Animated.FlatList
 			data={experiencias}
-			keyExtractor={(item) => item.id.toString()}
+			keyExtractor={(item, i) => (item.id.toString() + i)}
 			renderItem={renderItem}
 			scrollEnabled={true}
 			showsVerticalScrollIndicator={false}
@@ -125,12 +132,8 @@ const CategoryItem = ({
 				width > 600 ? { justifyContent: "space-between" } : undefined
 			}
 			contentContainerStyle={{ paddingBottom: 80, padding: 10 }}
-			onEndReachedThreshold={0.01}
-			onEndReached={() => {
-				if (!loading && hasMore) {
-					loadMore();
-				}
-			}}
+			onEndReachedThreshold={0.5}
+			onEndReached={handleLoadMore}
 		/>
 	);
 };

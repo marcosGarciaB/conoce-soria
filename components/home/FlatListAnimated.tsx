@@ -1,10 +1,9 @@
 import { useHorizontalFlatlistAnimation } from "@/components/animations/horizontalFlatlistAnimation";
-import { useLoadExperiences } from "@/hooks/useLoadExperiences";
 import { ExperienciasResponse } from "@/services/experienceService";
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import Animated, {
 	useAnimatedScrollHandler,
-	useSharedValue
+	useSharedValue,
 } from "react-native-reanimated";
 import LoadingScreen from "../common/Loading";
 
@@ -13,8 +12,19 @@ const imageWidth = width * 0.95;
 const imageHeight = imageWidth * 0.85;
 const spacing = 12;
 
-const FlatListAnimated = () => {
-	const { experiencias, loadExperiencias, loading, hasMore } = useLoadExperiences();
+interface FlatListAnimatedProps {
+	experiencias: ExperienciasResponse[];
+	loadExperiencias: () => Promise<void>;
+	loading: boolean;
+	hasMore: boolean;
+}
+
+const FlatListAnimated = ({
+	experiencias,
+	loadExperiencias,
+	loading,
+	hasMore,
+}: FlatListAnimatedProps) => {
 	const scrollX = useSharedValue(0);
 
 	const onScroll = useAnimatedScrollHandler({
@@ -22,7 +32,13 @@ const FlatListAnimated = () => {
 			scrollX.value = e.contentOffset.x / (imageWidth + spacing);
 		},
 	});
-	
+
+	const handleLoadMore = () => {
+		if (!loading && hasMore) {
+			loadExperiencias();
+		}
+	};
+
 	const Photo = ({
 		item,
 		index,
@@ -31,7 +47,7 @@ const FlatListAnimated = () => {
 		index: number;
 	}) => {
 		const animation = useHorizontalFlatlistAnimation(index, scrollX);
-		
+
 		return (
 			<View style={styles.shadowContainer}>
 				<View style={styles.imageContainer}>
@@ -57,14 +73,13 @@ const FlatListAnimated = () => {
 		<View style={styles.container}>
 			<Animated.FlatList
 				data={experiencias}
-				keyExtractor={(item) => item.id.toString()}
+				keyExtractor={(item, i) => item.id.toString() + i}
 				horizontal
 				renderItem={renderItem}
 				snapToInterval={imageWidth + spacing}
 				style={{ flexGrow: 0 }}
 				decelerationRate="fast"
 				showsHorizontalScrollIndicator={false}
-				onEndReached={() => loadExperiencias()}
 				showsVerticalScrollIndicator={false}
 				onEndReachedThreshold={0.5}
 				contentContainerStyle={{
@@ -75,6 +90,7 @@ const FlatListAnimated = () => {
 				}}
 				onScroll={onScroll}
 				scrollEventThrottle={16}
+				onEndReached={handleLoadMore}
 				ListFooterComponent={loading ? <LoadingScreen /> : null}
 			/>
 		</View>
@@ -83,12 +99,12 @@ const FlatListAnimated = () => {
 
 const styles = StyleSheet.create({
 	container: {
-		display: 'flex',
-		alignContent: 'center',
-		justifyContent: 'center',
+		display: "flex",
+		alignContent: "center",
+		justifyContent: "center",
 	},
 	shadowContainer: {
-		width:imageWidth,
+		width: imageWidth,
 		height: imageHeight,
 		borderRadius: 18,
 		shadowColor: "#000",
@@ -99,7 +115,6 @@ const styles = StyleSheet.create({
 		backgroundColor: "transparent",
 		marginTop: 10,
 		marginBottom: 10,
-
 	},
 	imageContainer: {
 		width: imageWidth,

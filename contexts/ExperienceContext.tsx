@@ -1,99 +1,184 @@
+import { adminService } from "@/services/adminService";
 import React, {
 	createContext,
 	ReactNode,
 	useContext,
+	useEffect,
 	useMemo,
 	useState,
 } from "react";
+import { usePaginatedFetch } from "../hooks/usePaginatedFetch";
 import {
 	ExperienciaDetailResponse,
 	experienciaService,
 	ExperienciasResponse,
 } from "../services/experienceService";
+import { useAuth } from "./AuthContext";
+import { useRefresh } from "./RefreshContext";
 
-/**
- * Interface que define las propiedades y funciones que expone el contexto de experiencias.
- */
 interface ExperienciaContextProps {
-	/** Lista de experiencias resumidas */
 	experiencias: ExperienciasResponse[];
-	/** Función para cargar las experiencias desde el servicio */
-	loadExperiencias: () => Promise<void>;
+	experienciasDetalladas: ExperienciaDetailResponse[];
+	loadExperiencias: (reset?: boolean) => Promise<void>;
+	loadExperienciasDetalladas: (reset?: boolean) => Promise<void>;
+	addExperiencia: (exp: ExperienciaDetailResponse) => void;
+	updateExperiencia: (exp: ExperienciaDetailResponse) => void;
+	deleteExperiencia: (id: number) => void;
+	loading: boolean;
+	loadingDetalladas: boolean;
+	hasMore: boolean;
+	hasMoreDetalladas: boolean;
 }
 
-/**
- * Contexto para gestionar las experiencias de la aplicación.
- * Permite acceder a la lista de experiencias y recargarla.
- */
 export const ExperienciaContext = createContext({} as ExperienciaContextProps);
 
-/**
- * Proveedor del contexto de experiencias.
- * Envuelve componentes que necesiten acceder o modificar la lista de experiencias.
- */
 export const ExperienciaProvider = ({ children }: { children: ReactNode }) => {
+	const { token } = useAuth();
+	const { subscribeExperiencias } = useRefresh();
+
+	// Base
+	const {
+		data: experienciasBaseData,
+		loadData: loadExperiencias,
+		loading,
+		hasMore,
+	} = usePaginatedFetch<ExperienciasResponse>({
+		fetchFunction: experienciaService.getExperiencias,
+		pageSize: 30,
+	});
+
 	const [experiencias, setExperiencias] = useState<ExperienciasResponse[]>(
 		[]
 	);
 
-	/**
-	 * Carga las experiencias desde el servicio y actualiza el estado.
-	 * Maneja errores internamente.
-	 */
-	const loadExperiencias = async () => {
-		try {
-			const data = await experienciaService.getExperiencias();
-			setExperiencias(data);
-		} catch (error) {
-			console.error("Error cargando experiencias:", error);
+	// Detalles
+	const [experienciasDetalladas, setExperienciasDetalladas] = useState<
+		ExperienciaDetailResponse[]
+	>([]);
+
+	const {
+		data: experienciasDetalladasData,
+		loadData: loadExperienciasDetalladas,
+		loading: loadingDetalladas,
+		hasMore: hasMoreDetalladas,
+	} = usePaginatedFetch<ExperienciaDetailResponse>({
+		fetchFunction: (offset, limit) =>
+			adminService.getAllExperiencesAdmin(token!, offset, limit),
+		pageSize: 30,
+	});
+
+	// Sincroniza lista base
+	useEffect(() => {
+		if (experienciasBaseData) {
+			setExperiencias(experienciasBaseData);
+		}
+	}, [experienciasBaseData]);
+
+	// Sincroniza lista detallada
+	useEffect(() => {
+		if (experienciasDetalladasData) {
+			setExperienciasDetalladas(experienciasDetalladasData);
+		}
+	}, [experienciasDetalladasData]);
+
+	// Funciones
+	const addExperiencia = (exp: ExperienciaDetailResponse) => {
+		setExperienciasDetalladas((prev) => {
+			if (prev.some((e) => e.id === exp.id)) return prev;
+			return [...prev, exp];
+		});
+
+		if (exp.activo) {
+			setExperiencias((prev) => {
+				if (prev.some((e) => e.id === exp.id)) return prev;
+				return [
+					...prev,
+					{
+						id: exp.id,
+						titulo: exp.titulo,
+						categoria: exp.categoria,
+						imagenPortadaUrl: exp.imagenPortadaUrl,
+					},
+				];
+			});
 		}
 	};
 
-	/**
-	 * Agrega una nueva experiencia al estado a partir de su detalle completo.
-	 * @param experiencia - Objeto de detalle completo de la experiencia
-	 */
-	const addExperiencia = (experiencia: ExperienciaDetailResponse) => {
-		const nuevaExperiencia: ExperienciasResponse = {
-			id: experiencia.id,
-			categoria: experiencia.categoria,
-			imagenPortadaUrl: experiencia.imagenPortadaUrl,
-			titulo: experiencia.titulo,
-		};
-		setExperiencias((prev) => [...prev, nuevaExperiencia]);
-	};
-
-	/**
-	 * Actualiza una experiencia existente en el estado a partir de su detalle completo.
-	 * @param experiencia - Objeto de detalle completo de la experiencia
-	 */
-	const updateExperiencia = (experiencia: ExperienciaDetailResponse) => {
-		const experienciaActualizada: ExperienciasResponse = {
-			id: experiencia.id,
-			categoria: experiencia.categoria,
-			imagenPortadaUrl: experiencia.imagenPortadaUrl,
-			titulo: experiencia.titulo,
-		};
-		setExperiencias((prev) =>
-			prev.map((exp) =>
-				exp.id === experienciaActualizada.id
-					? experienciaActualizada
-					: exp
-			)
+	const updateExperiencia = (exp: ExperienciaDetailResponse) => {
+		setExperienciasDetalladas((prev) =>
+			prev.map((e) => (e.id === exp.id ? exp : e))
 		);
+
+		if (exp.activo) {
+			setExperiencias((prev) => {
+				const exists = prev.some((e) => e.id === exp.id);
+
+				if (exists) {
+					return prev.map((e) =>
+						e.id === exp.id
+							? {
+									id: exp.id,
+									titulo: exp.titulo,
+									categoria: exp.categoria,
+									imagenPortadaUrl: exp.imagenPortadaUrl,
+							}
+							: e
+					);
+				} else {
+					return [
+						...prev,
+						{
+							id: exp.id,
+							titulo: exp.titulo,
+							categoria: exp.categoria,
+							imagenPortadaUrl: exp.imagenPortadaUrl,
+						},
+					];
+				}
+			});
+		} else {
+			setExperiencias((prev) => prev.filter((e) => e.id !== exp.id));
+		}
 	};
 
-	/**
-	 * Memoiza el valor del contexto para evitar renders innecesarios.
-	 */
+	const deleteExperiencia = (id: number) => {
+		setExperienciasDetalladas((prev) => prev.filter((e) => e.id !== id));
+		setExperiencias((prev) => prev.filter((e) => e.id !== id));
+	};
+
+	useEffect(() => {
+		const unsubscribe = subscribeExperiencias(() => {
+			loadExperiencias(true);
+			loadExperienciasDetalladas(true);
+		});
+
+		return unsubscribe;
+	}, [subscribeExperiencias, loadExperiencias, loadExperienciasDetalladas]);
+
 	const value = useMemo(
 		() => ({
 			experiencias,
+			experienciasDetalladas,
 			loadExperiencias,
+			loadExperienciasDetalladas,
 			addExperiencia,
 			updateExperiencia,
+			deleteExperiencia,
+			loading,
+			loadingDetalladas,
+			hasMore,
+			hasMoreDetalladas,
 		}),
-		[experiencias]
+		[
+			experiencias,
+			experienciasDetalladas,
+			loadExperiencias,
+			loadExperienciasDetalladas,
+			loading,
+			loadingDetalladas,
+			hasMore,
+			hasMoreDetalladas,
+		]
 	);
 
 	return (
@@ -103,7 +188,4 @@ export const ExperienciaProvider = ({ children }: { children: ReactNode }) => {
 	);
 };
 
-/**
- * Hook para consumir el contexto de experiencias de forma sencilla.
- */
 export const useExperiencias = () => useContext(ExperienciaContext);

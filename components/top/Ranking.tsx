@@ -1,4 +1,3 @@
-import { useLoadUser } from "@/hooks/useLoadUser";
 import { UsuarioRankingDTO } from "@/services/topService";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
@@ -32,7 +31,6 @@ const podiumColors = [
 ];
 
 const Ranking = ({ topUsuarios, navigation, isHome }: RankingProps) => {
-	const { user } = useLoadUser();
 	const [modalVisible, setModalVisible] = useState<{
 		rules: boolean;
 		prize: boolean;

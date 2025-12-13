@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { useAuth } from "@/contexts/AuthContext";
+import { useRefresh } from "@/contexts/RefreshContext";
+import { useUserData } from "@/contexts/UserDataContext";
 import { UserCredentials, authService } from "@/services/authService";
 import { useForm } from "react-hook-form";
 import UserChips from "../common/UserChips";
@@ -13,14 +15,17 @@ import showSuccesToast from "../utils/showSuccesToast";
 import Button from "./Button";
 
 interface UserLogguedProps {
-	user: UserCredentials;
 	token: string;
 	onPress: () => void;
 }
 
-const Logged = ({ token, user, onPress }: UserLogguedProps) => {
+const Logged = ({ token, onPress }: { token: string; onPress: () => void }) => {
+	const { user, loadUser } = useUserData();
 	const { logout } = useAuth();
-	const [currentUser, setCurrentUser] = useState<UserCredentials>(user);
+	//const [currentUser, setCurrentUser] = useState<UserCredentials>(user);
+	const { refreshUsers, refreshTop } = useRefresh();
+
+
 	const [modalVisible, setModalVisible] = useState<{
 		politics: boolean;
 		update: boolean;
@@ -42,12 +47,18 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 		setValue,
 	} = useForm({
 		defaultValues: {
-			nombre: currentUser.nombre,
-			email: currentUser.email,
+			nombre: user?.nombre,
+			email: user?.email,
 			password: "",
-			fotoPerfilUrl: currentUser.fotoPerfilUrl,
+			fotoPerfilUrl: user?.fotoPerfilUrl,
 		},
 	});
+
+	useEffect(() => {
+		setValue("nombre", user?.nombre ?? "");
+		setValue("email", user?.email ?? "");
+		setValue("fotoPerfilUrl", user?.fotoPerfilUrl);
+	}, [user, setValue]);
 
 	const openModal = async (
 		field: "nombre" | "email" | "password" | "fotoPerfilUrl"
@@ -59,14 +70,14 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 				...modalVisible,
 				update: true,
 			});
-			setValue("nombre", currentUser.nombre);
+			setValue("nombre", user?.nombre ?? "");
 		}
 		if (field === "email") {
 			setModalVisible({
 				...modalVisible,
 				warning: true,
 			});
-			setValue("email", currentUser.email);
+			setValue("email", user?.email ?? "");
 		}
 		if (field === "password") {
 			setModalVisible({
@@ -76,7 +87,7 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 			setValue("password", "");
 		}
 		if (field === "fotoPerfilUrl") {
-			setValue("fotoPerfilUrl", currentUser.fotoPerfilUrl);
+			setValue("fotoPerfilUrl", user?.fotoPerfilUrl ?? "");
 			setModalVisible({
 				...modalVisible,
 				update: true,
@@ -101,10 +112,10 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 				});
 			}
 
-			setCurrentUser({
-				...currentUser,
-				[modalField]: updated[modalField],
-			});
+			await loadUser();
+
+			refreshUsers(); 
+			refreshTop();     
 
 			setModalVisible({
 				...modalVisible,
@@ -115,6 +126,7 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 			let campo = capitalizeFirstLetter(`${modalField}`.toString());
 
 			if (campo === "Password") campo = "Contraseña";
+			if (campo === "FotoPerfilUrl") campo = "Foto de Perfil";
 
 			showSuccesToast(
 				"Actualización exitosa",
@@ -122,7 +134,7 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 			);
 
 			if (modalField === "email") logout();
-			
+
 		} catch (error) {
 			console.error(error);
 		}
@@ -138,10 +150,10 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 	return (
 		<>
 			<UserChips
-				nombre={currentUser.nombre}
-				email={currentUser.email}
-				puntos={currentUser.puntos}
-				fotoPerfil={currentUser.fotoPerfilUrl ?? ""}
+				nombre={user?.nombre ?? ""}
+				email={user?.email ?? ""}
+				puntos={user?.puntos ?? ""}
+				fotoPerfil={user?.fotoPerfilUrl ?? ""}
 				editPhoto={true}
 				onPress={() => openModal("fotoPerfilUrl")}
 			/>
@@ -189,10 +201,10 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 					modalField === "nombre"
 						? "Actualizar Nombre"
 						: modalField === "email"
-						? "Actualizar Email"
-						: modalField === "password"
-						? "Actualizar Contraseña"
-						: "Actualizar foto de perfil"
+							? "Actualizar Email"
+							: modalField === "password"
+								? "Actualizar Contraseña"
+								: "Actualizar foto de perfil"
 				}
 				isVisible={modalVisible.update}
 				onSave={saveModal}
@@ -210,12 +222,12 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 				isVisible={modalVisible.warning}
 				title="Cambio Correo Electrónico"
 				message="Al modificar la dirección de correo electrónico, será necesario iniciar sesión de nuevo"
-				onClose={ () => 
+				onClose={() =>
 					setModalVisible({
-							...modalVisible,
-							warning: false,
-							update: true,
-						})
+						...modalVisible,
+						warning: false,
+						update: true,
+					})
 				}
 			/>
 		</>
@@ -223,9 +235,6 @@ const Logged = ({ token, user, onPress }: UserLogguedProps) => {
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-	},
 	actionButtons: {
 		width: "100%",
 		gap: 10,

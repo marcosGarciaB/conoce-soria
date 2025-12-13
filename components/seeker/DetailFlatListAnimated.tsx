@@ -1,6 +1,6 @@
 import { useFilteredExperiences } from "@/hooks/useFilters";
 import { ExperienciasResponse } from "@/services/experienceService";
-import React from "react";
+import React, { useRef } from "react";
 import {
 	Dimensions,
 	StyleSheet,
@@ -11,7 +11,7 @@ import {
 import Animated, {
 	SharedValue,
 	useAnimatedScrollHandler,
-	useSharedValue
+	useSharedValue,
 } from "react-native-reanimated";
 import { useSeekerFlatlistAnimation } from "../animations/seekerFlatlistAnimation";
 import LoadingScreen from "../common/Loading";
@@ -42,12 +42,26 @@ const DetailFlatListAnimated: React.FC<DetailFlatListAnimatedProps> = ({
 		hasMore,
 		categories,
 	} = useFilteredExperiences();
+	const [scrollEnabled, setScrollEnabled] = React.useState(true);
 
 	const scrollY = useSharedValue(0);
 	const onScroll = useAnimatedScrollHandler((e) => {
 		scrollY.value = e.contentOffset.y / itemFullSize;
 	});
-	
+
+	const loadingMoreRef = useRef(false);
+
+	const handleLoadMore = () => {
+		if (!hasMore || loadingMoreRef.current) return;
+
+		loadingMoreRef.current = true;
+		setScrollEnabled(false);
+		loadExperiencias().finally(() => {
+			loadingMoreRef.current = false;
+			setScrollEnabled(true);
+		});
+	};
+
 	const Photo = ({
 		item,
 		index,
@@ -107,30 +121,35 @@ const DetailFlatListAnimated: React.FC<DetailFlatListAnimatedProps> = ({
 	return (
 		<Animated.FlatList
 			data={filteredExperiencias}
-			keyExtractor={(item) => item.id.toString()}
+			keyExtractor={(item, i) => item.id.toString() + i}
 			renderItem={renderItem}
 			showsVerticalScrollIndicator={false}
 			snapToInterval={itemFullSize}
 			removeClippedSubviews={true}
-			onEndReached={() => loadExperiencias()}
-			onEndReachedThreshold={0.5}
+			scrollEnabled={scrollEnabled}
+			onEndReached={handleLoadMore}
+			windowSize={5}
+			maxToRenderPerBatch={3}
+			initialNumToRender={3}
 			decelerationRate="fast"
 			scrollEventThrottle={16}
 			contentContainerStyle={{
 				padding: 10,
-				paddingBottom: 20
+				paddingBottom: 20,
 			}}
 			onScroll={onScroll}
 			ListHeaderComponent={
-				<Filters
-					searchText={searchText}
-					setSearchText={setSearchText}
-					selectedCat={selectedCat}
-					setSelectedCat={setSelectedCat}
-					categories={categories}
-					onFilterByText={wordsFilter}
-					onFilterByCategory={buttonFilter}
-				/>
+				<View style={{ minHeight: 50, paddingBottom: 10 }}>
+					<Filters
+						searchText={searchText}
+						setSearchText={setSearchText}
+						selectedCat={selectedCat}
+						setSelectedCat={setSelectedCat}
+						categories={categories}
+						onFilterByText={wordsFilter}
+						onFilterByCategory={buttonFilter}
+					/>
+				</View>
 			}
 			ListFooterComponent={loading ? <LoadingScreen /> : null}
 		/>

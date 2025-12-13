@@ -3,8 +3,9 @@
  */
 
 const API_URL = "http://192.168.1.133:8080";
+//const API_URL = "https://savable-tierra-proresignation.ngrok-free.dev";
 //const API_URL = "http://localhost:8080";
-//const API_URL = "https://soria-backend-production.up.railway.app";
+//const API_URL = "https://soriabackproduction-production.up.railway.app";
 
 /**
  * Define la estructura de las cabeceras HTTP.
