@@ -1,9 +1,8 @@
 import { useHorizontalFlatlistAnimation } from "@/components/animations/horizontalFlatlistAnimation";
-import { useRef } from "react";
 import { Dimensions, StyleSheet, View } from "react-native";
 import Animated, {
-    useAnimatedScrollHandler,
-    useSharedValue,
+	useAnimatedScrollHandler,
+	useSharedValue,
 } from "react-native-reanimated";
 import LoadingScreen from "../common/Loading";
 
@@ -19,7 +18,7 @@ const spacing = 12;
 
 const GalleryFaltist = ({ galeriaImagenes, loading }: GalleryFaltistProps) => {
 	const scrollX = useSharedValue(0);
-	const flatlistRef = useRef<Animated.FlatList>(null);
+	//const flatlistRef = useRef<Animated.FlatList>(null);
 
 	const onScroll = useAnimatedScrollHandler({
 		onScroll: (e) => {
@@ -53,7 +52,7 @@ const GalleryFaltist = ({ galeriaImagenes, loading }: GalleryFaltistProps) => {
 	return (
 		<>
 			<Animated.FlatList
-				ref={flatlistRef}
+				//ref={flatlistRef}
 				data={galeriaImagenes}
 				keyExtractor={(item, index) => item + index}
 				renderItem={renderItem}
@@ -67,17 +66,17 @@ const GalleryFaltist = ({ galeriaImagenes, loading }: GalleryFaltistProps) => {
 				snapToAlignment="center"
 				contentContainerStyle={{
 					gap: spacing,
-					paddingHorizontal: (width - imageWidth) / 2,
+					paddingHorizontal: (width - imageWidth) / 6,
 				}}
 				showsVerticalScrollIndicator={false}
-				onMomentumScrollEnd={(e) => {
-					const offset = e.nativeEvent.contentOffset.x;
-					const index = Math.round(offset / (imageWidth + spacing));
-					flatlistRef.current?.scrollToOffset({
-						offset: index * (imageWidth + spacing),
-						animated: true,
-					});
-				}}
+				// onMomentumScrollEnd={(e) => {
+				// 	const offset = e.nativeEvent.contentOffset.x;
+				// 	const index = Math.round(offset / (imageWidth + spacing));
+				// 	flatlistRef.current?.scrollToOffset({
+				// 		offset: index * (imageWidth + spacing),
+				// 		animated: true,
+				// 	});
+				// }}
 				onEndReachedThreshold={0.5}
 				scrollEventThrottle={16}
 				onScroll={onScroll}

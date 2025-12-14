@@ -9,7 +9,6 @@ import { useUsers } from "@/contexts/UserContext";
 import { useUserData } from "@/contexts/UserDataContext";
 import { adminService } from "@/services/adminService";
 import { ExperienciaDetailResponse } from "@/services/experienceService";
-import { useIsFocused } from "@react-navigation/native";
 
 import React, { useEffect, useState } from "react";
 
@@ -18,7 +17,6 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 	const [showUsers, setShowUsers] = useState(false);
 	const [buttonPressed, setButtonPressed] = useState<string>();
 	const { token } = useAuth();
-	const isFocused = useIsFocused();
 
 	const {
 		loadExperienciasDetalladas,
@@ -26,9 +24,10 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 		loading: loadingEx,
 		experienciasDetalladas,
 		updateExperiencia,
+		detalladasLoaded,
 	} = useExperiencias();
-	const { refreshExperiencias, refreshUsers, refreshTop } = useRefresh();
 
+	const { refreshExperiencias, refreshUsers, refreshTop } = useRefresh();
 	const { users, loading, reloadUsers } = useUsers();
 	const { user, loadUser } = useUserData();
 
@@ -48,11 +47,29 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 		setShowExperiencias(false);
 	};
 
+	// useEffect(() => {
+	// 	if (showExperiencias && experienciasDetalladas.length === 0) {
+	// 		loadExperienciasDetalladas(true);
+	// 	}
+	// }, [showExperiencias]);
+
 	useEffect(() => {
-		if (showExperiencias && experienciasDetalladas.length === 0) {
+		if (showExperiencias && !detalladasLoaded) {
 			loadExperienciasDetalladas(true);
 		}
-	}, [showExperiencias]);
+
+		if (showUsers && users.length === 0) {
+			reloadUsers();
+		}
+	}, [
+		showExperiencias,
+		showUsers,
+		detalladasLoaded,
+		loadExperienciasDetalladas,
+		users.length,
+		reloadUsers,
+	]);
+
 	const handleDeleteExperience = async (id: number) => {
 		try {
 			await adminService.deleteExperiencia(id, token!);
@@ -60,7 +77,7 @@ const AdminScreen = ({ navigation }: { navigation: any }) => {
 			if (experiencia) {
 				updateExperiencia({ ...experiencia, activo: false });
 			}
-			refreshExperiencias();
+			//refreshExperiencias();
 		} catch (error) {
 			console.error("Error eliminando experiencia", error);
 		}
